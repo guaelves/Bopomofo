@@ -40,32 +40,44 @@ button:hover { background: #005fa3; }
 
 #grid {
   display: grid;
-  grid-template-columns: repeat(4, auto); /* 4列生字格 + 4列注音格 */
-  grid-template-rows: repeat(6, 3cm);
+  grid-template-columns: repeat(4, auto); /* 每行 4 個生字格 */
+  grid-template-rows: repeat(6, 3cm); /* 6排 */
   justify-content: center;
   gap: 6px;
 }
 
-.cell, .phonetic {
+/* 生字格 */
+.cell {
   position: relative;
   width: 3cm;
   height: 3cm;
-  border: 2px solid #a8d8a8;
+  border: 2px solid #a8d8a8; /* 方框實線 */
   display: flex;
   flex-direction: column;
 }
 
-.cell::before, .cell::after, .phonetic::before, .phonetic::after {
+.cell::before, .cell::after {
   content: "";
   position: absolute;
   background: #a8d8a8;
 }
-.cell::before { top:50%; left:10%; right:10%; height:1px; border-top:1px dashed #a8d8a8; }
-.cell::after { left:50%; top:10%; bottom:10%; width:1px; border-left:1px dashed #a8d8a8; }
-.phonetic::before, .phonetic::after { display:none; }
+.cell::before {
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  border-top: 1px dashed #a8d8a8; /* 中間橫線虛線 */
+}
+.cell::after {
+  left: 50%;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+  border-left: 1px dashed #a8d8a8; /* 中間直線虛線 */
+}
 
 .example {
-  flex:7;
+  flex: 7;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -77,16 +89,29 @@ button:hover { background: #005fa3; }
 }
 
 .practice {
-  flex:3;
-  border-top:1px solid #a8d8a8;
+  flex: 3;
+  border-top: 1px solid #a8d8a8;
+}
+
+/* 注音格 */
+.phonetic {
+  width: 1cm;
+  height: 3cm;
+  border: 2px solid #a8d8a8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5cm;
+  color: rgba(0,0,0,0.25);
 }
 
 @media print {
   @page { margin: 1cm 2cm; } /* 上下1cm，左右2cm */
   body { background:white; padding:0; margin:0; }
   .controls { display:none; }
-  #grid { width:auto; height:auto; gap:0; grid-template-columns: repeat(8, 3cm); }
-  .cell, .phonetic { width:3cm; height:3cm; }
+  #grid { width:auto; height:auto; gap:0; }
+  .cell { width:3cm; height:3cm; }
+  .phonetic { width:1cm; height:3cm; }
   .example { font-size:2.5cm; }
   footer { position: fixed; bottom:0; width:100%; text-align:center; font-size:12px; }
 }
@@ -107,10 +132,10 @@ button:hover { background: #005fa3; }
 
 <script>
 const rows = 6;
-const cols = 4; // 生字格列數
+const cols = 4;
 const grid = document.getElementById("grid");
 
-// 建立 6x4 生字格 + 6x4 注音格
+// 建立格子：每個生字格右側加注音格
 for(let r=0; r<rows; r++){
   for(let c=0; c<cols; c++){
     // 生字格
@@ -141,7 +166,7 @@ document.getElementById("fillBtn").addEventListener("click", ()=>{
   const cells = document.querySelectorAll(".cell .example");
 
   let index = 0;
-  for(let c=cols-1; c>=0; c--){ // 右列開始
+  for(let c=cols-1; c>=0; c--){
     for(let r=0; r<rows; r++){
       const cellIndex = r*cols + c;
       if(index < chars.length){
