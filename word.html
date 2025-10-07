@@ -39,8 +39,8 @@ button:hover { background: #005fa3; }
 
 #grid {
   display: grid;
-  grid-template-columns: repeat(5, 3cm); /* 5列 */
-  grid-template-rows: repeat(6, 3cm);    /* 6排 */
+  grid-template-columns: repeat(6, 3cm); /* 6列 */
+  grid-template-rows: repeat(5, 3cm);    /* 5排 */
   justify-content: center;
   gap: 6px;
 }
@@ -89,7 +89,7 @@ button:hover { background: #005fa3; }
 <h1>田字格生字簿</h1>
 
 <div class="controls">
-  <label><strong>貼上生字（會自動由右排往下填入）</strong></label>
+  <label><strong>貼上生字（會自動由右排從下往上填入）</strong></label>
   <textarea id="inputWords" placeholder="貼上你的生字，例如：花草樹木天空大地"></textarea>
   <button id="fillBtn">填入生字</button>
   <button onclick="window.print()">列印</button>
@@ -116,14 +116,14 @@ function normalizeInput(text){
   return text.replace(/\r/g,'').replace(/\s+/g,'').split('').filter(ch=>ch.trim()!=='');
 }
 
-// 填字事件
+// 填字事件（右列從下往上）
 document.getElementById("fillBtn").addEventListener("click", ()=>{
   const chars = normalizeInput(document.getElementById("inputWords").value);
   const cells = document.querySelectorAll(".cell");
 
   let index = 0;
   for(let c=cols-1; c>=0; c--){ // 右列開始
-    for(let r=0; r<rows; r++){
+    for(let r=rows-1; r>=0; r--){ // 下到上
       const cellIndex = r*cols + c;
       if(index < chars.length){
         cells[cellIndex].textContent = chars[index];
