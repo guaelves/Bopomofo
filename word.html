@@ -3,166 +3,137 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>可自訂格數＋自動填字的田字格生字簿</title>
+<title>6x5田字格生字簿</title>
 <style>
-  body {
-    font-family: "Microsoft JhengHei", sans-serif;
-    background: #f5f5f5;
-    padding: 20px;
-  }
-  h1 { text-align: center; margin-bottom: 10px; }
-  .controls {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-  }
-  input {
-    width: 60px;
-    padding: 6px;
-    font-size: 16px;
-    text-align: center;
-  }
-  textarea {
-    width: 300px;
-    height: 120px;
-    font-size: 16px;
-    padding: 8px;
-    resize: vertical;
-  }
-  button {
-    padding: 8px 14px;
-    font-size: 16px;
-    background: #0078d7;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  button:hover { background: #005fa3; }
+body {
+  font-family: "Microsoft JhengHei", sans-serif;
+  background: #f5f5f5;
+  padding: 20px;
+}
+h1 { text-align: center; margin-bottom: 10px; }
 
-  #grid {
-    display: grid;
-    justify-content: center;
-    gap: 6px;
-  }
-  .cell {
-    width: 3cm;
-    height: 3cm;
-    position: relative;
-    border: 1px solid #000;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 36px;
-    color: rgba(0,0,0,0.4);
-  }
-  /* 田字格線 */
-  .cell::before, .cell::after {
-    content: "";
-    position: absolute;
-    background: #999;
-  }
-  .cell::before {
-    left: 0; right: 0; top: 50%; height: 1px;
-    transform: translateY(-50%);
-  }
-  .cell::after {
-    top: 0; bottom: 0; left: 50%; width: 1px;
-    transform: translateX(-50%);
-  }
-  /* 內框 */
-  .inner {
-    position: absolute;
-    inset: 10%;
-    border: 1px dashed rgba(0,0,0,0.2);
-    pointer-events: none;
-  }
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+textarea {
+  width: 320px;
+  height: 100px;
+  font-size: 16px;
+  padding: 8px;
+  resize: vertical;
+}
+button {
+  padding: 8px 14px;
+  font-size: 16px;
+  background: #0078d7;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover { background: #005fa3; }
 
-  @media print {
-    body { background: white; margin: 0; }
-    .controls { display: none; }
-    #grid { gap: 4px; }
-    .cell { color: rgba(0,0,0,0.15); }
-  }
+#grid {
+  display: grid;
+  grid-template-columns: repeat(6, 3cm);
+  grid-template-rows: repeat(5, 3cm);
+  justify-content: center;
+  gap: 6px;
+}
+
+.cell {
+  position: relative;
+  width: 3cm;
+  height: 3cm;
+  border: 2px solid #a8d8a8; /* 外框實線 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5cm; /* 字體大小 2.5x2.5 公分 */
+  color: #000;
+}
+
+.cell::before, .cell::after {
+  content: "";
+  position: absolute;
+  background: #a8d8a8;
+}
+.cell::before {
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  border-top: 1px dashed #a8d8a8; /* 中間橫線虛線 */
+  background: none;
+}
+.cell::after {
+  left: 50%;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+  border-left: 1px dashed #a8d8a8; /* 中間直線虛線 */
+  background: none;
+}
+
+@media print {
+  body { background: white; margin:0; }
+  .controls { display: none; }
+}
 </style>
 </head>
 <body>
-<h1>可自訂格數 + 自動填字的田字格生字簿</h1>
+<h1>6x5 田字格生字簿</h1>
 
 <div class="controls">
-  <label>排數（X）：<input type="number" id="rows" value="4" min="1"></label>
-  <label>行數（Y）：<input type="number" id="cols" value="6" min="1"></label>
-  <button id="generate">產生田字格</button>
+  <label><strong>貼上生字（會自動由右排往下填入）</strong></label>
+  <textarea id="inputWords" placeholder="貼上你的生字，例如：花草樹木天空大地"></textarea>
+  <button id="fillBtn">填入生字</button>
   <button onclick="window.print()">列印</button>
-</div>
-
-<div class="controls">
-  <div style="display:flex; flex-direction:column; align-items:center;">
-    <label for="inputWords"><strong>貼上生字（自動依序填入）</strong></label>
-    <textarea id="inputWords" placeholder="可貼上任意數量的生字，用空白或換行分隔"></textarea>
-    <button id="fillBtn" style="margin-top:6px;">填入生字</button>
-  </div>
 </div>
 
 <div id="grid"></div>
 
 <script>
-  const grid = document.getElementById("grid");
-  const generateBtn = document.getElementById("generate");
-  const fillBtn = document.getElementById("fillBtn");
+const rows = 5;
+const cols = 6;
+const total = rows * cols;
+const grid = document.getElementById("grid");
 
-  function generateGrid(rows, cols) {
-    grid.style.gridTemplateColumns = `repeat(${cols}, 3cm)`;
-    grid.innerHTML = "";
-    const total = rows * cols;
-    for (let i = 0; i < total; i++) {
-      const cell = document.createElement("div");
-      cell.className = "cell";
-      const inner = document.createElement("div");
-      inner.className = "inner";
-      cell.appendChild(inner);
-      grid.appendChild(cell);
+// 先建立 6x5 格子
+for(let r=0; r<rows; r++){
+  for(let c=0; c<cols; c++){
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    grid.appendChild(cell);
+  }
+}
+
+function normalizeInput(text){
+  return text.replace(/\r/g,'').replace(/\s+/g,'').split('').filter(ch=>ch.trim()!=='');
+}
+
+document.getElementById("fillBtn").addEventListener("click", ()=>{
+  const chars = normalizeInput(document.getElementById("inputWords").value);
+  const cells = document.querySelectorAll(".cell");
+
+  // 排序策略：右排→左排，每排由上往下
+  let index = 0;
+  for(let c=cols-1; c>=0; c--){
+    for(let r=0; r<rows; r++){
+      const cellIndex = r*cols + c; // 位置在grid NodeList中的index
+      if(index < chars.length){
+        cells[cellIndex].textContent = chars[index];
+        index++;
+      } else {
+        cells[cellIndex].textContent = '';
+      }
     }
   }
-
-  function normalizeInput(text) {
-    return text.replace(/\r/g, "")
-               .split(/[\s,，;；、]+/)
-               .filter(ch => ch.trim() !== "")
-               .join("");
-  }
-
-  generateBtn.addEventListener("click", () => {
-    const rows = parseInt(document.getElementById("rows").value);
-    const cols = parseInt(document.getElementById("cols").value);
-    generateGrid(rows, cols);
-  });
-
-  fillBtn.addEventListener("click", () => {
-    const chars = normalizeInput(document.getElementById("inputWords").value);
-    const cells = document.querySelectorAll(".cell");
-    cells.forEach((cell, idx) => {
-      cell.childNodes[0].textContent = ""; // remove inner lines first
-      if (chars[idx]) {
-        cell.textContent = chars[idx];
-        const inner = document.createElement("div");
-        inner.className = "inner";
-        cell.appendChild(inner);
-      } else {
-        cell.textContent = "";
-        const inner = document.createElement("div");
-        inner.className = "inner";
-        cell.appendChild(inner);
-      }
-    });
-  });
-
-  // 預設 4×6
-  generateGrid(4, 6);
+});
 </script>
 </body>
 </html>
