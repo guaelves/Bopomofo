@@ -1,299 +1,168 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>生字簿 — 田字格直式（4排×6行）</title>
-  <style>
-    :root{
-      --page-width: 210mm;
-      --page-height: 297mm;
-      --margin: 12mm;
-      --cell-size: calc((var(--page-width) - var(--margin)*2) / 6); /* 6 columns */
-      --cell-height: calc((var(--page-height) - var(--margin)*2 - 40mm) / 4); /* 4 rows, leave header space */
-      --model-font: 48px;
-    }
-    *{box-sizing:border-box}
-    body{
-      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-      padding:16px;
-      background:#f3f4f6;
-      color:#111;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>可自訂格數＋自動填字的田字格生字簿</title>
+<style>
+  body {
+    font-family: "Microsoft JhengHei", sans-serif;
+    background: #f5f5f5;
+    padding: 20px;
+  }
+  h1 { text-align: center; margin-bottom: 10px; }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  input {
+    width: 60px;
+    padding: 6px;
+    font-size: 16px;
+    text-align: center;
+  }
+  textarea {
+    width: 300px;
+    height: 120px;
+    font-size: 16px;
+    padding: 8px;
+    resize: vertical;
+  }
+  button {
+    padding: 8px 14px;
+    font-size: 16px;
+    background: #0078d7;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  button:hover { background: #005fa3; }
 
-    .toolbar{
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-      margin-bottom:12px;
-    }
-    textarea#inputWords{
-      width:380px;
-      height:200px;
-      padding:10px;
-      font-size:16px;
-      resize:vertical;
-    }
-    .btn{
-      display:inline-block;
-      padding:10px 14px;
-      background:#0b74da;
-      color:white;
-      border-radius:6px;
-      cursor:pointer;
-      user-select:none;
-      border:none;
-      font-size:15px;
-    }
-    .btn.secondary{background:#6b7280}
-    .note{font-size:13px;color:#444;margin-top:6px}
+  #grid {
+    display: grid;
+    justify-content: center;
+    gap: 6px;
+  }
+  .cell {
+    width: 3cm;
+    height: 3cm;
+    position: relative;
+    border: 1px solid #000;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    color: rgba(0,0,0,0.4);
+  }
+  /* 田字格線 */
+  .cell::before, .cell::after {
+    content: "";
+    position: absolute;
+    background: #999;
+  }
+  .cell::before {
+    left: 0; right: 0; top: 50%; height: 1px;
+    transform: translateY(-50%);
+  }
+  .cell::after {
+    top: 0; bottom: 0; left: 50%; width: 1px;
+    transform: translateX(-50%);
+  }
+  /* 內框 */
+  .inner {
+    position: absolute;
+    inset: 10%;
+    border: 1px dashed rgba(0,0,0,0.2);
+    pointer-events: none;
+  }
 
-    /* Page / sheet */
-    .sheet{
-      width:var(--page-width);
-      max-width:100%;
-      background:white;
-      margin: 10px auto;
-      padding:12mm;
-      box-shadow:0 6px 18px rgba(0,0,0,0.08);
-    }
-
-    .sheet-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:10px;
-    }
-    .sheet-title{
-      font-size:20px;
-      font-weight:700;
-    }
-    .sheet-meta{font-size:13px;color:#555}
-
-    /* grid */
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap:12px;
-    }
-
-    .cell{
-      position:relative;
-      width:100%;
-      /* keep square-ish by padding-top trick */
-      padding-top: calc( var(--cell-height) ); /* fixed height per row */
-      background:transparent;
-      border: 0;
-      overflow:visible;
-    }
-
-    .frame{
-      position:absolute;
-      inset:0;
-      border:1px solid #222;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background: linear-gradient(transparent, transparent);
-    }
-
-    /* 田字格 lines */
-    .grid .frame::before,
-    .grid .frame::after{
-      content:"";
-      position:absolute;
-      background:#cfcfcf;
-    }
-    .grid .frame::before{ /* horizontal middle */
-      left:8%;
-      right:8%;
-      height:1px;
-      top:50%;
-      transform:translateY(-0.5px);
-    }
-    .grid .frame::after{ /* vertical middle */
-      top:8%;
-      bottom:8%;
-      width:1px;
-      left:50%;
-      transform:translateX(-0.5px);
-    }
-    /* outer faint margin lines (frame border already present) */
-    .cell .guide {
-      position:absolute;
-      inset:8%;
-      border:1px dashed rgba(0,0,0,0.06);
-      pointer-events:none;
-    }
-
-    /* 模範字（淡） */
-    .model{
-      position:absolute;
-      top:6%;
-      left:6%;
-      font-size:var(--model-font);
-      color:rgba(0,0,0,0.25);
-      line-height:1;
-      transform-origin: left top;
-      writing-mode: horizontal-tb;
-      user-select:none;
-    }
-
-    /* 大型空白練習區（覆蓋整格，讓使用者可以寫） */
-    .practice{
-      position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:72px;
-      color:transparent; /* invisible, for printing we just show empty grid */
-    }
-
-    /* small caption under each cell (optional) */
-    .caption{
-      position:absolute;
-      bottom:-20px;
-      left:0;
-      width:100%;
-      text-align:center;
-      font-size:12px;
-      color:#444;
-    }
-
-    /* print */
-    @media print{
-      body{background:white}
-      .toolbar{display:none}
-      .sheet{box-shadow:none; margin:0; padding:8mm}
-      .model{color:rgba(0,0,0,0.15)}
-      .cell .frame{border-color:#333}
-    }
-
-    /* responsive small screens */
-    @media (max-width:920px){
-      textarea#inputWords{width:260px}
-      :root{ --model-font:42px }
-    }
-  </style>
+  @media print {
+    body { background: white; margin: 0; }
+    .controls { display: none; }
+    #grid { gap: 4px; }
+    .cell { color: rgba(0,0,0,0.15); }
+  }
+</style>
 </head>
 <body>
-  <h2>生字簿：田字格直式（4排 × 6行）</h2>
-  <div class="toolbar" aria-hidden="false">
-    <div>
-      <label for="inputWords"><strong>貼上你的生字（最多 24 個）：</strong></label><br/>
-      <textarea id="inputWords" placeholder="每個字換行或空白分隔。系統會取前 24 個字。"></textarea>
-      <div style="margin-top:8px;">
-        <button class="btn" id="fillBtn">填入生字</button>
-        <button class="btn secondary" id="clearBtn">清除</button>
-        <button class="btn secondary" id="printBtn">列印 (Print)</button>
-      </div>
-      <div class="note">提示：若字數不足，會留下空白格；需直式筆順示範請另行告知。</div>
-    </div>
+<h1>可自訂格數 + 自動填字的田字格生字簿</h1>
 
-    <div style="margin-left:12px;">
-      <div style="font-weight:700">列印建議</div>
-      <ul style="margin:6px 0 0 18px;color:#333">
-        <li>列印紙張：A4（直向）</li>
-        <li>列印設定：無邊距或縮小邊距，縮放 100%</li>
-        <li>列印 1 頁為一張練習紙</li>
-      </ul>
-    </div>
+<div class="controls">
+  <label>排數（X）：<input type="number" id="rows" value="4" min="1"></label>
+  <label>行數（Y）：<input type="number" id="cols" value="6" min="1"></label>
+  <button id="generate">產生田字格</button>
+  <button onclick="window.print()">列印</button>
+</div>
+
+<div class="controls">
+  <div style="display:flex; flex-direction:column; align-items:center;">
+    <label for="inputWords"><strong>貼上生字（自動依序填入）</strong></label>
+    <textarea id="inputWords" placeholder="可貼上任意數量的生字，用空白或換行分隔"></textarea>
+    <button id="fillBtn" style="margin-top:6px;">填入生字</button>
   </div>
+</div>
 
-  <div class="sheet" id="sheet">
-    <div class="sheet-header">
-      <div class="sheet-title">生字簿 — 田字格練習</div>
-      <div class="sheet-meta">（4 排 × 6 行） 共 24 格</div>
-    </div>
+<div id="grid"></div>
 
-    <div class="grid" id="grid">
-      <!-- 24 cells generated by JS -->
-    </div>
-  </div>
+<script>
+  const grid = document.getElementById("grid");
+  const generateBtn = document.getElementById("generate");
+  const fillBtn = document.getElementById("fillBtn");
 
-  <script>
-    // Build 24 cells
-    const grid = document.getElementById('grid');
-    const MAX = 24;
-    for(let i=0;i<MAX;i++){
-      const cell = document.createElement('div');
-      cell.className = 'cell';
-      cell.innerHTML = `
-        <div class="frame">
-          <div class="guide"></div>
-          <div class="model" data-index="${i}"></div>
-          <div class="practice" aria-hidden="true"></div>
-        </div>
-        <div class="caption"></div>
-      `;
+  function generateGrid(rows, cols) {
+    grid.style.gridTemplateColumns = `repeat(${cols}, 3cm)`;
+    grid.innerHTML = "";
+    const total = rows * cols;
+    for (let i = 0; i < total; i++) {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      const inner = document.createElement("div");
+      inner.className = "inner";
+      cell.appendChild(inner);
       grid.appendChild(cell);
     }
+  }
 
-    function normalizeAndSplit(text){
-      // split by whitespace, newlines; keep single characters only
-      // also remove non-visible chars
-      let arr = text.replace(/\r/g,'').trim().split(/[\s,，;；、]+/);
-      // flatten entries to single characters where user may have pasted words
-      let chars = [];
-      arr.forEach(entry=>{
-        if(!entry) return;
-        // If entry length > 1, split into characters
-        for(const ch of entry){
-          if(ch.trim()!=='') chars.push(ch);
-        }
-      });
-      return chars.slice(0, MAX);
-    }
+  function normalizeInput(text) {
+    return text.replace(/\r/g, "")
+               .split(/[\s,，;；、]+/)
+               .filter(ch => ch.trim() !== "")
+               .join("");
+  }
 
-    document.getElementById('fillBtn').addEventListener('click', ()=>{
-      const raw = document.getElementById('inputWords').value;
-      const chars = normalizeAndSplit(raw);
-      // place chars into model blocks in visual order (row-major)
-      const models = document.querySelectorAll('.model');
-      models.forEach((m, idx)=>{
-        if(chars[idx]){
-          m.textContent = chars[idx];
-          m.style.display = 'block';
-        } else {
-          m.textContent = '';
-          m.style.display = 'none';
-        }
-      });
-      // optional captions: show index number (1~24)
-      const caps = document.querySelectorAll('.caption');
-      caps.forEach((c, idx)=>{
-        c.textContent = (chars[idx] ? '' : '');
-      });
+  generateBtn.addEventListener("click", () => {
+    const rows = parseInt(document.getElementById("rows").value);
+    const cols = parseInt(document.getElementById("cols").value);
+    generateGrid(rows, cols);
+  });
+
+  fillBtn.addEventListener("click", () => {
+    const chars = normalizeInput(document.getElementById("inputWords").value);
+    const cells = document.querySelectorAll(".cell");
+    cells.forEach((cell, idx) => {
+      cell.childNodes[0].textContent = ""; // remove inner lines first
+      if (chars[idx]) {
+        cell.textContent = chars[idx];
+        const inner = document.createElement("div");
+        inner.className = "inner";
+        cell.appendChild(inner);
+      } else {
+        cell.textContent = "";
+        const inner = document.createElement("div");
+        inner.className = "inner";
+        cell.appendChild(inner);
+      }
     });
+  });
 
-    document.getElementById('clearBtn').addEventListener('click', ()=>{
-      document.getElementById('inputWords').value = '';
-      document.querySelectorAll('.model').forEach(m=>{ m.textContent=''; m.style.display='none'; });
-    });
-
-    document.getElementById('printBtn').addEventListener('click', ()=>{
-      window.print();
-    });
-
-    // allow paste event: if user pastes many characters, auto-fill
-    document.getElementById('inputWords').addEventListener('paste', (e)=>{
-      setTimeout(()=>{ // wait for paste to populate
-        const raw = document.getElementById('inputWords').value;
-        const chars = normalizeAndSplit(raw);
-        if(chars.length>0){
-          // auto fill if >=1
-          document.querySelectorAll('.model').forEach((m, idx)=>{
-            if(chars[idx]){ m.textContent = chars[idx]; m.style.display='block'; }
-            else { m.textContent=''; m.style.display='none'; }
-          });
-        }
-      },10);
-    });
-
-    // initialize empty
-    document.querySelectorAll('.model').forEach(m=>m.style.display='none');
-
-  </script>
+  // 預設 4×6
+  generateGrid(4, 6);
+</script>
 </body>
 </html>
