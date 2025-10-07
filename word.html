@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>5x6田字格生字簿</title>
+<title>6x4田字格生字簿</title>
 <style>
 body {
   font-family: "Microsoft JhengHei", sans-serif;
@@ -20,7 +20,7 @@ h1 { text-align: center; margin-bottom: 10px; }
   margin-bottom: 15px;
 }
 textarea {
-  width: 320px;
+  width: 300px;
   height: 100px;
   font-size: 16px;
   padding: 8px;
@@ -39,8 +39,8 @@ button:hover { background: #005fa3; }
 
 #grid {
   display: grid;
-  grid-template-columns: repeat(6, 3cm); /* 6列 */
-  grid-template-rows: repeat(5, 3cm);    /* 5排 */
+  grid-template-columns: repeat(4, 3cm); /* 4列 */
+  grid-template-rows: repeat(6, 3cm);    /* 6排 */
   justify-content: center;
   gap: 6px;
 }
@@ -86,10 +86,10 @@ button:hover { background: #005fa3; }
 </style>
 </head>
 <body>
-<h1>5x6 田字格生字簿</h1>
+<h1>6x4 田字格生字簿</h1>
 
 <div class="controls">
-  <label><strong>貼上生字（會自動由右排往下填入）</strong></label>
+  <label><strong>貼上生字（會自動由右列往下填入）</strong></label>
   <textarea id="inputWords" placeholder="貼上你的生字，例如：花草樹木天空大地"></textarea>
   <button id="fillBtn">填入生字</button>
   <button onclick="window.print()">列印</button>
@@ -98,11 +98,11 @@ button:hover { background: #005fa3; }
 <div id="grid"></div>
 
 <script>
-const rows = 5; // 5排
-const cols = 6; // 6列
+const rows = 6; // 6排
+const cols = 4; // 4列
 const grid = document.getElementById("grid");
 
-// 建立 5x6 格子
+// 建立 6x4 格子
 for(let r=0; r<rows; r++){
   for(let c=0; c<cols; c++){
     const cell = document.createElement("div");
