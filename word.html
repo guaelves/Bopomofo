@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>6x5田字格生字簿</title>
+<title>5x6田字格生字簿</title>
 <style>
 body {
   font-family: "Microsoft JhengHei", sans-serif;
@@ -39,8 +39,8 @@ button:hover { background: #005fa3; }
 
 #grid {
   display: grid;
-  grid-template-columns: repeat(6, 3cm);
-  grid-template-rows: repeat(5, 3cm);
+  grid-template-columns: repeat(6, 3cm); /* 6列 */
+  grid-template-rows: repeat(5, 3cm);    /* 5排 */
   justify-content: center;
   gap: 6px;
 }
@@ -53,8 +53,8 @@ button:hover { background: #005fa3; }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.5cm; /* 字體大小 2.5x2.5 公分 */
-  color: #000;
+  font-size: 2.5cm; /* 字體大小 */
+  color: rgba(0,0,0,0.25); /* 淡灰色 */
 }
 
 .cell::before, .cell::after {
@@ -86,7 +86,7 @@ button:hover { background: #005fa3; }
 </style>
 </head>
 <body>
-<h1>6x5 田字格生字簿</h1>
+<h1>5x6 田字格生字簿</h1>
 
 <div class="controls">
   <label><strong>貼上生字（會自動由右排往下填入）</strong></label>
@@ -98,12 +98,11 @@ button:hover { background: #005fa3; }
 <div id="grid"></div>
 
 <script>
-const rows = 5;
-const cols = 6;
-const total = rows * cols;
+const rows = 5; // 5排
+const cols = 6; // 6列
 const grid = document.getElementById("grid");
 
-// 先建立 6x5 格子
+// 建立 5x6 格子
 for(let r=0; r<rows; r++){
   for(let c=0; c<cols; c++){
     const cell = document.createElement("div");
@@ -112,19 +111,20 @@ for(let r=0; r<rows; r++){
   }
 }
 
+// 處理輸入字串
 function normalizeInput(text){
   return text.replace(/\r/g,'').replace(/\s+/g,'').split('').filter(ch=>ch.trim()!=='');
 }
 
+// 填字事件
 document.getElementById("fillBtn").addEventListener("click", ()=>{
   const chars = normalizeInput(document.getElementById("inputWords").value);
   const cells = document.querySelectorAll(".cell");
 
-  // 排序策略：右排→左排，每排由上往下
   let index = 0;
-  for(let c=cols-1; c>=0; c--){
+  for(let c=cols-1; c>=0; c--){ // 右列開始
     for(let r=0; r<rows; r++){
-      const cellIndex = r*cols + c; // 位置在grid NodeList中的index
+      const cellIndex = r*cols + c;
       if(index < chars.length){
         cells[cellIndex].textContent = chars[index];
         index++;
