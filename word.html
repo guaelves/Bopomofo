@@ -2,16 +2,15 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>5x6 可描寫生字簿</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6x5田字格生字簿</title>
 <style>
 body {
-  font-family: "DFKai-SB", "標楷體", "Microsoft JhengHei", sans-serif;
+  font-family: "Microsoft JhengHei", sans-serif;
   background: #f5f5f5;
-  margin:0;
-  padding:20px;
+  padding: 20px;
 }
-h1 { text-align: center; margin-bottom: 15px; }
+h1 { text-align: center; margin-bottom: 10px; }
 
 .controls {
   display: flex;
@@ -20,15 +19,13 @@ h1 { text-align: center; margin-bottom: 15px; }
   gap: 10px;
   margin-bottom: 15px;
 }
-
 textarea {
-  width: 300px;
+  width: 320px;
   height: 100px;
   font-size: 16px;
   padding: 8px;
   resize: vertical;
 }
-
 button {
   padding: 8px 14px;
   font-size: 16px;
@@ -40,127 +37,98 @@ button {
 }
 button:hover { background: #005fa3; }
 
-#grid-container {
-  display: flex;
-  justify-content: center;
-}
-
 #grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(5, 1fr);
-  gap: 5px;
-  max-width: 90vw;
-  max-height: 75vh;
-  width: auto;
-  aspect-ratio: 6 / 5; /* 保持 6列 x 5排比例 */
+  grid-template-columns: repeat(6, 3cm);
+  grid-template-rows: repeat(5, 3cm);
+  justify-content: center;
+  gap: 6px;
 }
 
 .cell {
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: 3cm;
+  height: 3cm;
   border: 2px solid #a8d8a8; /* 外框實線 */
-  background: white;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 2.5cm; /* 字體大小 2.5x2.5 公分 */
+  color: #000;
 }
 
-.cell-content {
-  font-size: 2.5rem;
-  color: rgba(0,0,0,0.25); /* 淡灰色描紅字 */
-  text-align: center;
-  line-height: 1;
-}
-
-/* 中間十字虛線 */
 .cell::before, .cell::after {
-  content:"";
+  content: "";
   position: absolute;
   background: #a8d8a8;
 }
-.cell::before { /* 橫線 */
+.cell::before {
   top: 50%;
   left: 10%;
   right: 10%;
   height: 1px;
-  border-top: 1px dashed #a8d8a8;
+  border-top: 1px dashed #a8d8a8; /* 中間橫線虛線 */
   background: none;
 }
-.cell::after { /* 直線 */
+.cell::after {
   left: 50%;
   top: 10%;
   bottom: 10%;
   width: 1px;
-  border-left: 1px dashed #a8d8a8;
+  border-left: 1px dashed #a8d8a8; /* 中間直線虛線 */
   background: none;
 }
 
-/* 列印時固定 3x3 公分 */
-@media print{
-  #grid {
-    width: auto;
-    height: auto;
-    grid-template-columns: repeat(6, 3cm);
-    grid-template-rows: repeat(5, 3cm);
-    gap: 0;
-  }
-  .cell { width:3cm; height:3cm; }
-  .cell-content { font-size: 2.5cm; }
-  .controls { display:none; }
+@media print {
+  body { background: white; margin:0; }
+  .controls { display: none; }
 }
 </style>
 </head>
 <body>
-<h1>5x6 可描寫生字簿</h1>
+<h1>6x5 田字格生字簿</h1>
 
 <div class="controls">
-  <label><strong>貼上生字（右排→左排，每排由上往下）</strong></label>
-  <textarea id="inputWords" placeholder="貼上你的生字"></textarea>
+  <label><strong>貼上生字（會自動由右排往下填入）</strong></label>
+  <textarea id="inputWords" placeholder="貼上你的生字，例如：花草樹木天空大地"></textarea>
   <button id="fillBtn">填入生字</button>
   <button onclick="window.print()">列印</button>
 </div>
 
-<div id="grid-container">
-  <div id="grid"></div>
-</div>
+<div id="grid"></div>
 
 <script>
 const rows = 5;
 const cols = 6;
+const total = rows * cols;
 const grid = document.getElementById("grid");
 
-// 建立 5x6 格
-for(let r=0;r<rows;r++){
-  for(let c=0;c<cols;c++){
+// 先建立 6x5 格子
+for(let r=0; r<rows; r++){
+  for(let c=0; c<cols; c++){
     const cell = document.createElement("div");
     cell.className = "cell";
-    const content = document.createElement("div");
-    content.className = "cell-content";
-    cell.appendChild(content);
     grid.appendChild(cell);
   }
 }
 
-// 處理輸入字串
 function normalizeInput(text){
   return text.replace(/\r/g,'').replace(/\s+/g,'').split('').filter(ch=>ch.trim()!=='');
 }
 
-// 填字事件
 document.getElementById("fillBtn").addEventListener("click", ()=>{
   const chars = normalizeInput(document.getElementById("inputWords").value);
-  const cells = document.querySelectorAll(".cell-content");
+  const cells = document.querySelectorAll(".cell");
 
-  let index=0;
-  for(let c=cols-1;c>=0;c--){ // 右排開始
-    for(let r=0;r<rows;r++){
-      const cellIndex = r*cols + c;
-      if(index<chars.length){
+  // 排序策略：右排→左排，每排由上往下
+  let index = 0;
+  for(let c=cols-1; c>=0; c--){
+    for(let r=0; r<rows; r++){
+      const cellIndex = r*cols + c; // 位置在grid NodeList中的index
+      if(index < chars.length){
         cells[cellIndex].textContent = chars[index];
         index++;
-      }else{
+      } else {
         cells[cellIndex].textContent = '';
       }
     }
