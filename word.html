@@ -3,12 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>6x5田字格生字簿</title>
+<title>5x6 可描寫生字簿</title>
 <style>
 body {
-  font-family: "Microsoft JhengHei", sans-serif;
+  font-family: "DFKai-SB", "標楷體", "Microsoft JhengHei", sans-serif;
   background: #f5f5f5;
   padding: 20px;
+  margin:0;
 }
 h1 { text-align: center; margin-bottom: 10px; }
 
@@ -20,7 +21,7 @@ h1 { text-align: center; margin-bottom: 10px; }
   margin-bottom: 15px;
 }
 textarea {
-  width: 320px;
+  width: 300px;
   height: 100px;
   font-size: 16px;
   padding: 8px;
@@ -39,58 +40,85 @@ button:hover { background: #005fa3; }
 
 #grid {
   display: grid;
-  grid-template-columns: repeat(6, 3cm);
-  grid-template-rows: repeat(5, 3cm);
   justify-content: center;
   gap: 6px;
+  width: 100%;
+  max-width: calc(3cm*6 + 30px); /* 螢幕縮放比例 */
 }
 
 .cell {
   position: relative;
-  width: 3cm;
-  height: 3cm;
-  border: 2px solid #a8d8a8; /* 外框實線 */
+  width: 100%;
+  padding-top: 100%; /* 保持正方形比例 */
+  border: 2px solid #a8d8a8;
+  background: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.5cm; /* 字體大小 2.5x2.5 公分 */
-  color: #000;
+}
+
+.cell-content {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: calc(2.5cm * 0.8); /* 顯示比例，螢幕縮放 */
+  color: rgba(0,0,0,0.25); /* 淡灰色描寫字 */
+  width: 80%;
+  height: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cell::before, .cell::after {
-  content: "";
+  content:"";
   position: absolute;
   background: #a8d8a8;
 }
-.cell::before {
+.cell::before { /* 中間橫線 */
   top: 50%;
   left: 10%;
   right: 10%;
   height: 1px;
-  border-top: 1px dashed #a8d8a8; /* 中間橫線虛線 */
+  border-top: 1px dashed #a8d8a8;
   background: none;
 }
-.cell::after {
+.cell::after { /* 中間直線 */
   left: 50%;
   top: 10%;
   bottom: 10%;
   width: 1px;
-  border-left: 1px dashed #a8d8a8; /* 中間直線虛線 */
+  border-left: 1px dashed #a8d8a8;
   background: none;
 }
 
-@media print {
-  body { background: white; margin:0; }
-  .controls { display: none; }
+/* 列印時 */
+@media print{
+  #grid {
+    width: auto;
+    max-width: none;
+    grid-template-columns: repeat(6, 3cm);
+    grid-template-rows: repeat(5, 3cm);
+    gap: 0;
+  }
+  .cell {
+    width: 3cm;
+    height: 3cm;
+    padding-top:0;
+  }
+  .cell-content {
+    font-size:2.5cm;
+  }
+  .controls { display:none; }
 }
 </style>
 </head>
 <body>
-<h1>6x5 田字格生字簿</h1>
+<h1>5x6 可描寫生字簿</h1>
 
 <div class="controls">
-  <label><strong>貼上生字（會自動由右排往下填入）</strong></label>
-  <textarea id="inputWords" placeholder="貼上你的生字，例如：花草樹木天空大地"></textarea>
+  <label><strong>貼上生字（右排→左排，每排由上往下）</strong></label>
+  <textarea id="inputWords" placeholder="貼上你的生字"></textarea>
   <button id="fillBtn">填入生字</button>
   <button onclick="window.print()">列印</button>
 </div>
@@ -100,14 +128,16 @@ button:hover { background: #005fa3; }
 <script>
 const rows = 5;
 const cols = 6;
-const total = rows * cols;
 const grid = document.getElementById("grid");
 
-// 先建立 6x5 格子
-for(let r=0; r<rows; r++){
-  for(let c=0; c<cols; c++){
+// 生成5x6格子
+for(let r=0;r<rows;r++){
+  for(let c=0;c<cols;c++){
     const cell = document.createElement("div");
     cell.className = "cell";
+    const content = document.createElement("div");
+    content.className = "cell-content";
+    cell.appendChild(content);
     grid.appendChild(cell);
   }
 }
@@ -118,17 +148,16 @@ function normalizeInput(text){
 
 document.getElementById("fillBtn").addEventListener("click", ()=>{
   const chars = normalizeInput(document.getElementById("inputWords").value);
-  const cells = document.querySelectorAll(".cell");
+  const cells = document.querySelectorAll(".cell-content");
 
-  // 排序策略：右排→左排，每排由上往下
-  let index = 0;
-  for(let c=cols-1; c>=0; c--){
-    for(let r=0; r<rows; r++){
-      const cellIndex = r*cols + c; // 位置在grid NodeList中的index
-      if(index < chars.length){
+  let index=0;
+  for(let c=cols-1;c>=0;c--){ // 從右排開始
+    for(let r=0;r<rows;r++){
+      const cellIndex = r*cols + c;
+      if(index<chars.length){
         cells[cellIndex].textContent = chars[index];
         index++;
-      } else {
+      }else{
         cells[cellIndex].textContent = '';
       }
     }
