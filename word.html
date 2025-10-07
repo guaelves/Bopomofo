@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>田字格生字簿</title>
+<title>6x4田字格生字簿（含注音格）</title>
 <style>
 body {
   font-family: "Microsoft JhengHei", sans-serif;
@@ -40,110 +40,80 @@ button:hover { background: #005fa3; }
 
 #grid {
   display: grid;
-  grid-template-columns: repeat(4, 3cm); /* 4列 */
-  grid-template-rows: repeat(6, 3cm);    /* 6排 */
+  grid-template-columns: repeat(4, auto); /* 4列生字格 + 4列注音格 */
+  grid-template-rows: repeat(6, 3cm);
   justify-content: center;
   gap: 6px;
 }
 
-.cell {
+.cell, .phonetic {
   position: relative;
   width: 3cm;
   height: 3cm;
-  border: 2px solid #a8d8a8; /* 外框實線 */
+  border: 2px solid #a8d8a8;
   display: flex;
   flex-direction: column;
 }
 
-.cell::before, .cell::after {
+.cell::before, .cell::after, .phonetic::before, .phonetic::after {
   content: "";
   position: absolute;
   background: #a8d8a8;
 }
-.cell::before {
-  top: 50%;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  border-top: 1px dashed #a8d8a8; /* 中間橫線虛線 */
-}
-.cell::after {
-  left: 50%;
-  top: 10%;
-  bottom: 10%;
-  width: 1px;
-  border-left: 1px dashed #a8d8a8; /* 中間直線虛線 */
-}
+.cell::before { top:50%; left:10%; right:10%; height:1px; border-top:1px dashed #a8d8a8; }
+.cell::after { left:50%; top:10%; bottom:10%; width:1px; border-left:1px dashed #a8d8a8; }
+.phonetic::before, .phonetic::after { display:none; }
 
 .example {
-  flex: 7; /* 上方 70% */
+  flex:7;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2.5cm;
-  color: rgba(0,0,0,0.25); /* 淡灰色 */
+  color: rgba(0,0,0,0.25);
   text-align: center;
   line-height: 1;
   word-break: break-all;
 }
 
 .practice {
-  flex: 3; /* 下方 30% 空格描寫 */
-  border-top: 1px solid #a8d8a8;
+  flex:3;
+  border-top:1px solid #a8d8a8;
 }
 
-/* 列印樣式 */
 @media print {
-  @page {
-    margin: 2cm; /* 上下左右 2cm */
-  }
-  body {
-    background: white;
-    padding: 0;
-    margin: 0;
-  }
-  .controls { display: none; }
-  #grid {
-    width: auto;
-    height: auto;
-    grid-template-columns: repeat(4, 3cm);
-    grid-template-rows: repeat(6, 3cm);
-    gap: 0;
-  }
-  .cell { width:3cm; height:3cm; }
-  .example { font-size: 2.5cm; }
-  footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-    font-size: 12px;
-  }
+  @page { margin: 1cm 2cm; } /* 上下1cm，左右2cm */
+  body { background:white; padding:0; margin:0; }
+  .controls { display:none; }
+  #grid { width:auto; height:auto; gap:0; grid-template-columns: repeat(8, 3cm); }
+  .cell, .phonetic { width:3cm; height:3cm; }
+  .example { font-size:2.5cm; }
+  footer { position: fixed; bottom:0; width:100%; text-align:center; font-size:12px; }
 }
 </style>
 </head>
 <body>
-<h1>田字格生字簿</h1>
+<h1>6x4 田字格生字簿（含注音格）</h1>
 
 <div class="controls">
-  <label><strong>填入生字（右列→左列，每列上→下填字）</strong></label>
+  <label><strong>貼上生字（右列→左列，每列上→下填字）</strong></label>
   <textarea id="inputWords" placeholder="貼上你的生字，例如：花草樹木天空大地"></textarea>
   <button id="fillBtn">填入生字</button>
   <button onclick="window.print()">列印</button>
 </div>
 
 <div id="grid"></div>
-
 <footer>@2025 guaelves. All rights reserved.</footer>
 
 <script>
 const rows = 6;
-const cols = 4;
+const cols = 4; // 生字格列數
 const grid = document.getElementById("grid");
 
-// 建立 6x4 格子
+// 建立 6x4 生字格 + 6x4 注音格
 for(let r=0; r<rows; r++){
   for(let c=0; c<cols; c++){
+    // 生字格
     const cell = document.createElement("div");
     cell.className = "cell";
     const example = document.createElement("div");
@@ -153,6 +123,10 @@ for(let r=0; r<rows; r++){
     cell.appendChild(example);
     cell.appendChild(practice);
     grid.appendChild(cell);
+    // 注音格
+    const phonetic = document.createElement("div");
+    phonetic.className = "phonetic";
+    grid.appendChild(phonetic);
   }
 }
 
