@@ -2,16 +2,16 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>5x6 可描寫生字簿</title>
 <style>
 body {
   font-family: "DFKai-SB", "標楷體", "Microsoft JhengHei", sans-serif;
   background: #f5f5f5;
-  padding: 20px;
   margin:0;
+  padding:20px;
 }
-h1 { text-align: center; margin-bottom: 10px; }
+h1 { text-align: center; margin-bottom: 15px; }
 
 .controls {
   display: flex;
@@ -20,6 +20,7 @@ h1 { text-align: center; margin-bottom: 10px; }
   gap: 10px;
   margin-bottom: 15px;
 }
+
 textarea {
   width: 300px;
   height: 100px;
@@ -27,6 +28,7 @@ textarea {
   padding: 8px;
   resize: vertical;
 }
+
 button {
   padding: 8px 14px;
   font-size: 16px;
@@ -38,19 +40,27 @@ button {
 }
 button:hover { background: #005fa3; }
 
+#grid-container {
+  display: flex;
+  justify-content: center;
+}
+
 #grid {
   display: grid;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  max-width: calc(3cm*6 + 30px); /* 螢幕縮放比例 */
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 5px;
+  max-width: 90vw;
+  max-height: 75vh;
+  width: auto;
+  aspect-ratio: 6 / 5; /* 保持 6列 x 5排比例 */
 }
 
 .cell {
   position: relative;
   width: 100%;
-  padding-top: 100%; /* 保持正方形比例 */
-  border: 2px solid #a8d8a8;
+  height: 100%;
+  border: 2px solid #a8d8a8; /* 外框實線 */
   background: white;
   display: flex;
   align-items: center;
@@ -58,24 +68,19 @@ button:hover { background: #005fa3; }
 }
 
 .cell-content {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: calc(2.5cm * 0.8); /* 顯示比例，螢幕縮放 */
-  color: rgba(0,0,0,0.25); /* 淡灰色描寫字 */
-  width: 80%;
-  height: 80%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 2.5rem;
+  color: rgba(0,0,0,0.25); /* 淡灰色描紅字 */
+  text-align: center;
+  line-height: 1;
 }
 
+/* 中間十字虛線 */
 .cell::before, .cell::after {
   content:"";
   position: absolute;
   background: #a8d8a8;
 }
-.cell::before { /* 中間橫線 */
+.cell::before { /* 橫線 */
   top: 50%;
   left: 10%;
   right: 10%;
@@ -83,7 +88,7 @@ button:hover { background: #005fa3; }
   border-top: 1px dashed #a8d8a8;
   background: none;
 }
-.cell::after { /* 中間直線 */
+.cell::after { /* 直線 */
   left: 50%;
   top: 10%;
   bottom: 10%;
@@ -92,23 +97,17 @@ button:hover { background: #005fa3; }
   background: none;
 }
 
-/* 列印時 */
+/* 列印時固定 3x3 公分 */
 @media print{
   #grid {
     width: auto;
-    max-width: none;
+    height: auto;
     grid-template-columns: repeat(6, 3cm);
     grid-template-rows: repeat(5, 3cm);
     gap: 0;
   }
-  .cell {
-    width: 3cm;
-    height: 3cm;
-    padding-top:0;
-  }
-  .cell-content {
-    font-size:2.5cm;
-  }
+  .cell { width:3cm; height:3cm; }
+  .cell-content { font-size: 2.5cm; }
   .controls { display:none; }
 }
 </style>
@@ -123,14 +122,16 @@ button:hover { background: #005fa3; }
   <button onclick="window.print()">列印</button>
 </div>
 
-<div id="grid"></div>
+<div id="grid-container">
+  <div id="grid"></div>
+</div>
 
 <script>
 const rows = 5;
 const cols = 6;
 const grid = document.getElementById("grid");
 
-// 生成5x6格子
+// 建立 5x6 格
 for(let r=0;r<rows;r++){
   for(let c=0;c<cols;c++){
     const cell = document.createElement("div");
@@ -142,16 +143,18 @@ for(let r=0;r<rows;r++){
   }
 }
 
+// 處理輸入字串
 function normalizeInput(text){
   return text.replace(/\r/g,'').replace(/\s+/g,'').split('').filter(ch=>ch.trim()!=='');
 }
 
+// 填字事件
 document.getElementById("fillBtn").addEventListener("click", ()=>{
   const chars = normalizeInput(document.getElementById("inputWords").value);
   const cells = document.querySelectorAll(".cell-content");
 
   let index=0;
-  for(let c=cols-1;c>=0;c--){ // 從右排開始
+  for(let c=cols-1;c>=0;c--){ // 右排開始
     for(let r=0;r<rows;r++){
       const cellIndex = r*cols + c;
       if(index<chars.length){
