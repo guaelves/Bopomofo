@@ -80,9 +80,31 @@ button:hover { background: #005fa3; }
 }
 
 @media print {
-  body { background: white; margin:0; }
-  .controls { display: none; }
+  @page {
+    size: auto;         /* 使用自動紙張大小 */
+    margin: 1cm;        /* 全部邊距 1cm */
+  }
+
+  body {
+    background: white;
+    margin: 0;          /* 移除 body 自身 margin */
+  }
+
+  .controls {
+    display: none;      /* 隱藏輸入框、按鈕 */
+  }
+
+  #grid {
+    gap: 1cm;           /* 格子間距 1cm */
+  }
+
+  .cell {
+    width: 3cm;
+    height: 3cm;
+    font-size: 2.5cm;
+  }
 }
+
 </style>
 </head>
 <body>
