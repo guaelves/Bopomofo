@@ -39,8 +39,8 @@ button:hover { background: #005fa3; }
 
 #grid {
   display: grid;
-  grid-template-columns: repeat(5, 3cm); /* 5列 */
-  grid-template-rows: repeat(7, 3cm);    /* 7行 */
+  grid-template-columns: repeat(4, 3cm); /* 4列 */
+  grid-template-rows: repeat(6, 3cm);    /* 6行 */
   justify-content: center;
   gap: 6px;
 }
@@ -116,12 +116,12 @@ button:hover { background: #005fa3; }
 <div id="grid"></div>
 
 <script>
-const rows = 7; // 6行
-const cols = 5; // 5列
+const rows = 6; // 6行
+const cols = 4; // 4列
 const maxChars = 30;
 const grid = document.getElementById("grid");
 
-// 建立 7x5 格子
+// 建立 6x4 格子
 for(let r=0; r<rows; r++){
   for(let c=0; c<cols; c++){
     const cell = document.createElement("div");
