@@ -15,6 +15,30 @@ body {
 
 h1 {
   color: #00695c;
+  margin-bottom: 0.2em;
+}
+
+.subtitle {
+  font-size: 1.3em;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* 大大的 ㄅ - 正方形 淡藍底 */
+.big-b {
+  background: #bbdefb; /* 淡藍 */
+  color: #333;
+  font-size: 16em; /* 更大 */
+  font-weight: bold;
+  width: 200px;
+  height: 200px; /* 正方形 */
+  margin: 0 auto 30px auto;
+  border-radius: 15px;
+  line-height: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 button {
@@ -56,6 +80,12 @@ button:hover {
   background: #ffd6d6; /* 淡紅 */
 }
 
+/* 聲調符號點選淡黃底 */
+.tone-selected {
+  background: #fff9c4; /* 淡黃色 */
+  border-color: #f0e68c;
+}
+
 .section-title {
   font-weight: bold;
   margin-top: 30px;
@@ -85,6 +115,10 @@ button:hover {
 <body>
 
 <h1>ㄅ的好朋友 點點名</h1>
+<div class="subtitle">選出可以跟ㄅ一起發出聲音的符號</div>
+
+<div class="big-b">ㄅ</div>
+
 <button id="resetBtn">🔄 重新開始</button>
 
 <!-- 聲調符號區塊 -->
@@ -170,12 +204,25 @@ const tiles = document.querySelectorAll('.tile');
 tiles.forEach(tile => {
   tile.addEventListener('click', () => {
     const text = tile.innerText.replace(/\n/g, '');
-    if (goodFriends.includes(text)) {
-      tile.classList.add('correct');
-      tile.classList.remove('wrong');
+
+    // 判斷這個 tile 是不是在聲調符號區塊
+    const parentGrid = tile.parentElement;
+    const isToneTile = parentGrid.classList.contains('grid-5');
+
+    if (isToneTile) {
+      // 聲調符號點選都改成淡黃底
+      tile.classList.add('tone-selected');
+      tile.classList.remove('correct', 'wrong');
     } else {
-      tile.classList.add('wrong');
-      tile.classList.remove('correct');
+      // 其他區塊維持原本的判斷
+      tile.classList.remove('tone-selected'); // 移除淡黃底
+      if (goodFriends.includes(text)) {
+        tile.classList.add('correct');
+        tile.classList.remove('wrong');
+      } else {
+        tile.classList.add('wrong');
+        tile.classList.remove('correct');
+      }
     }
   });
 });
@@ -183,11 +230,10 @@ tiles.forEach(tile => {
 // 🔄 重新開始
 document.getElementById('resetBtn').addEventListener('click', () => {
   tiles.forEach(tile => {
-    tile.classList.remove('correct', 'wrong');
+    tile.classList.remove('correct', 'wrong', 'tone-selected');
   });
 });
 </script>
 
 </body>
 </html>
-
