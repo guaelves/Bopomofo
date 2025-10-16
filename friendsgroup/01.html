@@ -1,1 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>ㄅ的好朋友 點點名</title>
+<style>
+body {
+  font-family: "Noto Sans TC", sans-serif;
+  text-align: center;
+  background: #f8f8f8;
+  color: #333;
+  max-width: 800px;
+  margin: auto;
+}
+
+h1 {
+  color: #00695c;
+}
+
+button {
+  background: #009688;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  cursor: pointer;
+  margin: 10px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #00796b;
+}
+
+/* === 共用格子樣式 === */
+.tile {
+  background: white;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  font-size: 2em;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.tile:hover {
+  transform: scale(1.05);
+}
+
+.correct {
+  background: #d9fdd3; /* 淡綠 */
+}
+
+.wrong {
+  background: #ffd6d6; /* 淡紅 */
+}
+
+.section-title {
+  font-weight: bold;
+  margin-top: 30px;
+  color: #444;
+}
+
+/* === 四格排版 === */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 20px auto;
+}
+
+/* === 聲調五格排版（與四格同寬）=== */
+.grid-5 {
+  display: grid;
+  grid-template-columns: repeat(5, 0.8fr); /* 每格略窄，總寬接近四格區 */
+  gap: 10px;
+  margin: 20px auto;
+  justify-content: center; /* 置中 */
+  max-width: 700px;
+}
+
+</style>
+</head>
+<body>
+
+<h1>ㄅ的好朋友 點點名</h1>
+<button id="resetBtn">🔄 重新開始</button>
+
+<!-- 聲調符號區塊 -->
+<div class="section-title">聲調符號</div>
+<div class="grid-5">
+  <div class="tile">一聲<br>「」</div>
+  <div class="tile">二聲<br>「/」</div>
+  <div class="tile">三聲<br>「V」</div>
+  <div class="tile">四聲<br>「﹨」</div>
+  <div class="tile">輕聲<br>「˙」</div>
+</div>
+
+<div class="section-title">介音</div>
+<div class="grid">
+  <div class="tile">ㄧ</div>
+  <div class="tile">ㄨ</div>
+  <div class="tile">ㄩ</div>
+</div>
+
+<div class="section-title">單韻母</div>
+<div class="grid">
+  <div class="tile">ㄚ</div>
+  <div class="tile">ㄛ</div>
+  <div class="tile">ㄜ</div>
+  <div class="tile">ㄝ</div>
+</div>
+
+<div class="section-title">複韻母</div>
+<div class="grid">
+  <div class="tile">ㄞ</div>
+  <div class="tile">ㄟ</div>
+  <div class="tile">ㄠ</div>
+  <div class="tile">ㄡ</div>
+</div>
+
+<div class="section-title">聲隨韻母</div>
+<div class="grid">
+  <div class="tile">ㄢ</div>
+  <div class="tile">ㄣ</div>
+  <div class="tile">ㄤ</div>
+  <div class="tile">ㄥ</div>
+</div>
+
+<div class="section-title">捲舌韻母</div>
+<div class="grid">
+  <div class="tile">ㄦ</div>
+</div>
+
+<div class="section-title">結合韻 (直式顯示)</div>
+<div class="grid">
+  <div class="tile">ㄧ<br>ㄚ</div>
+  <div class="tile">ㄧ<br>ㄛ</div>
+  <div class="tile">ㄧ<br>ㄝ</div>
+  <div class="tile">ㄧ<br>ㄞ</div>
+  <div class="tile">ㄧ<br>ㄠ</div>
+  <div class="tile">ㄧ<br>ㄡ</div>
+  <div class="tile">ㄧ<br>ㄢ</div>
+  <div class="tile">ㄧ<br>ㄣ</div>
+  <div class="tile">ㄧ<br>ㄤ</div>
+  <div class="tile">ㄧ<br>ㄥ</div>
+  <div class="tile">ㄨ<br>ㄚ</div>
+  <div class="tile">ㄨ<br>ㄛ</div>
+  <div class="tile">ㄨ<br>ㄞ</div>
+  <div class="tile">ㄨ<br>ㄟ</div>
+  <div class="tile">ㄨ<br>ㄢ</div>
+  <div class="tile">ㄨ<br>ㄣ</div>
+  <div class="tile">ㄨ<br>ㄤ</div>
+  <div class="tile">ㄨ<br>ㄥ</div>
+  <div class="tile">ㄩ<br>ㄝ</div>
+  <div class="tile">ㄩ<br>ㄢ</div>
+  <div class="tile">ㄩ<br>ㄣ</div>
+  <div class="tile">ㄩ<br>ㄥ</div>
+</div>
+
+<script>
+const goodFriends = [
+  "ㄧ","ㄨ","ㄚ","ㄛ","ㄞ","ㄟ","ㄠ","ㄢ","ㄣ","ㄤ","ㄥ",
+  "ㄧㄝ","ㄧㄠ","ㄧㄢ","ㄧㄣ","ㄧㄥ"
+];
+
+const tiles = document.querySelectorAll('.tile');
+
+tiles.forEach(tile => {
+  tile.addEventListener('click', () => {
+    const text = tile.innerText.replace(/\n/g, '');
+    if (goodFriends.includes(text)) {
+      tile.classList.add('correct');
+      tile.classList.remove('wrong');
+    } else {
+      tile.classList.add('wrong');
+      tile.classList.remove('correct');
+    }
+  });
+});
+
+// 🔄 重新開始
+document.getElementById('resetBtn').addEventListener('click', () => {
+  tiles.forEach(tile => {
+    tile.classList.remove('correct', 'wrong');
+  });
+});
+</script>
+
+</body>
+</html>
 
