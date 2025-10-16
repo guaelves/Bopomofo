@@ -24,53 +24,53 @@ h1 {
   margin-bottom: 20px;
 }
 
-/* 大大的 ㄅ - 正方形 淡藍底 */
+/* 大大的 ㄅ 方塊 */
 .big-b {
-  background: #bbdefb; /* 淡藍 */
+  background: #bbdefb;
   color: #333;
-  font-size: 16em; /* 更大 */
+  font-size: 16em;
   font-weight: bold;
   width: 200px;
-  height: 200px; /* 正方形 */
+  height: 200px;
   margin: 0 auto 15px auto;
   border-radius: 15px;
-  line-height: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-/* 結果區外層：橫排排列 */
+/* === 結果區 === */
 #result {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
   margin-bottom: 30px;
 }
 
-/* 每個結果：直式排列 ㄅ 在上，符號在下 */
+/* ㄅ + 韻母結果 (直式) */
 .result-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   font-weight: bold;
-  font-size: 2.8em;
+  font-size: clamp(2em, 4vw, 3em);
   color: #00695c;
   user-select: none;
+  line-height: 1.1;
 }
 
-/* 用更大字體區分 ㄅ 和符號 */
-.result-item .b-char {
-  font-size: 1em;
-  line-height: 1;
+.result-finish {
+  width: 100%;
+  text-align: center;
+  font-size: 2.5em;
+  color: #00695c;
+  font-weight: bold;
+  margin-top: 20px;
 }
 
-.result-item .friend-char {
-  font-size: 1em;
-  line-height: 1;
-}
-
+/* 按鈕 */
 button {
   background: #009688;
   color: white;
@@ -82,12 +82,11 @@ button {
   margin: 10px;
   transition: background 0.3s;
 }
-
 button:hover {
   background: #00796b;
 }
 
-/* === 共用格子樣式 === */
+/* tile 格子 */
 .tile {
   background: white;
   border: 2px solid #ccc;
@@ -98,24 +97,12 @@ button:hover {
   transition: background 0.3s, transform 0.2s;
   user-select: none;
 }
-
 .tile:hover {
   transform: scale(1.05);
 }
-
-.correct {
-  background: #d9fdd3; /* 淡綠 */
-}
-
-.wrong {
-  background: #ffd6d6; /* 淡紅 */
-}
-
-/* 聲調符號點選淡黃底 */
-.tone-selected {
-  background: #fff9c4; /* 淡黃色 */
-  border-color: #f0e68c;
-}
+.correct { background: #d9fdd3; }
+.wrong { background: #ffd6d6; }
+.tone-selected { background: #fff9c4; border-color: #f0e68c; }
 
 .section-title {
   font-weight: bold;
@@ -123,7 +110,7 @@ button:hover {
   color: #444;
 }
 
-/* === 四格排版 === */
+/* 格子排版 */
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -131,8 +118,6 @@ button:hover {
   margin: 20px auto;
   max-width: 700px;
 }
-
-/* === 聲調五格排版（與四格同寬）=== */
 .grid-5 {
   display: grid;
   grid-template-columns: repeat(5, 0.8fr);
@@ -150,12 +135,11 @@ button:hover {
 
 <div class="big-b">ㄅ</div>
 
-<!-- 新增結果區，水平排列 -->
 <div id="result"></div>
 
 <button id="resetBtn">🔄 重新開始</button>
 
-<!-- 聲調符號區塊 -->
+<!-- 聲調符號 -->
 <div class="section-title">聲調符號</div>
 <div class="grid-5">
   <div class="tile">一聲<br>「」</div>
@@ -228,7 +212,7 @@ button:hover {
 </div>
 
 <script>
-  // ======== 簡單電腦音效 ========
+  // ======== 音效 ========
   function playBeep(frequency, duration) {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const osc = ctx.createOscillator();
@@ -246,13 +230,10 @@ button:hover {
     playBeep(880, 100);
     setTimeout(() => playBeep(1320, 100), 150);
   }
-
   function playWrong() {
     playBeep(220, 150);
     setTimeout(() => playBeep(150, 150), 200);
   }
-
-  // 簡易煙火音效（多個高音連續）
   function playFireworks() {
     let freq = 1000;
     for (let i = 0; i < 5; i++) {
@@ -261,7 +242,7 @@ button:hover {
     }
   }
 
-  // 可跟 ㄅ 一起拼音的符號清單
+  // ㄅ的好朋友
   const goodFriends = [
     "ㄧ","ㄨ","ㄚ","ㄛ","ㄞ","ㄟ","ㄠ","ㄢ","ㄣ","ㄤ","ㄥ",
     "ㄧㄝ","ㄧㄠ","ㄧㄢ","ㄧㄣ","ㄧㄥ"
@@ -269,9 +250,8 @@ button:hover {
 
   const tiles = document.querySelectorAll('.tile');
   const resultDiv = document.getElementById('result');
-
-  // 紀錄正確點選的拼音，依順序排列
   let selectedOrder = [];
+  let hasWrong = false;
 
   tiles.forEach(tile => {
     tile.addEventListener('click', () => {
@@ -280,59 +260,62 @@ button:hover {
       const isToneTile = parentGrid.classList.contains('grid-5');
 
       if (isToneTile) {
-        // 聲調符號點選只做視覺標示
         tile.classList.add('tone-selected');
         tile.classList.remove('correct', 'wrong');
-      } else {
-        tile.classList.remove('tone-selected');
-        if (goodFriends.includes(text)) {
-          if (!selectedOrder.includes(text)) {
-            selectedOrder.push(text);
+        return;
+      }
 
-            // 清空結果區，重新生成橫向排列的直式結果
-            resultDiv.innerHTML = '';
-            selectedOrder.forEach(sym => {
-              const div = document.createElement('div');
-              div.classList.add('result-item');
+      tile.classList.remove('tone-selected');
 
-              const bSpan = document.createElement('span');
-              bSpan.classList.add('b-char');
-              bSpan.textContent = 'ㄅ';
+      if (goodFriends.includes(text)) {
+        if (!selectedOrder.includes(text)) {
+          selectedOrder.push(text);
 
-              const friendSpan = document.createElement('span');
-              friendSpan.classList.add('friend-char');
-              friendSpan.textContent = sym;
+          // 建立 ㄅ + 韻母（每個符號直式）
+          const div = document.createElement('div');
+          div.classList.add('result-item');
 
-              div.appendChild(bSpan);
-              div.appendChild(friendSpan);
-              resultDiv.appendChild(div);
-            });
-          }
+          const symbols = text.split('');
+          const bSpan = document.createElement('span');
+          bSpan.textContent = 'ㄅ';
+          div.appendChild(bSpan);
+          symbols.forEach(ch => {
+            const s = document.createElement('span');
+            s.textContent = ch;
+            div.appendChild(s);
+          });
 
-          tile.classList.add('correct');
-          tile.classList.remove('wrong');
-          playCorrect();
-
-          // 全部選對時顯示訊息並播放煙火音效
-          if (selectedOrder.length === goodFriends.length) {
-            resultDiv.innerHTML = '<div style="font-size: 2.5em; color: #00695c; font-weight: bold;">全部答對 🎉🎉🎉</div>';
-            playFireworks();
-          }
-        } else {
-          tile.classList.add('wrong');
-          tile.classList.remove('correct');
-          playWrong();
+          resultDiv.appendChild(div);
         }
+
+        tile.classList.add('correct');
+        tile.classList.remove('wrong');
+        playCorrect();
+
+        // 全部選完顯示結果
+        if (selectedOrder.length === goodFriends.length) {
+          const finishMsg = document.createElement('div');
+          finishMsg.classList.add('result-finish');
+          finishMsg.textContent = hasWrong ? '完成' : '全部答對 🎉🎉🎉';
+          resultDiv.appendChild(finishMsg);
+          playFireworks();
+        }
+      } else {
+        tile.classList.add('wrong');
+        tile.classList.remove('correct');
+        playWrong();
+        hasWrong = true;
       }
     });
   });
 
-  // 重新開始按鈕清除所有狀態和結果
+  // 重新開始
   document.getElementById('resetBtn').addEventListener('click', () => {
     tiles.forEach(tile => {
       tile.classList.remove('correct', 'wrong', 'tone-selected');
     });
     selectedOrder = [];
+    hasWrong = false;
     resultDiv.innerHTML = '';
   });
 </script>
