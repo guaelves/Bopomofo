@@ -32,13 +32,43 @@ h1 {
   font-weight: bold;
   width: 200px;
   height: 200px; /* 正方形 */
-  margin: 0 auto 30px auto;
+  margin: 0 auto 15px auto;
   border-radius: 15px;
   line-height: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* 結果區外層：橫排排列 */
+#result {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* 每個結果：直式排列 ㄅ 在上，符號在下 */
+.result-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: bold;
+  font-size: 2.8em;
+  color: #00695c;
+  user-select: none;
+}
+
+/* 用更大字體區分 ㄅ 和符號 */
+.result-item .b-char {
+  font-size: 1em;
+  line-height: 1;
+}
+
+.result-item .friend-char {
+  font-size: 1em;
+  line-height: 1;
 }
 
 button {
@@ -66,6 +96,7 @@ button:hover {
   font-size: 2em;
   cursor: pointer;
   transition: background 0.3s, transform 0.2s;
+  user-select: none;
 }
 
 .tile:hover {
@@ -98,15 +129,16 @@ button:hover {
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin: 20px auto;
+  max-width: 700px;
 }
 
 /* === 聲調五格排版（與四格同寬）=== */
 .grid-5 {
   display: grid;
-  grid-template-columns: repeat(5, 0.8fr); /* 每格略窄，總寬接近四格區 */
+  grid-template-columns: repeat(5, 0.8fr);
   gap: 10px;
   margin: 20px auto;
-  justify-content: center; /* 置中 */
+  justify-content: center;
   max-width: 700px;
 }
 </style>
@@ -117,6 +149,9 @@ button:hover {
 <div class="subtitle">選出可以跟ㄅ一起拼音的符號</div>
 
 <div class="big-b">ㄅ</div>
+
+<!-- 新增結果區，水平排列 -->
+<div id="result"></div>
 
 <button id="resetBtn">🔄 重新開始</button>
 
@@ -217,29 +252,72 @@ button:hover {
     setTimeout(() => playBeep(150, 150), 200);
   }
 
+  // 簡易煙火音效（多個高音連續）
+  function playFireworks() {
+    let freq = 1000;
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => playBeep(freq, 150), i * 200);
+      freq += 200;
+    }
+  }
+
+  // 可跟 ㄅ 一起拼音的符號清單
   const goodFriends = [
     "ㄧ","ㄨ","ㄚ","ㄛ","ㄞ","ㄟ","ㄠ","ㄢ","ㄣ","ㄤ","ㄥ",
     "ㄧㄝ","ㄧㄠ","ㄧㄢ","ㄧㄣ","ㄧㄥ"
   ];
 
   const tiles = document.querySelectorAll('.tile');
+  const resultDiv = document.getElementById('result');
+
+  // 紀錄正確點選的拼音，依順序排列
+  let selectedOrder = [];
 
   tiles.forEach(tile => {
     tile.addEventListener('click', () => {
       const text = tile.innerText.replace(/\n/g, '');
-
       const parentGrid = tile.parentElement;
       const isToneTile = parentGrid.classList.contains('grid-5');
 
       if (isToneTile) {
+        // 聲調符號點選只做視覺標示
         tile.classList.add('tone-selected');
         tile.classList.remove('correct', 'wrong');
       } else {
         tile.classList.remove('tone-selected');
         if (goodFriends.includes(text)) {
+          if (!selectedOrder.includes(text)) {
+            selectedOrder.push(text);
+
+            // 清空結果區，重新生成橫向排列的直式結果
+            resultDiv.innerHTML = '';
+            selectedOrder.forEach(sym => {
+              const div = document.createElement('div');
+              div.classList.add('result-item');
+
+              const bSpan = document.createElement('span');
+              bSpan.classList.add('b-char');
+              bSpan.textContent = 'ㄅ';
+
+              const friendSpan = document.createElement('span');
+              friendSpan.classList.add('friend-char');
+              friendSpan.textContent = sym;
+
+              div.appendChild(bSpan);
+              div.appendChild(friendSpan);
+              resultDiv.appendChild(div);
+            });
+          }
+
           tile.classList.add('correct');
           tile.classList.remove('wrong');
           playCorrect();
+
+          // 全部選對時顯示訊息並播放煙火音效
+          if (selectedOrder.length === goodFriends.length) {
+            resultDiv.innerHTML = '<div style="font-size: 2.5em; color: #00695c; font-weight: bold;">全部答對 🎉🎉🎉</div>';
+            playFireworks();
+          }
         } else {
           tile.classList.add('wrong');
           tile.classList.remove('correct');
@@ -249,10 +327,13 @@ button:hover {
     });
   });
 
+  // 重新開始按鈕清除所有狀態和結果
   document.getElementById('resetBtn').addEventListener('click', () => {
     tiles.forEach(tile => {
       tile.classList.remove('correct', 'wrong', 'tone-selected');
     });
+    selectedOrder = [];
+    resultDiv.innerHTML = '';
   });
 </script>
 
