@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const symbols = text.split('');
           const bSpan = document.createElement('span');
-          bSpan.textContent = 'ㄅ';
+          bSpan.textContent = 'ㄆ';
           div.appendChild(bSpan);
           symbols.forEach(ch => {
             const s = document.createElement('span');
