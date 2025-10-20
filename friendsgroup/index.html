@@ -1,114 +1,213 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>注音好朋友</title>
-<style>
-  body {
-    font-family: "Microsoft JhengHei", sans-serif;
-    padding: 2vw;
-    background: #f0f8ff;
-  }
-  h1 {
-    font-size: 8vw;
-    text-align: center;
-    margin-bottom: 2vw;
-  }
-  .line {
-    display: flex;
-    justify-content: flex-start; /* 改成靠左 */
-    gap: 2vw;
-    margin-bottom: 2vw;
-  }
-  .box {
-    background-color: #add8e6;
-    padding: 2.5vw;
-    border-radius: 1vw;
-    text-align: center;
-    font-size: 2vw;
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.3s ease;
-    text-decoration: none;
-    color: black;
-    flex: 1 0 auto;
-    max-width: 8rem;
-    min-width: 6rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .box:hover {
-    background-color: #87cefa;
-  }
-  .symbol {
-    font-size: 10vw;
-    font-weight: bold;
-    margin-bottom: 0.5vw;
-  }
-  .text {
-    font-size: 2vw;
-    margin-top: 0.2vw;
-    line-height: 0.5;
-  }
-
-  @media (max-width: 480px) {
-    .box {
-      max-width: 7rem;
-      min-width: 5rem;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>注音好朋友</title>
+  <style>
+    body {
+      font-family: "Microsoft JhengHei", sans-serif;
       padding: 2vw;
+      background: #f0f8ff;
+    }
+    h1 {
+      font-size: 8vw;
+      text-align: center;
+      margin-bottom: 2vw;
+    }
+    .section-title {
+      font-size: 6vw;
+      font-weight: bold;
+      color: #333;
+      margin-top: 4vw;
+      margin-bottom: 1vw;
+    }
+    .sub-title {
+      font-size: 4vw;
+      font-weight: bold;
+      color: #555;
+      margin-top: 3vw;
+      margin-bottom: 1vw;
+    }
+    .sub-description {
+      font-size: 2.8vw;
+      color: #666;
+      margin-bottom: 1.5vw;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      padding-left: 1vw;
+    }
+    .line {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2vw;
+      margin-bottom: 2vw;
+    }
+    .box {
+      background-color: #add8e6;
+      padding: 2.5vw;
+      border-radius: 1vw;
+      text-align: center;
+      font-size: 2vw;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+      color: black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .box:hover {
+      background-color: #87cefa;
     }
     .symbol {
-      font-size: 8vw;
+      font-size: 10vw;
+      font-weight: bold;
+      margin-bottom: 0.5vw;
     }
     .text {
-      font-size: 3vw;
+      font-size: 2vw;
+      margin-top: 0.2vw;
+      line-height: 0.5;
     }
-  }
-</style>
+
+    @media (max-width: 480px) {
+      .symbol {
+        font-size: 8vw;
+      }
+      .text {
+        font-size: 3vw;
+      }
+      .section-title {
+        font-size: 6vw;
+      }
+      .sub-title {
+        font-size: 5vw;
+      }
+      .sub-description {
+        font-size: 3.2vw;
+      }
+    }
+  </style>
 </head>
 <body>
   <h1>注音好朋友</h1>
   <div id="container"></div>
 
   <script>
-    const lines = [
-      ["ㄅ","ㄆ","ㄇ","ㄈ"],
-      ["ㄉ","ㄊ","ㄋ","ㄌ"],
-      ["ㄍ","ㄎ","ㄏ"],
-      ["ㄐ","ㄑ","ㄒ"],
-      ["ㄓ","ㄔ","ㄕ","ㄖ"],
-      ["ㄗ","ㄘ","ㄙ"],
-      ["ㄧ","ㄨ","ㄩ"],
-      ["ㄚ","ㄛ","ㄜ","ㄝ"],
-      ["ㄞ","ㄟ","ㄠ","ㄡ"],
-      ["ㄢ","ㄣ","ㄤ","ㄥ"],
-      ["ㄦ"]
-    ];
-
     const container = document.getElementById('container');
 
-    lines.forEach(line => {
+    const initials = [ // 聲母
+      ["ㄅ", "ㄆ", "ㄇ", "ㄈ"],
+      ["ㄉ", "ㄊ", "ㄋ", "ㄌ"],
+      ["ㄍ", "ㄎ", "ㄏ"],
+      ["ㄐ", "ㄑ", "ㄒ"],
+      ["ㄓ", "ㄔ", "ㄕ", "ㄖ"],
+      ["ㄗ", "ㄘ", "ㄙ"]
+    ];
+
+    const finalsGroups = [
+      { 
+        title: "介音", 
+        lines: [["ㄧ", "ㄨ", "ㄩ"]] 
+      },
+      { 
+        title: "單韻母", 
+        lines: [["ㄚ", "ㄛ", "ㄜ", "ㄝ"]] 
+      },
+      { 
+        title: "複韻母", 
+        lines: [["ㄞ", "ㄟ", "ㄠ", "ㄡ"]],
+        description: `複韻母可理解為兩個單韻母合併唸出：
+• ㄞ＝ㄚ＋ㄧ
+• ㄟ＝ㄝ＋ㄧ
+• ㄠ＝ㄚ＋ㄨ
+• ㄡ＝ㄛ＋ㄨ`
+      },
+      { 
+        title: "聲隨韻母", 
+        lines: [["ㄢ", "ㄣ", "ㄤ", "ㄥ"]],
+        description: `或稱「鼻音聲隨韻母」
+這四個韻母有明顯的鼻音特徵：
+• ㄢ＝ㄚ＋鼻音
+• ㄣ＝ㄜ＋鼻音（發音時：閉口，舌尖貼近上門牙後方）
+• ㄤ＝ㄚ＋鼻音
+• ㄥ＝ㄜ＋鼻音（發音時：張口，舌根頂住上顎）`
+      },
+      { 
+        title: "捲舌韻母", 
+        lines: [["ㄦ"]] 
+      }
+    ];
+
+    function renderLine(line) {
       const lineDiv = document.createElement('div');
       lineDiv.className = 'line';
 
       line.forEach(sym => {
         const box = document.createElement('a');
         box.className = 'box';
-        box.href = `https://guaelves.github.io/Bopomofo/friendsgroup/${sym}/index.html`;
+        box.href = `https://guaelves.github.io/Bopomofo/friendsgroup/${sym}/`;
         box.target = '_blank';
         box.rel = 'noopener noreferrer';
 
-        box.innerHTML = `<span class="symbol">${sym}</span><span class="text">的好朋友</span>`;
+        box.innerHTML = `
+          <span class="symbol">${sym}</span>
+          <span class="text">的好朋友</span>
+        `;
 
         lineDiv.appendChild(box);
       });
 
+      const remainder = 4 - line.length;
+      for (let i = 0; i < remainder; i++) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'box';
+        placeholder.style.visibility = 'hidden';
+        lineDiv.appendChild(placeholder);
+      }
+
       container.appendChild(lineDiv);
-    });
+    }
+
+    function renderSection(title, lines) {
+      const sectionTitle = document.createElement('div');
+      sectionTitle.className = 'section-title';
+      sectionTitle.textContent = title;
+      container.appendChild(sectionTitle);
+
+      lines.forEach(renderLine);
+    }
+
+    function renderFinalsGroup(group) {
+      const subTitle = document.createElement('div');
+      subTitle.className = 'sub-title';
+      subTitle.textContent = group.title;
+      container.appendChild(subTitle);
+
+      if (group.description) {
+        const desc = document.createElement('div');
+        desc.className = 'sub-description';
+        desc.textContent = group.description;
+        container.appendChild(desc);
+      }
+
+      group.lines.forEach(renderLine);
+    }
+
+    // 渲染聲母
+    renderSection("聲母", initials);
+
+    // 渲染韻母總標題
+    const finalsMainTitle = document.createElement('div');
+    finalsMainTitle.className = 'section-title';
+    finalsMainTitle.textContent = '韻母';
+    container.appendChild(finalsMainTitle);
+
+    // 渲染韻母分類
+    finalsGroups.forEach(renderFinalsGroup);
   </script>
 </body>
 </html>
-
-
