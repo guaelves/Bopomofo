@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>注音好朋友＋聲符表格 - 遊戲版</title>
+  <style>
+    body {
+      margin: 20px;
+      font-family: "Microsoft JhengHei", sans-serif;
+      background: #fff;
+      font-size: 4vw;
+    }
+    table {
+      border-collapse: separate;
+      border-spacing: 0.5vw;
+      width: 100%;
+      height: 100%;
+    }
+    thead th {
+      border: none !important;
+      background-color: #fff !important;
+      height: 20vw;
+      padding: 2vw 1vw;
+      text-align: center;
+      vertical-align: middle;
+      border-radius: 1vw;
+      box-shadow: none !important;
+      user-select: none;
+    }
+    thead th:hover {
+      background-color: #fff !important;
+      transform: none !important;
+      cursor: default;
+    }
+    tbody td.no-border {
+      border: none !important;
+      background-color: #fff !important;
+      pointer-events: none;
+    }
+    tbody td.no-border:hover {
+      background-color: #fff !important;
+      transform: none !important;
+      cursor: default;
+    }
+    th, td {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 1vw;
+      padding: 2vw 1vw;
+      vertical-align: bottom;
+      text-align: center;
+      min-width: 10vw;
+      height: 45vw;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      user-select: none;
+    }
+    th:hover, td:hover {
+      background-color: #f0f0f0;
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+    .voice-circle {
+      width: 8vw;
+      height: 8vw;
+      line-height: 8vw;
+      font-size: 4vw;
+      background-color: #fff8cc;
+      border: 0.3vw solid #e6d97a;
+      border-radius: 50%;
+      margin: 0 auto 1.5vw auto;
+      user-select: none;
+    }
+    .voice-marker-circle {
+      position: absolute;
+      width: 5vw;
+      height: 5vw;
+      line-height: 5vw;
+      font-size: 3vw;
+      background-color: #fff8cc;
+      border: 0.3vw solid #e6d97a;
+      border-radius: 50%;
+      user-select: none;
+      font-weight: bold;
+      color: #000;
+    }
+    .circle-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5vw;
+      margin-bottom: 3vw;
+      position: relative;
+    }
+    .circle {
+      border-radius: 50%;
+      width: 10vw;
+      height: 10vw;
+      line-height: 10vw;
+      text-align: center;
+      font-size: 5vw;
+      user-select: none;
+      margin: 0 auto;
+      display: block;
+      position: relative;
+      animation: expandCircle 0.3s ease-out;
+    }
+    .pink {
+      background-color: #f9c6c9;
+      color: #000;
+      font-weight: bold;
+    }
+    .white {
+      background-color: #fff;
+      border: 0.3vw solid #ccc;
+      color: #000;
+      font-weight: bold;
+    }
+    .green {
+      background-color: #c8e6c9;
+      color: #000;
+      font-weight: bold;
+    }
+    .correct {
+      background-color: #d8f5d0 !important; /* 更淡的綠 */
+    }
+    .wrong {
+      background-color: #f9d6d5 !important; /* 更淡的紅 */
+    }
+    .dot-on-top {
+      top: -6vw;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+    }
+    .on-top-right {
+      top: -1.5vw;
+      right: -1.5vw;
+      z-index: 2;
+    }
+    .big-blue-circle {
+      width: 12vw;
+      height: 12vw;
+      line-height: 12vw;
+      font-size: 6vw;
+      background-color: #d0ecff;
+      border: 0.3vw solid #87c5e6;
+      border-radius: 50%;
+      text-align: center;
+      margin: 0 auto;
+      font-weight: bold;
+      color: #000;
+      user-select: none;
+    }
+    @keyframes expandCircle {
+      from {
+        transform: scale(0);
+      }
+      to {
+        transform: scale(1);
+      }
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 5vw;
+      }
+      table {
+        font-size: 3vw;
+      }
+    }
+
+    /* 新增按鈕樣式 */
+    .btn-container {
+      text-align: center;
+      margin-bottom: 2vw;
+      user-select: none;
+    }
+    button {
+      font-size: 4vw;
+      padding: 0.8vw 3vw;
+      margin: 0 1vw;
+      border-radius: 1vw;
+      border: none;
+      background-color: #87c5e6;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #5a9cd6;
+    }
+  </style>
+</head>
+<body>
+<h1 style="text-align:center; font-family: 'Microsoft JhengHei', sans-serif; font-size:6vw; margin-bottom: 1rem;">
+  ㄅ的好朋友＋聲符 <br> 選出可以讀出的音
+</h1>
+
+<!-- 按鈕區 -->
+<div class="btn-container">
+  <button id="restart-btn">重新開始</button>
+  <button id="show-answers-btn">顯示答案</button>
+</div>
+
+<table>
+  <thead>
+    <tr id="voice-row">
+      <th class="no-hover">
+        <div class="big-blue-circle">ㄅ</div>
+      </th>
+    </tr>
+  </thead>
+  <tbody id="table-body"></tbody>
+</table>
+
+<script>
+  // 音節和聲調
+  const friends = [
+    "ㄧ", "ㄨ", "ㄚ", "ㄛ", "ㄞ", "ㄟ", "ㄠ", "ㄢ", "ㄣ", "ㄤ", "ㄥ",
+    "ㄧㄝ", "ㄧㄠ", "ㄧㄢ", "ㄧㄣ", "ㄧㄥ"
+  ];
+  const voiceMarks = ['-', '/', 'v', '\\', '‧'];
+
+  // 有效的音節組合（ㄅ + 好朋友 + 聲調）
+  const validSounds = new Set([
+    "ㄧ-", "ㄧ/", "ㄧv", "ㄧ\\",
+    "ㄨv", "ㄨ\\",
+    "ㄧㄝ-", "ㄧㄝ/", "ㄧㄝv", "ㄧㄝ\\",
+    "ㄧㄠ-", "ㄧㄠv",
+    "ㄧㄢ-", "ㄧㄢv", "ㄧㄢ\\",
+    "ㄧㄣ-", "ㄧㄣ\\",
+    "ㄧㄥ-", "ㄧㄥv", "ㄧㄥ\\",
+    "ㄚ-", "ㄚ/", "ㄚv", "ㄚ\\",
+    "ㄛ-", "ㄛ/", "ㄛv", "ㄛ\\",
+    "ㄞ/", "ㄞv", "ㄞ\\",
+    "ㄟ-", "ㄟv", "ㄟ\\",
+    "ㄠ-", "ㄠ/", "ㄠv", "ㄠ\\",
+    "ㄢ-", "ㄢv", "ㄢ\\",
+    "ㄣ-", "ㄣv", "ㄣ\\",
+    "ㄤ-", "ㄤv", "ㄤ\\",
+    "ㄥ-", "ㄥv", "ㄥ\\",
+    "ㄚ‧"
+  ]);
+
+  // 創建頂部聲調行
+  const voiceRow = document.getElementById('voice-row');
+  voiceMarks.forEach(vm => {
+    const th = document.createElement('th');
+    const vcircle = document.createElement('div');
+    vcircle.className = 'voice-circle';
+    vcircle.textContent = vm;
+    th.appendChild(vcircle);
+    voiceRow.appendChild(th);
+  });
+
+  const tbody = document.getElementById('table-body');
+
+  friends.forEach(friend => {
+    const tr = document.createElement('tr');
+
+    // 第一欄：ㄅ + 好朋友組合，無框線
+    const tdFriend = document.createElement('td');
+    tdFriend.classList.add('no-border');
+    const group = document.createElement('div');
+    group.className = 'circle-group';
+
+    const bCircle = document.createElement('div');
+    bCircle.className = 'circle pink';
+    bCircle.textContent = 'ㄅ';
+    group.appendChild(bCircle);
+
+    for (let i = 0; i < friend.length; i++) {
+      const circle = document.createElement('div');
+      circle.className = 'circle';
+      if (friend.length === 1) {
+        circle.classList.add('white');
+      } else {
+        circle.classList.add(i === 0 ? 'white' : 'green');
+      }
+      circle.textContent = friend[i];
+      group.appendChild(circle);
+    }
+    tdFriend.appendChild(group);
+    tr.appendChild(tdFriend);
+
+    // 聲調欄
+    voiceMarks.forEach(voice => {
+      const td = document.createElement('td');
+      const comboGroup = document.createElement('div');
+      comboGroup.className = 'circle-group';
+
+      if (voice === '‧') {
+        const marker = document.createElement('div');
+        marker.className = 'voice-marker-circle dot-on-top';
+        marker.textContent = '‧';
+        comboGroup.appendChild(marker);
+      }
+
+      const b = document.createElement('div');
+      b.className = 'circle pink';
+      b.textContent = 'ㄅ';
+      comboGroup.appendChild(b);
+
+      for (let i = 0; i < friend.length; i++) {
+        const letter = document.createElement('div');
+        letter.className = 'circle';
+        if (friend.length === 1) {
+          letter.classList.add('white');
+        } else {
+          letter.classList.add(i === 0 ? 'white' : 'green');
+        }
+        letter.textContent = friend[i];
+
+        const isLast = i === friend.length - 1;
+        if (isLast && (voice === '/' || voice === 'v' || voice === '\\')) {
+          const marker = document.createElement('div');
+          marker.className = 'voice-marker-circle on-top-right';
+          marker.textContent = voice;
+          letter.appendChild(marker);
+        }
+
+        comboGroup.appendChild(letter);
+      }
+
+      td.appendChild(comboGroup);
+      tr.appendChild(td);
+
+      // 點擊事件判斷
+      td.style.cursor = "pointer";
+      td.addEventListener('click', () => {
+        // 產生 key 判斷是否正確
+        const key = friend + voice;
+
+        // 清除先前樣式
+        td.classList.remove('correct', 'wrong');
+
+        if (validSounds.has(key)) {
+          td.classList.add('correct');
+          playCorrect();
+        } else {
+          td.classList.add('wrong');
+          playWrong();
+        }
+      });
+    });
+
+    tbody.appendChild(tr);
+  });
+
+  // 重新開始按鈕
+  document.getElementById('restart-btn').addEventListener('click', () => {
+    const tds = tbody.querySelectorAll('td');
+    tds.forEach(td => {
+      td.classList.remove('correct', 'wrong');
+    });
+  });
+
+  // 顯示所有正確答案按鈕
+  document.getElementById('show-answers-btn').addEventListener('click', () => {
+    const rows = tbody.querySelectorAll('tr');
+    rows.forEach(tr => {
+      const friendTd = tr.querySelector('td.no-border div.circle-group div.circle:nth-child(2)');
+      if (!friendTd) return;
+      let friend = '';
+      // 把所有circle文字合併成字串（跳過第1個粉紅ㄅ圈）
+      const circles = tr.querySelectorAll('td.no-border div.circle-group div.circle');
+      for(let i = 1; i < circles.length; i++) {
+        friend += circles[i].textContent;
+      }
+
+      const tds = tr.querySelectorAll('td');
+      // 跳過第1欄 (no-border)
+      for (let i = 1; i < tds.length; i++) {
+        const voice = voiceMarks[i - 1];
+        const key = friend + voice;
+        tds[i].classList.remove('correct', 'wrong');
+        if (validSounds.has(key)) {
+          tds[i].classList.add('correct');
+        }
+      }
+    });
+  });
+
+  // 音效函式
+  function playBeep(frequency, duration) {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sine";
+    osc.frequency.value = frequency;
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    osc.start();
+    osc.stop(ctx.currentTime + duration / 1000);
+  }
+
+  function playCorrect() {
+    playBeep(880, 100);
+    setTimeout(() => playBeep(1320, 100), 150);
+  }
+
+  function playWrong() {
+    playBeep(220, 300);
+  }
+</script>
+
+</body>
+</html>
