@@ -99,15 +99,17 @@
   <script>
     const container = document.getElementById('container');
 
-    const initials = [ // 聲母
-      ["ㄅ", "ㄆ", "ㄇ", "ㄈ"],
-      ["ㄉ", "ㄊ", "ㄋ", "ㄌ"],
-      ["ㄍ", "ㄎ", "ㄏ"],
-      ["ㄐ", "ㄑ", "ㄒ"],
-      ["ㄓ", "ㄔ", "ㄕ", "ㄖ"],
-      ["ㄗ", "ㄘ", "ㄙ"]
+    // === 聲母分類 ===
+    const initialsGroups = [
+      { title: "唇音", lines: [["ㄅ", "ㄆ", "ㄇ", "ㄈ"]] },
+      { title: "舌尖中音", lines: [["ㄉ", "ㄊ", "ㄋ", "ㄌ"]] },
+      { title: "舌根音", lines: [["ㄍ", "ㄎ", "ㄏ"]] },
+      { title: "舌面前音", lines: [["ㄐ", "ㄑ", "ㄒ"]] },
+      { title: "翹舌音", lines: [["ㄓ", "ㄔ", "ㄕ", "ㄖ"]] },
+      { title: "平舌音", lines: [["ㄗ", "ㄘ", "ㄙ"]] }
     ];
 
+    // === 韻母分類 ===
     const finalsGroups = [
       { 
         title: "介音", 
@@ -142,6 +144,7 @@
       }
     ];
 
+    // === 函數區 ===
     function renderLine(line) {
       const lineDiv = document.createElement('div');
       lineDiv.className = 'line';
@@ -161,6 +164,7 @@
         lineDiv.appendChild(box);
       });
 
+      // 填滿四格網格
       const remainder = 4 - line.length;
       for (let i = 0; i < remainder; i++) {
         const placeholder = document.createElement('div');
@@ -172,16 +176,14 @@
       container.appendChild(lineDiv);
     }
 
-    function renderSection(title, lines) {
+    function renderSection(title) {
       const sectionTitle = document.createElement('div');
       sectionTitle.className = 'section-title';
       sectionTitle.textContent = title;
       container.appendChild(sectionTitle);
-
-      lines.forEach(renderLine);
     }
 
-    function renderFinalsGroup(group) {
+    function renderSubGroup(group) {
       const subTitle = document.createElement('div');
       subTitle.className = 'sub-title';
       subTitle.textContent = group.title;
@@ -197,18 +199,14 @@
       group.lines.forEach(renderLine);
     }
 
-    // 渲染聲母
-    renderSection("聲母", initials);
+    // === 開始渲染 ===
+    // 聲母主標題
+    renderSection("聲母");
+    initialsGroups.forEach(renderSubGroup);
 
-    // 渲染韻母總標題
-    const finalsMainTitle = document.createElement('div');
-    finalsMainTitle.className = 'section-title';
-    finalsMainTitle.textContent = '韻母';
-    container.appendChild(finalsMainTitle);
-
-    // 渲染韻母分類
-    finalsGroups.forEach(renderFinalsGroup);
+    // 韻母主標題
+    renderSection("韻母");
+    finalsGroups.forEach(renderSubGroup);
   </script>
 </body>
 </html>
-
