@@ -101,28 +101,62 @@
 
     // === 聲母分類 ===
     const initialsGroups = [
-      { title: "唇音", lines: [["ㄅ", "ㄆ", "ㄇ", "ㄈ"]] },
-      { title: "舌尖中音", lines: [["ㄉ", "ㄊ", "ㄋ", "ㄌ"]] },
-      { title: "舌根音", lines: [["ㄍ", "ㄎ", "ㄏ"]] },
-      { title: "舌面前音", lines: [["ㄐ", "ㄑ", "ㄒ"]] },
-      { title: "翹舌音", lines: [["ㄓ", "ㄔ", "ㄕ", "ㄖ"]] },
-      { title: "平舌音", lines: [["ㄗ", "ㄘ", "ㄙ"]] }
+      { 
+        title: "唇音", 
+        description: "發音時主要用雙唇或下唇與上齒接觸，氣流經由嘴唇釋出。\nㄅ、ㄆ、ㄇ為雙唇音，ㄈ為唇齒音。",
+        lines: [["ㄅ", "ㄆ", "ㄇ", "ㄈ"]] 
+      },
+      { 
+        title: "舌尖中音", 
+        description: "發音時舌尖頂住或接近上齒齦中部位置。\nㄉ、ㄊ是舌尖堵住氣流的塞音，ㄋ、ㄌ則是鼻音與邊音。",
+        lines: [["ㄉ", "ㄊ", "ㄋ", "ㄌ"]] 
+      },
+      { 
+        title: "舌根音", 
+        description: "舌根頂住或接近軟顎發音。\nㄍ、ㄎ為塞音，ㄏ為摩擦音，氣流從舌根與軟顎之間通過。",
+        lines: [["ㄍ", "ㄎ", "ㄏ"]] 
+      },
+      { 
+        title: "舌面前音", 
+        description: "舌面前部抬起，接近硬顎發音。\n這三個音都是舌面音，常與ㄧ、ㄩ連用。",
+        lines: [["ㄐ", "ㄑ", "ㄒ"]] 
+      },
+      { 
+        title: "翹舌音", 
+        description: "舌尖向後翹、接近硬顎後部發音，帶有明顯的「捲舌」特徵。",
+        lines: [["ㄓ", "ㄔ", "ㄕ", "ㄖ"]] 
+      },
+      { 
+        title: "平舌音", 
+        description: "舌尖平放，接近上齒齦前部發音，氣流從舌尖間通過。",
+        lines: [["ㄗ", "ㄘ", "ㄙ"]] 
+      }
     ];
 
     // === 韻母分類 ===
     const finalsGroups = [
-      { title: "介音", lines: [["ㄧ", "ㄨ", "ㄩ"]] },
-      { title: "單韻母", lines: [["ㄚ", "ㄛ", "ㄜ", "ㄝ"]] },
-
-      { title: "複韻母", lines: [["ㄞ", "ㄟ", "ㄠ", "ㄡ"]],
+      { 
+        title: "介音", 
+        lines: [["ㄧ", "ㄨ", "ㄩ"]],
+        description: "介音是韻母的前導音，用來協助過渡到主要母音。"
+      },
+      { 
+        title: "單韻母", 
+        lines: [["ㄚ", "ㄛ", "ㄜ", "ㄝ"]],
+        description: "單韻母由一個母音構成，發音口形穩定、單一。"
+      },
+      { 
+        title: "複韻母", 
+        lines: [["ㄞ", "ㄟ", "ㄠ", "ㄡ"]],
         description: `複韻母可理解為兩個單韻母合併唸出：
 • ㄞ＝ㄚ＋ㄧ
 • ㄟ＝ㄝ＋ㄧ
 • ㄠ＝ㄚ＋ㄨ
 • ㄡ＝ㄛ＋ㄨ`
       },
-
-      { title: "聲隨韻母", lines: [["ㄢ", "ㄣ", "ㄤ", "ㄥ"]],
+      { 
+        title: "聲隨韻母", 
+        lines: [["ㄢ", "ㄣ", "ㄤ", "ㄥ"]],
         description: `或稱「鼻音聲隨韻母」
 這四個韻母有明顯的鼻音特徵：
 • ㄢ＝ㄚ＋鼻音
@@ -130,8 +164,11 @@
 • ㄤ＝ㄚ＋鼻音
 • ㄥ＝ㄜ＋鼻音（發音時：張口，舌根頂住上顎）`
       },
-
-      { title: "捲舌韻母", lines: [["ㄦ"]] }
+      { 
+        title: "捲舌韻母", 
+        lines: [["ㄦ"]],
+        description: "捲舌韻母 ㄦ 的發音時，舌尖向後捲，氣流經舌面與硬顎之間。"
+      }
     ];
 
     // === 函數區 ===
@@ -142,7 +179,7 @@
       line.forEach(sym => {
         const box = document.createElement('a');
         box.className = 'box';
-        box.href = `https://guaelves.github.io/Bopomofo/friendsgroup/${sym}/index.html`;
+        box.href = `https://guaelves.github.io/Bopomofo/friendsgroup/${sym}/`;
         box.target = '_blank';
         box.rel = 'noopener noreferrer';
 
@@ -190,11 +227,9 @@
     }
 
     // === 開始渲染 ===
-    // 聲母主標題
     renderSection("聲母");
     initialsGroups.forEach(renderSubGroup);
 
-    // 韻母主標題
     renderSection("韻母");
     finalsGroups.forEach(renderSubGroup);
   </script>
