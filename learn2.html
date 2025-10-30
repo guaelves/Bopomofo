@@ -1,1 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>注音符號學習小天地 — 兒童可愛簡報</title>
+  <style>
+    /* ====== 全站基礎樣式（Morandi 粉藍＋粉紅） ====== */
+    :root{
+      --bg1: #f3f7fb; /* 淡粉藍底 */
+      --card: #ffffff;
+      --accent: #ffb6c1; /* 粉紅 */
+      --accent-dark: #ff92ad;
+      --muted: #8b98a9;
+      --text: #2b3742;
+      --soft-border: rgba(43,55,66,0.06);
+      --shadow: 0 8px 20px rgba(11,22,30,0.06);
+      --frog-green: #7ecb7e;
+      --frog-dark: #2d7a2d;
+    }
 
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: "Microsoft JhengHei", "Noto Sans TC", "DFKai-SB", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, var(--bg1) 0%, #fefcff 100%);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow:hidden;
+    }
+
+    header{
+      padding:18px 20px;
+      text-align:center;
+      background: linear-gradient(90deg,#cfeffb, #eef6ff);
+      border-bottom: 3px solid rgba(0,0,0,0.03);
+      box-shadow: 0 6px 18px rgba(12,34,56,0.04);
+    }
+    header h1{
+      margin:0;
+      font-size:22px;
+      letter-spacing:1px;
+    }
+    header p{ margin:6px 0 0 0; color:var(--muted); font-size:13px }
+
+    /* ====== slides container ====== */
+    .viewport{
+      position:relative;
+      width:100%;
+      height: calc(100% - 84px); /* header + footer */
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      box-sizing:border-box;
+      padding:10px;
+    }
+    .slides{
+      display:flex;
+      height:100%;
+      transition: transform 0.6s cubic-bezier(.22,.9,.32,1);
+      will-change: transform;
+    }
+    .slide{
+      min-width:100%;
+      height:100%;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:28px 18px;
+      box-sizing:border-box;
+      overflow:auto;
+    }
+
+    /* ====== 章節卡片 ====== */
+    .card{
+      width:100%;
+      max-width:920px;
+      background:var(--card);
+      border-radius:18px;
+      padding:26px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--soft-border);
+      box-sizing:border-box;
+    }
+    .card h2{
+      margin:0 0 10px 0;
+      font-size:20px;
+      color: #ff7fa1;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .card p, .card li {
+      font-size:16px;
+      line-height:1.8;
+      color:var(--text);
+    }
+    .card ul { padding-left:18px; margin:8px 0 0 0 }
+    .example{
+      background: #fffaf0;
+      border-left:6px solid #ffd580;
+      padding:12px 14px;
+      border-radius:10px;
+      margin-top:12px;
+    }
+    .note{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    /* ====== 控制按鈕 (下一頁 / 上一頁) ====== */
+    .controls{
+      position:absolute;
+      bottom:28px;
+      right:28px;
+      display:flex;
+      gap:14px;
+      align-items:end;
+      z-index:40;
+    }
+    .btn{
+      background: linear-gradient(180deg,var(--accent),var(--accent-dark));
+      color:white;
+      border:none;
+      border-radius:28px;
+      padding:12px 18px;
+      font-size:16px;
+      cursor:pointer;
+      box-shadow: 0 6px 18px rgba(255,110,150,0.12);
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+    }
+    .btn:active{ transform:translateY(2px) }
+    .btn.secondary{
+      background: #fff;
+      color:var(--text);
+      border:1px solid rgba(0,0,0,0.06);
+      box-shadow:none;
+    }
+
+    /* ====== 小青蛙老師（Q 版） ====== */
+    .frog-wrap{
+      position:absolute;
+      bottom:100px;
+      right:60px;
+      width:92px;
+      height:92px;
+      pointer-events:none;
+      z-index:45;
+      transform-origin:center;
+      animation: float 2.6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100%{ transform: translateY(0) }
+      50%{ transform: translateY(-12px) }
+    }
+    .frog-card{
+      width:92px; height:92px;
+      display:flex; align-items:center; justify-content:center;
+    }
+
+    /* ====== footer / dots ====== */
+    .footer{
+      position: absolute;
+      left:0; right:0; bottom:0;
+      height:56px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      color:var(--muted);
+      font-size:13px;
+      background: linear-gradient(180deg, rgba(255,255,255,0), rgba(240,246,250,0.8));
+      z-index:30;
+    }
+    .dots{
+      display:flex; gap:8px;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:50%;
+      background: #e6eef6; border:1px solid rgba(43,55,66,0.05);
+    }
+    .dot.active{
+      background: var(--accent);
+      box-shadow: 0 4px 12px rgba(255,110,150,0.12);
+      transform:scale(1.15);
+    }
+
+    /* ====== 手機/觸控提示 ====== */
+    .hint{
+      display:inline-block;
+      margin-left:10px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    /* ====== 小標籤 / 顯示符號 ====== */
+    .tag{
+      display:inline-block;
+      background: linear-gradient(90deg,#fff0f3,#fffafc);
+      border:1px solid rgba(255,120,150,0.12);
+      padding:6px 10px;
+      border-radius:14px;
+      font-size:13px;
+      color:#ff6f98;
+      margin-right:8px;
+    }
+
+    /* ====== 響應式微調 ====== */
+    @media (max-width:720px){
+      .card{ padding:18px; border-radius:14px }
+      header h1{ font-size:18px }
+      .frog-wrap{ width:76px; height:76px; bottom:86px; right:40px }
+      .controls{ right:16px; bottom:18px }
+    }
+
+    /* ====== 小細節：可顯示注音符號樣式 ====== */
+    .chuoyin{ font-family: 'Noto Sans TC', "Microsoft JhengHei"; font-weight:700; letter-spacing:6px; color:#3a3a3a }
+    .big-phonetic{ font-size:20px; display:inline-block; margin-right:8px; padding:6px 8px; background:#f6f9fc; border-radius:8px; border:1px solid rgba(0,0,0,0.03) }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>注音符號學習小天地 — 兒童可愛簡報 🐧</h1>
+    <p>簡潔、可愛、分章節教學（左右滑動） — 青蛙老師陪你學注音！</p>
+  </header>
+
+  <div class="viewport" id="viewport">
+    <div class="slides" id="slides">
+
+      <!-- ========== Slide 1 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>🎵 聲符不可單獨出現</h2>
+          <p>學習上需注意：聲符（子音）不可單獨出現，必須與韻符搭配成完整音節。除了 <strong>ㄓ、ㄔ、ㄕ、ㄖ、ㄗ、ㄘ、ㄙ</strong> 可單獨成音外，其他聲符都需搭配韻符。</p>
+
+          <div class="example">
+            <p class="big-phonetic">例子：</p>
+            <p>公雞 → <span class="chuoyin">ㄍㄨㄥ ㄐㄧ</span></p>
+            <p>油漆 → <span class="chuoyin">ㄧㄡˊ ㄑㄧ</span></p>
+            <p>小溪 → <span class="chuoyin">ㄒㄧˋ</span></p>
+          </div>
+
+          <p class="note">這一頁是學習注音最基本的規則，提醒孩子「一個聲符要有韻符才完整」喔！</p>
+        </div>
+      </div>
+
+      <!-- ========== Slide 2 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>🔤 ㄐ、ㄑ、ㄒ → 不能少掉「ㄧ」</h2>
+          <p>這三個聲符在拼讀時，前面常需要搭配介音「ㄧ」。例如：</p>
+          <div class="example">
+            <p>公雞（ㄐㄧ）</p>
+            <p>油漆（ㄑㄧ）</p>
+            <p>小溪（ㄒㄧ）</p>
+          </div>
+          <p class="note">教孩子記住：遇到ㄐ、ㄑ、ㄒ，先想「ㄧ」再念喔～</p>
+        </div>
+      </div>
+
+      <!-- ========== Slide 3 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>🐢 ㄍ、ㄎ、ㄏ → 不能少掉「ㄜ」</h2>
+          <p>這三個聲符與韻母結合時，常常會出現「ㄜ」音不可省略：</p>
+          <div class="example">
+            <p>鴿（ㄍㄜ）子</p>
+            <p>蝌（ㄎㄜ）蚪</p>
+            <p>喝（ㄏㄜ）水</p>
+          </div>
+          <p class="note">小朋友容易忘記加「ㄜ」，家長教學時可以用圖片提醒（鴿子、蝌蚪、喝水）。</p>
+        </div>
+      </div>
+
+      <!-- ========== Slide 4 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>🧸 ㄅ ㄆ ㄇ ㄈ 與 ㄨㄛ 拼讀規則</h2>
+          <p>當 <strong>ㄅ、ㄆ、ㄇ、ㄈ</strong> 與「ㄨㄛ」拼讀時，不需要把「ㄨ」符號寫出來。</p>
+          <div class="example">
+            <p>玻璃 → <span class="chuoyin">ㄅㄛ ㄌㄧˊ</span></p>
+            <p>外婆 → <span class="chuoyin">ㄨㄞˋ ㄆㄛˊ</span></p>
+            <p>抹布 → <span class="chuoyin">ㄇㄛ ㄅㄨˋ</span></p>
+            <p>佛祖 → <span class="chuoyin">ㄈㄛˊ ㄗㄨˇ</span></p>
+          </div>
+          <p class="note">註：要注意「麼」是 ˙ㄇㄜ（輕聲），不是 ˙ㄇㄛ。</p>
+        </div>
+      </div>
+
+      <!-- ========== Slide 5 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>🔎 ㄥ 的發音（與 ㄨㄥ 的不同）</h2>
+          <ul>
+            <li>ㄥ 的發音是（ㄜ + ŋ），不是（ㄛ + ŋ）。</li>
+            <li>ㄨㄥ 才是發（ㄛ + ŋ）的音。</li>
+          </ul>
+
+          <div class="example">
+            <p>燈 → <span class="chuoyin">ㄉㄥ</span>（ㄜŋ）</p>
+            <p>東 → <span class="chuoyin">ㄉㄨㄥ</span>（ㄛŋ）</p>
+          </div>
+
+          <p class="note">許多小朋友會把ㄥ唸成（ㄛŋ），要教他們分辨「前鼻音 / 後鼻音」的差別。</p>
+        </div>
+      </div>
+
+      <!-- ========== Slide 6 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>🔁 聲符與 ㄥ / ㄨㄥ 結合的發音</h2>
+          <p>聲符與 ㄥ 結合時，發（ㄜ + ŋ）的音；聲符與 ㄨㄥ 結合時，發（ㄛ + ŋ）的音。</p>
+
+          <div class="example">
+            <p>燈（ㄉㄥ）泡、疼（ㄊㄥˊ）痛（為 ㄥ 的發音）</p>
+            <p>東（ㄉㄨㄥ）西、同（ㄊㄨㄥˊ）學（為 ㄨㄥ 的發音）</p>
+          </div>
+          <p class="note">例句練習可以幫助孩子更快分辨。</p>
+        </div>
+      </div>
+
+      <!-- ========== Slide 7 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>🟣 ㄅㄆㄇㄈ 與 ㄥ 拼音要注意</h2>
+          <p>ㄅ、ㄆ、ㄇ、ㄈ 與 ㄥ 拼音時，發（ㄜŋ）的音，並且 <strong>不能寫出ㄨ</strong>。</p>
+
+          <div class="example">
+            <p>崩 → <span class="chuoyin">ㄅㄥ</span></p>
+            <p>朋 → <span class="chuoyin">ㄆㄥ</span></p>
+            <p>夢 → <span class="chuoyin">ㄇㄥ</span></p>
+            <p>風 → <span class="chuoyin">ㄈㄥ</span></p>
+          </div>
+          <p class="note">常見錯誤：寫成「ㄨㄥ」；教孩子把表格練習多念幾次。</p>
+        </div>
+      </div>
+
+      <!-- ========== Slide 8 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>🔍 ㄨㄥ 的兩種情形（單獨 vs 有聲符）</h2>
+          <ul>
+            <li>單獨發音（沒和其他聲母拼）：ㄨㄥ → 發（ㄨㄛ）音（例：不倒翁、嗡嗡叫的「嗡」）。</li>
+            <li>有和其他聲符拼時：ㄨㄥ → 發（ㄛ）音（例：通 → ㄊㄨㄥ → 念「ㄊㄛ」）。</li>
+          </ul>
+
+          <p class="note">仔細聽：翁（單字）和通（有聲符）發音其實不一樣，教孩子分辨即可。</p>
+        </div>
+      </div>
+
+      <!-- ========== Slide 9 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>✨ 例外：結合韻 ㄩㄥ 的念法</h2>
+          <p>當 <strong>ㄩ</strong> 與 <strong>ㄥ</strong> 結合成 「ㄩㄥ」時，實際念法變成「ㄩㄛ」，但寫法仍視為單一韻。</p>
+
+          <div class="example">
+            <p>用 → <span class="chuoyin">ㄩㄥ</span>（念起來像「ㄩㄛ」）</p>
+            <p>功 → <span class="chuoyin">ㄍㄨㄥ</span></p>
+          </div>
+          <p class="note">教學上提醒學生不要多寫一個「ㄨ」，以免寫成 ㄩㄨㄥ。</p>
+        </div>
+      </div>
+
+      <!-- ========== Slide 10 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>👅 翹舌音與平舌音（容易混淆）</h2>
+          <p>兩組常被混淆的音：</p>
+          <ul>
+            <li><strong>ㄓ、ㄔ、ㄕ</strong>：翹舌音，舌尖後抵住硬口蓋（舌面抬起，發翹舌音）。</li>
+            <li><strong>ㄗ、ㄘ、ㄙ</strong>：平舌音，舌尖前抵住上下牙床間（舌尖在牙床前方）。</li>
+          </ul>
+
+          <div class="example">
+            <p>練習：翹舌 → ㄓ（ㄓㄨ）、ㄔ（ㄔㄨ）、ㄕ（ㄕㄨ）</p>
+            <p>平舌 → ㄗ（ㄗㄨ）、ㄘ（ㄘㄨ）、ㄙ（ㄙㄨ）</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== Slide 11 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>🔄 常混淆的韻母：ㄛ/ㄡ、ㄝ/ㄟ、ㄜ/ㄦ、ㄣ/ㄥ、ㄢ/ㄤ</h2>
+          <ul>
+            <li><strong>ㄛ</strong>：嘴較圓，單一音，嘴型不變。</li>
+            <li><strong>ㄡ</strong>：先發ㄛ，再收成 ㄨ（類似 ㄛ→ㄨ 的滑音）。</li>
+            <li><strong>ㄝ</strong>：嘴型不變，不能直接和聲符拼讀，中間需有介音 ㄧ 或 ㄩ。</li>
+            <li><strong>ㄟ</strong>：先發ㄝ，再收成 ㄧ 的滑音。</li>
+            <li><strong>ㄜ</strong>：嘴較扁開，嘴型不變。<br>
+                <strong>ㄦ</strong>：先發ㄜ再捲舌。</li>
+            <li><strong>ㄣ</strong>：前鼻音（像 ㄜ + ㄋ）。</li>
+            <li><strong>ㄥ</strong>：後鼻音（像 ㄜ + ŋ）。</li>
+            <li><strong>ㄢ / ㄤ</strong>：先發ㄚ再收前/後鼻音。</li>
+          </ul>
+          <p class="note">提示：可以用台語「黃」字的收音體會ㄥ的後鼻音。</p>
+        </div>
+      </div>
+
+      <!-- ========== Slide 12 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>⚖️ 常會弄混的子音：ㄈ、ㄏ、ㄌ、ㄋ、ㄖ</h2>
+          <ul>
+            <li><strong>ㄈ</strong>：唇齒音，上排牙齒咬住下嘴唇（如「飛」）。</li>
+            <li><strong>ㄏ</strong>：舌根音，嘴唇和牙齒不接觸（如「灰」）。</li>
+            <li><strong>ㄌ</strong>：舌尖邊聲帶音，舌尖輕翹滑下帶ㄜ音（如「恐龍」）。</li>
+            <li><strong>ㄋ</strong>：舌尖抵住上顎再離開，氣流由鼻腔發出鼻音（如「老農」）。</li>
+            <li><strong>ㄖ</strong>：舌尖翹起，接近硬口蓋，氣流擦聲帶音（如「孔融」）。</li>
+          </ul>
+
+          <div class="example">
+            <p>例：飛機（ㄈㄟㄐㄧ） vs 灰雞（ㄏㄨㄟㄐㄧ）</p>
+            <p>好樂（ㄌㄜˋ） ≠ 好熱（ㄖㄜˋ） — 小心不要念錯！</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== Slide 13 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>🔁 會變音的結合韻（ㄧㄢ、ㄩㄢ、ㄧㄣ、ㄩㄣ、ㄧㄥ）</h2>
+          <p>某些結合韻會變音或簡化，教學上把它們視為單一學習符號，直接記住發音：</p>
+          <ul>
+            <li>ㄧㄢ → ㄧ + ㄚㄋ → 變成 ㄧㄝㄋ（ㄚ 變音成 ㄝ）</li>
+            <li>ㄩㄢ → ㄩ + ㄚㄋ → 變成 ㄩㄝㄋ（ㄚ 變音成 ㄝ）</li>
+            <li>ㄧㄣ → ㄧ + ㄜㄋ → ㄧㄋ（ㄜ 音不見）</li>
+            <li>ㄩㄣ → ㄩ + ㄜㄋ → ㄩㄋ（ㄜ 音不見）</li>
+            <li>ㄧㄥ → ㄧ + ㄜŋ → ㄧŋ（ㄜ 音不見）</li>
+          </ul>
+          <p class="note">把這些視為一個整體的符號學習，避免拼讀時與實際讀音不一致。</p>
+        </div>
+      </div>
+
+      <!-- ========== Slide 14 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>🔔 三聲字的變調問題（實用提示）</h2>
+          <p>中文的三聲變調規則，在口語中常常出現，簡單記法：</p>
+          <ul>
+            <li>聲 + 或輕聲 → 聲變前半上（例如：好聽、打球、買菜、嬸嬸）。</li>
+            <li>聲 + 聲 → 聲變後半上（例如：粉筆、小姐、響板、老鼠）。</li>
+            <li>聲 + 聲 + 聲（1+2）→ 第一字變前半上、後詞第一字變聲（例如：蔣總統、小組長）。</li>
+            <li>聲 + 聲 + 聲（2+1）→ 前詞組兩個聲字變聲（例如：總統府、演講稿）。</li>
+          </ul>
+
+          <p class="note">練習示例：可以用短句練習變調，幫助孩子聽辨並練習。</p>
+        </div>
+      </div>
+
+      <!-- ========== Slide 15 ========== -->
+      <div class="slide">
+        <div class="card">
+          <h2>👪 給家長的教學小提醒</h2>
+          <ul>
+            <li>父母可以用聊天、遊戲的方式隨機進行注音符號教學，輕鬆有效。</li>
+            <li>每個孩子有不同的發音弱點，可能只有幾個音念不好，家長別操之過急。</li>
+            <li>一般而言，資質正常的孩子約十週後注音符號能學得很好；重點在練習頻率與趣味性。</li>
+          </ul>
+
+          <div class="note">祝學習愉快！青蛙老師會在旁邊加油鼓勵 🐸📚</div>
+        </div>
+      </div>
+
+    </div> <!-- slides end -->
+  </div> <!-- viewport end -->
+
+  <!-- Q 版 青蛙老師：內嵌 SVG（戴眼鏡、拿小黑板） -->
+  <div class="frog-wrap" id="frog">
+    <div class="frog-card" aria-hidden="true">
+      <!-- SVG 圖案（Q 版青蛙老師） -->
+      <svg viewBox="0 0 160 160" width="92" height="92" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="青蛙老師">
+        <defs>
+          <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#8fe08f"/>
+            <stop offset="1" stop-color="#6fc76f"/>
+          </linearGradient>
+        </defs>
+        <!-- body -->
+        <ellipse cx="80" cy="88" rx="54" ry="44" fill="url(#g1)"/>
+        <!-- head -->
+        <circle cx="80" cy="50" r="38" fill="#7ecb7e"/>
+        <!-- cheeks -->
+        <circle cx="58" cy="60" r="8" fill="#ffd4df" opacity="0.95"/>
+        <circle cx="102" cy="60" r="8" fill="#ffd4df" opacity="0.95"/>
+        <!-- eyes frames -->
+        <ellipse cx="66" cy="44" rx="12" ry="14" fill="#fff"/>
+        <ellipse cx="94" cy="44" rx="12" ry="14" fill="#fff"/>
+        <!-- pupils -->
+        <circle cx="66" cy="46" r="5" fill="#174"/>
+        <circle cx="94" cy="46" r="5" fill="#174"/>
+        <!-- glasses -->
+        <rect x="52" y="34" width="28" height="22" rx="12" fill="none" stroke="#345" stroke-width="3"/>
+        <rect x="80" y="34" width="28" height="22" rx="12" fill="none" stroke="#345" stroke-width="3"/>
+        <line x1="80" y1="45" x2="80" y2="45" stroke="#345" stroke-width="2"/>
+        <!-- smile -->
+        <path d="M64 66 q16 14 32 0" stroke="#2a6a2a" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- small blackboard in hand -->
+        <rect x="30" y="100" width="40" height="28" rx="6" fill="#2d3b43" transform="rotate(-12 50 114)"/>
+        <rect x="32" y="102" width="36" height="24" rx="4" fill="#82d882" transform="rotate(-12 50 114)"/>
+        <text x="38" y="118" font-size="10" fill="#fff" font-family="Arial">注音</text>
+        <!-- tiny body arms -->
+        <path d="M40 100 q8 -6 18 -6" stroke="#6fc76f" stroke-width="6" stroke-linecap="round" fill="none"/>
+        <path d="M120 100 q-8 -6 -18 -6" stroke="#6fc76f" stroke-width="6" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- controls (next / prev) -->
+  <div class="controls" aria-hidden="false">
+    <button class="btn secondary" id="prevBtn" title="上一頁">⬅️ 上一頁</button>
+    <button class="btn" id="nextBtn" title="下一頁">下一頁 ➡️</button>
+  </div>
+
+  <!-- footer dots -->
+  <div class="footer" role="navigation" aria-label="分頁指示">
+    <div class="dots" id="dots"></div>
+    <div class="hint">左右滑動或使用按鈕切換</div>
+  </div>
+
+  <script>
+    // ====== 基本頁面行為：左右滑動、按鈕、鍵盤 ======
+    (function(){
+      const slides = document.getElementById('slides');
+      const slideEls = document.querySelectorAll('.slide');
+      const total = slideEls.length;
+      let index = 0;
+
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const dotsWrap = document.getElementById('dots');
+
+      // 建立 dots
+      for(let i=0;i<total;i++){
+        const d = document.createElement('div');
+        d.className = 'dot' + (i===0? ' active':'');
+        d.dataset.i = i;
+        d.setAttribute('aria-label','第 '+ (i+1) +' 頁');
+        d.addEventListener('click', ()=> goTo(parseInt(d.dataset.i)));
+        dotsWrap.appendChild(d);
+      }
+
+      function update(){
+        slides.style.transform = `translateX(-${index * 100}%)`;
+        const ds = document.querySelectorAll('.dot');
+        ds.forEach((el,i)=>{
+          if(i===index) el.classList.add('active'); else el.classList.remove('active');
+        });
+      }
+
+      function goTo(i){
+        index = (i + total) % total;
+        update();
+      }
+
+      prevBtn.addEventListener('click', ()=> { goTo(index - 1); });
+      nextBtn.addEventListener('click', ()=> { goTo(index + 1); });
+
+      // 鍵盤左右
+      window.addEventListener('keydown', (e)=>{
+        if(e.key === 'ArrowRight') goTo(index + 1);
+        if(e.key === 'ArrowLeft') goTo(index - 1);
+      });
+
+      // 觸控滑動（簡單實作）
+      let startX = null;
+      const vp = document.getElementById('viewport');
+      vp.addEventListener('touchstart', function(e){
+        startX = e.touches[0].clientX;
+      }, {passive:true});
+      vp.addEventListener('touchmove', function(e){
+        if(startX === null) return;
+        const dx = e.touches[0].clientX - startX;
+        // 若滑動距離大於某值，不做即時拖移，只在touchend判斷方向
+      }, {passive:true});
+      vp.addEventListener('touchend', function(e){
+        if(startX === null) return;
+        const endX = (e.changedTouches && e.changedTouches[0].clientX) || startX;
+        const diff = endX - startX;
+        if(Math.abs(diff) > 40){
+          if(diff < 0) goTo(index + 1);
+          else goTo(index - 1);
+        }
+        startX = null;
+      });
+
+      // 自動調整 frog 位置（若螢幕太窄，將 frog 往左微移）
+      function adjustFrog(){
+        const frog = document.getElementById('frog');
+        const w = window.innerWidth;
+        if(w < 560){
+          frog.style.right = '18px';
+          frog.style.bottom = '100px';
+          frog.style.transform = 'translateX(0)';
+        } else {
+          frog.style.right = '';
+          frog.style.bottom = '';
+        }
+      }
+      window.addEventListener('resize', adjustFrog);
+      adjustFrog();
+
+      // 初始
+      update();
+    })();
+  </script>
+
+</body>
+</html>
