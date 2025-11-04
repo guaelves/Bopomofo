@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // ✅ 顯示「但有跟介音好朋友...」（紅色字體）
           const friendNote = document.createElement('div');
-          friendNote.textContent = '但有跟介音好朋友「ㄧ」「ㄩ」，放在結合韻再練習';
+          friendNote.textContent = '但有跟介音「ㄧ」「ㄩ」是好朋友，放在結合韻';
           friendNote.style.width = '100%';
           friendNote.style.textAlign = 'center';
           friendNote.style.marginTop = '10px';
@@ -130,3 +130,4 @@ document.addEventListener('DOMContentLoaded', () => {
     resultDiv.innerHTML = '';
   });
 });
+
