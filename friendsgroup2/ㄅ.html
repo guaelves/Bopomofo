@@ -1,1 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ㄅ 拼音翻牌練習</title>
+<style>
+body {
+  font-family: "Noto Sans TC", sans-serif;
+  background: #f0f0f0;
+  text-align: center;
+  padding: 20px;
+}
+h1 {
+  margin-bottom: 20px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  justify-content: center;
+}
+.card {
+  width: 100%;
+  aspect-ratio: 5/7;
+  perspective: 800px;
+}
+.inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+.card.flipped .inner {
+  transform: rotateY(180deg);
+}
+.front, .back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.front {
+  background: #fff;
+  border: 2px solid #bbb;
+  font-weight: bold;
+}
+.back {
+  background: #fff;
+  border: 2px solid #888;
+  transform: rotateY(180deg);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 成功/失敗顏色 */
+.back.success {
+  background: #d4edda; /* 淡綠 */
+  border-color: #28a745;
+}
+.back.fail {
+  background: #f8d7da; /* 淡紅 */
+  border-color: #dc3545;
+}
+
+.fail {
+  color: red;
+  font-size: 48px;
+}
+
+/* 書本直排注音 */
+.zhuyin-part {
+  display: flex;
+  flex-direction: column;   /* 直排 */
+  align-items: center;
+  justify-content: center;
+  gap: 0.15em;             /* 字距稍微拉開 */
+  line-height: 1;
+  font-family: "Noto Sans TC", "PingFang TC", "DFKai-SB", sans-serif;
+}
+
+.zhuyin-glyph {
+  position: relative;
+  font-weight: normal;
+  font-size: 2em;
+  text-align: center;
+}
+
+/* 聲調偏右上角，間距拉開 */
+.zhuyin-tone {
+  position: absolute;
+  font-size: 0.6em;
+  top: -0.4em;
+  right: -0.6em;
+}
+
+/* 輕聲在最上方，但不要太遠 */
+.zhuyin-dot {
+  position: absolute;
+  font-size: 0.65em;
+  top: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* 背面直排中文字 */
+.word-vertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  line-height: 1.15em;
+  font-size: calc(2vw + 12px);
+}
+.word-vertical span {
+  display: block;
+}
+.back-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+.back-content .zhuyin-part {
+  font-size: 0.6em;
+}
+</style>
+</head>
+<body>
+<h1>ㄅ 拼音翻牌練習</h1>
+<div class="grid" id="cards"></div>
+
+<script>
+// ---------------- 音訊與語音 ----------------
+let audioCtx = null;
+let zhTWVoice = null;
+
+function initAudio(){ 
+  if(audioCtx) return; 
+  try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){console.error("Web Audio not supported");} 
+}
+
+function pickPreferredVoice(voices){
+  const norm = s => (s||'').toLowerCase().replace(/[\s_\-()（）:：,，.。]+/g,'');
+  const isTW = v => /^zh/i.test(v.lang||'') && /tw/i.test(v.lang||'');
+  const isG  = v => /google/i.test(v.name||'');
+  const isMS = v => /microsoft/i.test(v.name||'');
+
+  const N = voices.map(v => ({ v, name:norm(v.name), uri:norm(v.voiceURI) }));
+  let p = N.find(x => isTW(x.v) && isMS(x.v) && (x.name.includes('yating') || x.uri.includes('yating'))); if(p) return p.v;
+  p = N.find(x => isTW(x.v) && isMS(x.v) && (x.name.includes('zhiwei') || x.uri.includes('zhiwei'))); if(p) return p.v;
+  p = voices.find(v => isTW(v) && isG(v) && /(國語|台灣|臺灣|mandarin|taiwan)/i.test(v.name||'')); if(p) return p;
+  return (voices.find(v => !isG(v) && isTW(v)) || voices.find(v =>  isG(v) && isTW(v)) || voices.find(v =>  isG(v) && isCN(v)) || voices.find(v => !isG(v) && isCN(v)) || voices.find(isTW) || voices.find(isCN) || voices.find(isZH) || voices[0] || null);
+}
+
+function setupSpeechSynthesis(){
+  if(!('speechSynthesis' in window)) return;
+  const apply = () => { const voices=speechSynthesis.getVoices()||[]; zhTWVoice=pickPreferredVoice(voices); };
+  apply(); 
+  if (typeof speechSynthesis.onvoiceschanged!=="undefined"){ speechSynthesis.onvoiceschanged=apply; }
+}
+
+function speak(text){
+  if(!('speechSynthesis' in window) || !text) return;
+  const utter = new SpeechSynthesisUtterance(text);
+  if(zhTWVoice) utter.voice = zhTWVoice;
+  utter.rate = 0.8; 
+  speechSynthesis.speak(utter);
+}
+
+window.onload = ()=>{ initAudio(); setupSpeechSynthesis(); };
+
+// ---------------- 卡片生成 ----------------
+//ㄅ 
+//"ㄧ", "ㄨ", "ㄚ", "ㄛ", "ㄞ", "ㄟ", "ㄠ", "ㄢ", "ㄣ", "ㄤ", "ㄥ","ㄧㄝ", "ㄧㄠ", "ㄧㄢ", "ㄧㄣ", "ㄧㄥ"
+
+const data = [
+//ㄅㄧ
+  { front: ["ㄅ","ㄧ"], tones: [
+      {tone:"", back:{zh:"逼真", zhBpmf:["ㄅ","ㄧ","ㄓ","ㄣ"]}},
+      {tone:"ˊ", back:{zh:"鼻涕", zhBpmf:["ㄅ","ㄧˊ"," ㄊ","ㄧˋ"]}},
+      {tone:"ˇ", back:{zh:"比賽", zhBpmf:["ㄅ","ㄧˇ","ㄙ","ㄞˋ"]}},
+      {tone:"ˋ", back:{zh:"必須", zhBpmf:["ㄅ","ㄧˋ","ㄒ","ㄩ"]}},
+      {tone:"˙", back:null}
+  ]},
+//ㄅㄨ
+  { front: ["ㄅ","ㄨ"], tones: [
+      {tone:"",back:{zh:"逋欠",zhBpmf:["ㄅ","ㄨ","ㄑ","ㄧ","ㄢˋ"]}},
+      {tone:"ˊ",back:{zh:"不會",zhBpmf:["ㄅ","ㄨˊ","ㄏ","ㄨ","ㄟˋ"]}},
+      {tone:"ˇ",back:{zh:"補助",zhBpmf:["ㄅ","ㄨˇ","ㄓ","ㄨˋ"]}},
+      {tone:"ˋ",back:{zh:"布置",zhBpmf:["ㄅ","ㄨˋ","ㄓˋ"]}},
+      {tone:"˙",back:null}
+  ]},
+//ㄅㄚ
+  { front: ["ㄅ","ㄚ"], tones: [
+      {tone:"",back:{zh:"巴掌",zhBpmf:["ㄅ","ㄚ","ㄓ","ㄤˇ"]}},
+      {tone:"ˊ",back:{zh:"拔河",zhBpmf:["ㄅ","ㄚˊ","ㄏ","ㄜˊ"]}},
+      {tone:"ˇ",back:{zh:"把握",zhBpmf:["ㄅ","ㄚˇ","ㄨ","ㄛˋ"]}},
+      {tone:"ˋ",back:{zh:"爸爸",zhBpmf:["ㄅ","ㄚˋ","˙","ㄅ","ㄚ"]}},
+      {tone:"˙",back:{zh:"好吧",zhBpmf:["ㄏ","ㄠˇ","˙","ㄅ","ㄚ"]}}
+  ]},
+//ㄅㄛ
+  { front: ["ㄅ","ㄛ"], tones: [
+      {tone:"",back:{zh:"波浪",zhBpmf:["ㄅ","ㄛ","ㄌ","ㄤˋ"]}},
+      {tone:"ˊ",back:{zh:"博愛",zhBpmf:["ㄅ","ㄛˊ","ㄞˋ"]}},
+      {tone:"ˇ",back:{zh:"跛腳",zhBpmf:["ㄅ","ㄛˇ","ㄐ","ㄧ","ㄠˇ"]}},
+      {tone:"ˋ",back:{zh:"播放",zhBpmf:["ㄅ","ㄛˋ","ㄈ","ㄤˋ"]}},
+      {tone:"˙",back:{zh:"蘿蔔",zhBpmf:["ㄌ","ㄨ","ㄛˊ","˙","ㄅ","ㄛ"]}}
+  ]}
+];
+
+const container = document.getElementById("cards");
+
+data.forEach(item => {
+  item.tones.forEach(t => {
+    const card = document.createElement("div");
+    card.className = "card";
+    const inner = document.createElement("div");
+    inner.className = "inner";
+
+    const front = document.createElement("div");
+    front.className = "front";
+    const bpmfFront = document.createElement("div");
+    bpmfFront.className = "zhuyin-part";
+
+    if(t.tone === "˙"){
+      const dot = document.createElement("span");
+      dot.className = "zhuyin-dot";
+      dot.textContent = t.tone;
+      bpmfFront.appendChild(dot);
+    }
+
+    item.front.forEach((s, idx) => {
+      const char = document.createElement("span");
+      char.className = "zhuyin-glyph";
+      char.textContent = s;
+      if(t.tone && t.tone !== "˙" && idx === item.front.length - 1){
+        const tone = document.createElement("span");
+        tone.className = "zhuyin-tone";
+        tone.textContent = t.tone;
+        char.appendChild(tone);
+      }
+      bpmfFront.appendChild(char);
+    });
+
+    front.appendChild(bpmfFront);
+
+    const back = document.createElement("div");
+    back.className = "back";
+
+    if(t.back){
+      back.classList.add("success"); // 有對應發音
+      const backContent = document.createElement("div");
+      backContent.className = "back-content";
+
+      const wordDiv = document.createElement("div");
+      wordDiv.className = "word-vertical";
+      for(const ch of t.back.zh){
+        const span = document.createElement("span");
+        span.textContent = ch;
+        wordDiv.appendChild(span);
+      }
+
+      const bpmfBack = document.createElement("div");
+      bpmfBack.className = "zhuyin-part";
+
+      t.back.zhBpmf.forEach((s, idx) => {
+        const char = document.createElement("span");
+        char.className = "zhuyin-glyph";
+        const m = s.match(/^(.)([ˊˇˋ˙]?)$/);
+        if(m){
+          char.textContent = m[1];
+          if(m[2]){
+            if(m[2]==="˙"){
+              const dot = document.createElement("span");
+              dot.className = "zhuyin-dot";
+              dot.textContent = m[2];
+              char.appendChild(dot);
+            } else {
+              const tone = document.createElement("span");
+              tone.className = "zhuyin-tone";
+              tone.textContent = m[2];
+              char.appendChild(tone);
+            }
+          }
+        }else{
+          char.textContent = s;
+        }
+        bpmfBack.appendChild(char);
+      });
+
+      backContent.appendChild(wordDiv);
+      backContent.appendChild(bpmfBack);
+      back.appendChild(backContent);
+
+    }else{
+      back.classList.add("fail"); // 沒對應發音
+      back.innerHTML = `<div class="fail">❌</div>`;
+    }
+
+    inner.appendChild(front);
+    inner.appendChild(back);
+    card.appendChild(inner);
+
+    card.addEventListener("click", ()=> {
+      card.classList.toggle("flipped");
+      if(t.back) speak(t.back.zh); 
+    });
+
+    container.appendChild(card);
+  });
+});
+</script>
+</body>
+</html>
 
