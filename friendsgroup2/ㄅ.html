@@ -19,7 +19,7 @@ h1 {
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 15px;
   justify-content: center;
 }
@@ -187,37 +187,37 @@ window.onload = ()=>{ initAudio(); setupSpeechSynthesis(); };
 //"ㄧ", "ㄨ", "ㄚ", "ㄛ", "ㄞ", "ㄟ", "ㄠ", "ㄢ", "ㄣ", "ㄤ", "ㄥ","ㄧㄝ", "ㄧㄠ", "ㄧㄢ", "ㄧㄣ", "ㄧㄥ"
 
 const data = [
+
 //ㄅㄧ
   { front: ["ㄅ","ㄧ"], tones: [
       {tone:"", back:{zh:"逼真", zhBpmf:["ㄅ","ㄧ","ㄓ","ㄣ"]}},
       {tone:"ˊ", back:{zh:"鼻涕", zhBpmf:["ㄅ","ㄧˊ"," ㄊ","ㄧˋ"]}},
       {tone:"ˇ", back:{zh:"比賽", zhBpmf:["ㄅ","ㄧˇ","ㄙ","ㄞˋ"]}},
-      {tone:"ˋ", back:{zh:"必須", zhBpmf:["ㄅ","ㄧˋ","ㄒ","ㄩ"]}},
-      {tone:"˙", back:null}
+      {tone:"ˋ", back:{zh:"必須", zhBpmf:["ㄅ","ㄧˋ","ㄒ","ㄩ"]}}
   ]},
+
 //ㄅㄨ
   { front: ["ㄅ","ㄨ"], tones: [
       {tone:"",back:{zh:"逋欠",zhBpmf:["ㄅ","ㄨ","ㄑ","ㄧ","ㄢˋ"]}},
       {tone:"ˊ",back:{zh:"不會",zhBpmf:["ㄅ","ㄨˊ","ㄏ","ㄨ","ㄟˋ"]}},
       {tone:"ˇ",back:{zh:"補助",zhBpmf:["ㄅ","ㄨˇ","ㄓ","ㄨˋ"]}},
-      {tone:"ˋ",back:{zh:"布置",zhBpmf:["ㄅ","ㄨˋ","ㄓˋ"]}},
-      {tone:"˙",back:null}
+      {tone:"ˋ",back:{zh:"布置",zhBpmf:["ㄅ","ㄨˋ","ㄓˋ"]}}
   ]},
+
 //ㄅㄚ
   { front: ["ㄅ","ㄚ"], tones: [
       {tone:"",back:{zh:"巴掌",zhBpmf:["ㄅ","ㄚ","ㄓ","ㄤˇ"]}},
       {tone:"ˊ",back:{zh:"拔河",zhBpmf:["ㄅ","ㄚˊ","ㄏ","ㄜˊ"]}},
       {tone:"ˇ",back:{zh:"把握",zhBpmf:["ㄅ","ㄚˇ","ㄨ","ㄛˋ"]}},
-      {tone:"ˋ",back:{zh:"爸爸",zhBpmf:["ㄅ","ㄚˋ","˙","ㄅ","ㄚ"]}},
-      {tone:"˙",back:{zh:"好吧",zhBpmf:["ㄏ","ㄠˇ","˙","ㄅ","ㄚ"]}}
+      {tone:"ˋ",back:{zh:"爸爸",zhBpmf:["ㄅ","ㄚˋ","˙","ㄅ","ㄚ"]}}
   ]},
+
 //ㄅㄛ
   { front: ["ㄅ","ㄛ"], tones: [
       {tone:"",back:{zh:"波浪",zhBpmf:["ㄅ","ㄛ","ㄌ","ㄤˋ"]}},
       {tone:"ˊ",back:{zh:"博愛",zhBpmf:["ㄅ","ㄛˊ","ㄞˋ"]}},
       {tone:"ˇ",back:{zh:"跛腳",zhBpmf:["ㄅ","ㄛˇ","ㄐ","ㄧ","ㄠˇ"]}},
-      {tone:"ˋ",back:{zh:"播放",zhBpmf:["ㄅ","ㄛˋ","ㄈ","ㄤˋ"]}},
-      {tone:"˙",back:{zh:"蘿蔔",zhBpmf:["ㄌ","ㄨ","ㄛˊ","˙","ㄅ","ㄛ"]}}
+      {tone:"ˋ",back:{zh:"播放",zhBpmf:["ㄅ","ㄛˋ","ㄈ","ㄤˋ"]}}
   ]}
 ];
 
