@@ -60,17 +60,20 @@ h1 {
   justify-content: center;
   align-items: center;
 }
+
+/* 成功/失敗顏色 */
+.back.success {
+  background: #d4edda; /* 淡綠 */
+  border-color: #28a745;
+}
+.back.fail {
+  background: #f8d7da; /* 淡紅 */
+  border-color: #dc3545;
+}
+
 .fail {
   color: red;
   font-size: 48px;
-}
-
-/* 有發音卡片淡綠色，沒有的淡紅色 */
-.card.has-audio.flipped .back {
-  background: #d0f0c0; /* 淡綠 */
-}
-.card.no-audio.flipped .back {
-  background: #f0d0d0; /* 淡紅 */
 }
 
 /* 書本直排注音 */
@@ -79,9 +82,9 @@ h1 {
   flex-direction: column;   /* 直排 */
   align-items: center;
   justify-content: center;
-  gap: 0.15em;
+  gap: 0.15em;             /* 字距稍微拉開 */
   line-height: 1;
-  font-family: "Noto Sans TC", "DFKai-SB", "KaiTi", sans-serif;
+  font-family: "Noto Sans TC", "PingFang TC", "DFKai-SB", sans-serif;
 }
 
 .zhuyin-glyph {
@@ -91,7 +94,7 @@ h1 {
   text-align: center;
 }
 
-/* 聲調偏右上角 */
+/* 聲調偏右上角，間距拉開 */
 .zhuyin-tone {
   position: absolute;
   font-size: 0.6em;
@@ -99,7 +102,7 @@ h1 {
   right: -0.6em;
 }
 
-/* 輕聲小圓點在上方 */
+/* 輕聲在最上方，但不要太遠 */
 .zhuyin-dot {
   position: absolute;
   font-size: 0.65em;
@@ -149,8 +152,6 @@ function initAudio(){
 function pickPreferredVoice(voices){
   const norm = s => (s||'').toLowerCase().replace(/[\s_\-()（）:：,，.。]+/g,'');
   const isTW = v => /^zh/i.test(v.lang||'') && /tw/i.test(v.lang||'');
-  const isCN = v => /^zh/i.test(v.lang||'') && /cn/i.test(v.lang||'');
-  const isZH = v => /^zh/i.test(v.lang||'');
   const isG  = v => /google/i.test(v.name||'');
   const isMS = v => /microsoft/i.test(v.name||'');
 
@@ -176,20 +177,22 @@ function speak(text){
   speechSynthesis.speak(utter);
 }
 
-window.onload = ()=>{
-  initAudio();
-  setupSpeechSynthesis();
-};
+window.onload = ()=>{ initAudio(); setupSpeechSynthesis(); };
 
 // ---------------- 卡片生成 ----------------
+//ㄅ 
+//"ㄧ", "ㄨ", "ㄚ", "ㄛ", "ㄞ", "ㄟ", "ㄠ", "ㄢ", "ㄣ", "ㄤ", "ㄥ","ㄧㄝ", "ㄧㄠ", "ㄧㄢ", "ㄧㄣ", "ㄧㄥ"
+
 const data = [
+//ㄅㄧ
   { front: ["ㄅ","ㄧ"], tones: [
       {tone:"", back:{zh:"逼真", zhBpmf:["ㄅ","ㄧ","ㄓ","ㄣ"]}},
-      {tone:"ˊ", back:{zh:"鼻涕", zhBpmf:["ㄅ","ㄧˊ","ㄊ","ㄧˋ"]}},
+      {tone:"ˊ", back:{zh:"鼻涕", zhBpmf:["ㄅ","ㄧˊ"," ㄊ","ㄧˋ"]}},
       {tone:"ˇ", back:{zh:"比賽", zhBpmf:["ㄅ","ㄧˇ","ㄙ","ㄞˋ"]}},
       {tone:"ˋ", back:{zh:"必須", zhBpmf:["ㄅ","ㄧˋ","ㄒ","ㄩ"]}},
       {tone:"˙", back:null}
   ]},
+//ㄅㄨ
   { front: ["ㄅ","ㄨ"], tones: [
       {tone:"",back:{zh:"逋欠",zhBpmf:["ㄅ","ㄨ","ㄑ","ㄧ","ㄢˋ"]}},
       {tone:"ˊ",back:{zh:"不會",zhBpmf:["ㄅ","ㄨˊ","ㄏ","ㄨ","ㄟˋ"]}},
@@ -197,12 +200,21 @@ const data = [
       {tone:"ˋ",back:{zh:"布置",zhBpmf:["ㄅ","ㄨˋ","ㄓˋ"]}},
       {tone:"˙",back:null}
   ]},
+//ㄅㄚ
   { front: ["ㄅ","ㄚ"], tones: [
       {tone:"",back:{zh:"巴掌",zhBpmf:["ㄅ","ㄚ","ㄓ","ㄤˇ"]}},
       {tone:"ˊ",back:{zh:"拔河",zhBpmf:["ㄅ","ㄚˊ","ㄏ","ㄜˊ"]}},
       {tone:"ˇ",back:{zh:"把握",zhBpmf:["ㄅ","ㄚˇ","ㄨ","ㄛˋ"]}},
       {tone:"ˋ",back:{zh:"爸爸",zhBpmf:["ㄅ","ㄚˋ","˙","ㄅ","ㄚ"]}},
       {tone:"˙",back:{zh:"好吧",zhBpmf:["ㄏ","ㄠˇ","˙","ㄅ","ㄚ"]}}
+  ]},
+//ㄅㄛ
+  { front: ["ㄅ","ㄛ"], tones: [
+      {tone:"",back:{zh:"波浪",zhBpmf:["ㄅ","ㄛ","ㄌ","ㄤˋ"]}},
+      {tone:"ˊ",back:{zh:"博愛",zhBpmf:["ㄅ","ㄛˊ","ㄞˋ"]}},
+      {tone:"ˇ",back:{zh:"跛腳",zhBpmf:["ㄅ","ㄛˇ","ㄐ","ㄧ","ㄠˇ"]}},
+      {tone:"ˋ",back:{zh:"播放",zhBpmf:["ㄅ","ㄛˋ","ㄈ","ㄤˋ"]}},
+      {tone:"˙",back:{zh:"蘿蔔",zhBpmf:["ㄌ","ㄨ","ㄛˊ","˙","ㄅ","ㄛ"]}}
   ]}
 ];
 
@@ -212,7 +224,6 @@ data.forEach(item => {
   item.tones.forEach(t => {
     const card = document.createElement("div");
     card.className = "card";
-    card.classList.add(t.back ? "has-audio":"no-audio");
     const inner = document.createElement("div");
     inner.className = "inner";
 
@@ -221,7 +232,7 @@ data.forEach(item => {
     const bpmfFront = document.createElement("div");
     bpmfFront.className = "zhuyin-part";
 
-    if(t.tone === "˙" && !t.back){
+    if(t.tone === "˙"){
       const dot = document.createElement("span");
       dot.className = "zhuyin-dot";
       dot.textContent = t.tone;
@@ -232,23 +243,12 @@ data.forEach(item => {
       const char = document.createElement("span");
       char.className = "zhuyin-glyph";
       char.textContent = s;
-
-      // 加聲調
       if(t.tone && t.tone !== "˙" && idx === item.front.length - 1){
         const tone = document.createElement("span");
         tone.className = "zhuyin-tone";
         tone.textContent = t.tone;
         char.appendChild(tone);
       }
-
-      // 加輕聲點
-      if(t.tone === "˙"){
-        const dot = document.createElement("span");
-        dot.className = "zhuyin-dot";
-        dot.textContent = t.tone;
-        char.appendChild(dot);
-      }
-
       bpmfFront.appendChild(char);
     });
 
@@ -258,6 +258,7 @@ data.forEach(item => {
     back.className = "back";
 
     if(t.back){
+      back.classList.add("success"); // 有對應發音
       const backContent = document.createElement("div");
       backContent.className = "back-content";
 
@@ -302,6 +303,7 @@ data.forEach(item => {
       back.appendChild(backContent);
 
     }else{
+      back.classList.add("fail"); // 沒對應發音
       back.innerHTML = `<div class="fail">❌</div>`;
     }
 
