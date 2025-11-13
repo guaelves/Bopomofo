@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>拼音練習</title>
+  <style>
+    body {
+      font-family: "Microsoft JhengHei", sans-serif;
+      padding: 2vw;
+      background: #f0fff0;
+    }
+    h1 {
+      font-size: 8vw;
+      text-align: center;
+      margin-bottom: 2vw;
+    }
+    .section-title {
+      font-size: 6vw;
+      font-weight: bold;
+      color: #333;
+      margin-top: 4vw;
+      margin-bottom: 1vw;
+    }
+    .sub-title {
+      font-size: 4vw;
+      font-weight: bold;
+      color: #555;
+      margin-top: 3vw;
+      margin-bottom: 1vw;
+    }
+    .sub-description {
+      font-size: 2.8vw;
+      color: #666;
+      margin-bottom: 1.5vw;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      padding-left: 1vw;
+    }
+    .line {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2vw;
+      margin-bottom: 2vw;
+    }
+    .box {
+      background-color: #90ee90;
+      padding: 2.5vw;
+      border-radius: 1vw;
+      text-align: center;
+      font-size: 2vw;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+      color: black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .box:hover {
+      background-color: #98fb98;
+    }
+    .symbol {
+      font-size: 10vw;
+      font-weight: bold;
+      margin-bottom: 0.5vw;
+    }
+    .text {
+      font-size: 2vw;
+      margin-top: 0.2vw;
+      line-height: 0.5;
+    }
+
+    @media (max-width: 480px) {
+      .symbol {
+        font-size: 8vw;
+      }
+      .text {
+        font-size: 3vw;
+      }
+      .section-title {
+        font-size: 6vw;
+      }
+      .sub-title {
+        font-size: 5vw;
+      }
+      .sub-description {
+        font-size: 3.2vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>拼音練習</h1>
+  <div id="container"></div>
+
+  <script>
+    const container = document.getElementById('container');
+
+    // === 聲母分類 ===
+    const initialsGroups = [
+      { 
+        title: "唇音", 
+        description: "發音時主要用雙唇或下唇與上齒接觸，氣流經由嘴唇釋出。\nㄅ、ㄆ、ㄇ為雙唇音，ㄈ為唇齒音。",
+        lines: [["ㄅ", "ㄆ", "ㄇ", "ㄈ"]] 
+      },
+      { 
+        title: "舌尖中音", 
+        description: "發音時舌尖頂住或接近上齒齦中部位置。\nㄉ、ㄊ是舌尖堵住氣流的塞音，ㄋ、ㄌ則是鼻音與邊音。",
+        lines: [["ㄉ", "ㄊ", "ㄋ", "ㄌ"]] 
+      },
+      { 
+        title: "舌根音", 
+        description: "舌根頂住或接近軟顎發音。\nㄍ、ㄎ為塞音，ㄏ為摩擦音，氣流從舌根與軟顎之間通過。",
+        lines: [["ㄍ", "ㄎ", "ㄏ"]] 
+      },
+      { 
+        title: "舌面前音", 
+        description: "舌面前部抬起，接近硬顎發音。\n這三個音都是舌面音，常與ㄧ、ㄩ連用。",
+        lines: [["ㄐ", "ㄑ", "ㄒ"]] 
+      },
+      { 
+        title: "翹舌音", 
+        description: "舌尖向後翹、接近硬顎後部發音，帶有明顯的「捲舌」特徵。",
+        lines: [["ㄓ", "ㄔ", "ㄕ", "ㄖ"]] 
+      },
+      { 
+        title: "平舌音", 
+        description: "舌尖平放，接近上齒齦前部發音，氣流從舌尖間通過。",
+        lines: [["ㄗ", "ㄘ", "ㄙ"]] 
+      }
+    ];
+
+    // === 韻母分類 ===
+    const finalsGroups = [
+      { 
+        title: "介音", 
+        lines: [["ㄧ", "ㄨ", "ㄩ"]],
+        description: "介音是韻母的前導音，用來協助過渡到主要母音。"
+      },
+      { 
+        title: "單韻母", 
+        lines: [["ㄚ", "ㄛ", "ㄜ", "ㄝ"]],
+        description: "單韻母由一個母音構成，發音口形穩定、單一。"
+      },
+      { 
+        title: "複韻母", 
+        lines: [["ㄞ", "ㄟ", "ㄠ", "ㄡ"]],
+        description: `複韻母可理解為兩個單韻母合併唸出：
+• ㄞ＝ㄚ＋ㄧ
+• ㄟ＝ㄝ＋ㄧ
+• ㄠ＝ㄚ＋ㄨ
+• ㄡ＝ㄛ＋ㄨ`
+      },
+      { 
+        title: "聲隨韻母", 
+        lines: [["ㄢ", "ㄣ", "ㄤ", "ㄥ"]],
+        description: `或稱「鼻音聲隨韻母」
+這四個韻母有明顯的鼻音特徵：
+• ㄢ＝ㄚ＋鼻音
+• ㄣ＝ㄜ＋鼻音（發音時：閉口，舌尖貼近上門牙後方）
+• ㄤ＝ㄚ＋鼻音
+• ㄥ＝ㄜ＋鼻音（發音時：張口，舌根頂住上顎）`
+      },
+      { 
+        title: "捲舌韻母", 
+        lines: [["ㄦ"]],
+        description: "捲舌韻母 ㄦ 的發音時，舌尖向後捲，氣流經舌面與硬顎之間。"
+      }
+    ];
+
+    // === 函數區 ===
+    function renderLine(line) {
+      const lineDiv = document.createElement('div');
+      lineDiv.className = 'line';
+
+      line.forEach(sym => {
+        const box = document.createElement('a');
+        box.className = 'box';
+        box.href = `https://guaelves.github.io/Bopomofo/friendsgroup2/${sym}.html`;  //網址
+        box.target = '_blank';
+        box.rel = 'noopener noreferrer';
+
+        box.innerHTML = `
+          <span class="symbol">${sym}</span>
+          <span class="text">的拼音練習</span>
+        `;
+
+        lineDiv.appendChild(box);
+      });
+
+      // 填滿四格網格
+      const remainder = 4 - line.length;
+      for (let i = 0; i < remainder; i++) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'box';
+        placeholder.style.visibility = 'hidden';
+        lineDiv.appendChild(placeholder);
+      }
+
+      container.appendChild(lineDiv);
+    }
+
+    function renderSection(title) {
+      const sectionTitle = document.createElement('div');
+      sectionTitle.className = 'section-title';
+      sectionTitle.textContent = title;
+      container.appendChild(sectionTitle);
+    }
+
+    function renderSubGroup(group) {
+      const subTitle = document.createElement('div');
+      subTitle.className = 'sub-title';
+      subTitle.textContent = group.title;
+      container.appendChild(subTitle);
+
+      if (group.description) {
+        const desc = document.createElement('div');
+        desc.className = 'sub-description';
+        desc.textContent = group.description;
+        container.appendChild(desc);
+      }
+
+      group.lines.forEach(renderLine);
+    }
+
+    // === 開始渲染 ===
+    renderSection("聲母");
+    initialsGroups.forEach(renderSubGroup);
+
+    renderSection("韻母");
+    finalsGroups.forEach(renderSubGroup);
+  </script>
+</body>
+</html>
