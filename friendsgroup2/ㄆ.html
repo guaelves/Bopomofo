@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拼音練習</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap">
+
+<style>
+body {
+  font-family: "Noto Sans TC", sans-serif;
+  background: #f0f0f0;
+  text-align: center;
+  padding: 20px;
+}
+h1 {
+  margin-bottom: 20px;
+}
+
+/* 整體容器 */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* 每一排：左邊泡泡 + 右邊四張卡 */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+}
+
+/* 泡泡樣式 */
+.vowel-bubble {
+  background: #fff9c4; /* 淡黃色 */
+  color: #333;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 3em;
+  height: 3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #fbc02d;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+
+/* 卡片排列 */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  flex: 1;
+}
+
+.card {
+  width: 100%;
+  aspect-ratio: 5/7;
+  perspective: 800px;
+  position: relative;
+}
+.inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+.card.flipped .inner {
+  transform: rotateY(180deg);
+}
+.front, .back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.front {
+  background: #fff;
+  border: 2px solid #bbb;
+  font-weight: bold;
+}
+.back {
+  background: #fff;
+  border: 2px solid #888;
+  transform: rotateY(180deg);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 成功卡片 */
+.back.success {
+  background: #d4edda;
+  border-color: #28a745;
+}
+
+/* 空白卡片 */
+.back.empty {
+  background: #ffe4e1; /* 淡粉色 */
+  border-color: #ffb6c1;
+}
+
+/* 失敗 ❌ 樣式 */
+.fail {
+  color: red;
+  font-size: 48px;
+}
+
+/* 書本直排注音 */
+.zhuyin-part {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15em;
+  line-height: 1;
+  font-family: "Noto Sans TC", "PingFang TC", "DFKai-SB", sans-serif;
+}
+.zhuyin-glyph {
+  position: relative;
+  font-weight: normal;
+  font-size: 2em;
+  text-align: center;
+}
+.zhuyin-tone {
+  position: absolute;
+  font-size: 1em;
+  top: -0.4em;
+  right: -0.6em;
+}
+.zhuyin-dot {
+  position: absolute;
+  font-size: 0.65em;
+  top: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* 背面直排中文字 */
+.word-vertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  line-height: 1.15em;
+  font-size: calc(4vw + 12px);
+}
+.word-vertical span {
+  display: block;
+}
+.back-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+.back-content .zhuyin-part {
+  font-size: 0.6em;
+}
+</style>
+</head>
+<body>
+<h1>ㄆ 拼音練習</h1>
+
+<div class="wrapper" id="wrapper"></div>
+
+<script>
+// ---------------- 音訊與語音 ----------------
+let audioCtx = null;
+let zhTWVoice = null;
+
+function initAudio(){ 
+  if(audioCtx) return; 
+  try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){console.error("Web Audio not supported");} 
+}
+
+function pickPreferredVoice(voices){
+  const norm = s => (s||'').toLowerCase().replace(/[\s_\-()（）:：,，.。]+/g,'');
+  const isTW = v => /^zh/i.test(v.lang||'') && /tw/i.test(v.lang||'');
+  const isG  = v => /google/i.test(v.name||'');
+  const isMS = v => /microsoft/i.test(v.name||'');
+  const N = voices.map(v => ({ v, name:norm(v.name), uri:norm(v.voiceURI) }));
+  let p = N.find(x => isTW(x.v) && isMS(x.v) && (x.name.includes('yating') || x.uri.includes('yating'))); if(p) return p.v;
+  p = N.find(x => isTW(x.v) && isMS(x.v) && (x.name.includes('zhiwei') || x.uri.includes('zhiwei'))); if(p) return p.v;
+  p = voices.find(v => isTW(v) && isG(v) && /(國語|台灣|臺灣|mandarin|taiwan)/i.test(v.name||'')); if(p) return p;
+  return (voices.find(v => !isG(v) && isTW(v)) || voices.find(v =>  isG(v) && isTW(v)) || voices.find(v =>  isG(v) && isCN(v)) || voices.find(v => !isG(v) && isCN(v)) || voices.find(isTW) || voices.find(isCN) || voices.find(isZH) || voices[0] || null);
+}
+
+function setupSpeechSynthesis(){
+  if(!('speechSynthesis' in window)) return;
+  const apply = () => { const voices=speechSynthesis.getVoices()||[]; zhTWVoice=pickPreferredVoice(voices); };
+  apply(); 
+  if (typeof speechSynthesis.onvoiceschanged!=="undefined"){ speechSynthesis.onvoiceschanged=apply; }
+}
+
+function speak(text){
+  if(!('speechSynthesis' in window) || !text) return;
+  const utter = new SpeechSynthesisUtterance(text);
+  if(zhTWVoice) utter.voice = zhTWVoice;
+  utter.rate = 0.8; 
+  speechSynthesis.speak(utter);
+}
+
+window.onload = ()=>{ initAudio(); setupSpeechSynthesis(); };
+
+// ---------------- 卡片生成 ----------------
+//ㄆ 
+//"ㄧ", "ㄨ", "ㄚ", "ㄛ", "ㄞ", "ㄟ", "ㄠ", "ㄡ", "ㄢ", "ㄣ", "ㄤ", "ㄥ","ㄧㄝ", "ㄧㄠ", "ㄧㄢ", "ㄧㄣ", "ㄧㄥ"
+
+
+const data = [
+  { front: ["ㄆ","ㄧ"], tones: [
+      {tone:"",back:{zh:"披風",zhBpmf:["ㄆ","ㄧ","ㄈ","ㄥ"]}},
+      {tone:"ˊ",back:{zh:"皮球",zhBpmf:["ㄆ","ㄧˊ","ㄑ","ㄧ","ㄡˊ"]}},
+      {tone:"ˇ",back:{zh:"匹配",zhBpmf:["ㄆ","ㄧˇ","ㄆ","ㄟˋ"]}},
+      {tone:"ˋ",back:{zh:"偏僻",zhBpmf:["ㄆ","ㄧ","ㄢ","ㄆ","ㄧˋ"]}}
+  ]},
+  { front: ["ㄆ","ㄨ"], tones: [
+      {tone:"",back:{zh:"撲通",zhBpmf:["ㄆ","ㄨ","ㄊ","ㄨ","ㄥ"]}},
+      {tone:"ˊ",back:{zh:"樸素",zhBpmf:["ㄆ","ㄨˊ","ㄙ","ㄨˋ"]}},
+      {tone:"ˇ",back:{zh:"普通",zhBpmf:["ㄆ","ㄨˇ","ㄊ","ㄨ","ㄥ"]}},
+      {tone:"ˋ",back:{zh:"曝光",zhBpmf:["ㄆ","ㄨˋ","ㄍ","ㄨ","ㄤ"]}}
+  ]},
+  { front: ["ㄆ","ㄚ"], tones: [
+      {tone:"",back:{zh:"趴下",zhBpmf:["ㄆ","ㄚ","ㄒ","ㄧ","ㄚˋ"]}},
+      {tone:"ˊ",back:{zh:"爬行",zhBpmf:["ㄆ","ㄚˊ","ㄒ","ㄧ","ㄥˊ"]}},
+      {tone:"ˇ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˋ",back:{zh:"怕人",zhBpmf:["ㄆ","ㄚˋ","ㄖ","ㄣˊ"]}}
+  ]},
+  { front: ["ㄆ","ㄛ"], tones: [
+      {tone:"",back:{zh:"坡道",zhBpmf:["ㄆ","ㄛ","ㄉ","ㄠˋ"]}},
+      {tone:"ˊ",back:{zh:"外婆",zhBpmf:["ㄨ","ㄞˋ","ㄆ","ㄛˊ"]}},
+      {tone:"ˇ",back:{zh:"頗佳",zhBpmf:["ㄆ","ㄛˇ","ㄐ","ㄧ","ㄚ"]}},
+      {tone:"ˋ",back:{zh:"破壞",zhBpmf:["ㄆ","ㄛˋ","ㄏ","ㄨ","ㄞˋ"]}}
+  ]},
+  { front: ["ㄆ","ㄞ"], tones: [
+      {tone:"",back:{zh:"拍手",zhBpmf:["ㄆ","ㄞ","ㄕ","ㄡˇ"]}},
+      {tone:"ˊ",back:{zh:"排隊",zhBpmf:["ㄆ","ㄞˊ","ㄉ","ㄨ","ㄟˋ"]}},
+      {tone:"ˇ",back:{zh:"排子車",zhBpmf:["ㄆ","ㄞˇ","˙","ㄗ","ㄔ","ㄜ"]}},
+      {tone:"ˋ",back:{zh:"派對",zhBpmf:["ㄆ","ㄞˋ","ㄉ","ㄨ","ㄟˋ"]}}
+  ]},
+  { front: ["ㄆ","ㄟ"], tones: [
+      {tone:"",back:{zh:"胚胎",zhBpmf:["ㄆ","ㄟ","ㄊ","ㄞ"]}},
+      {tone:"ˊ",back:{zh:"陪伴",zhBpmf:["ㄆ","ㄟˊ","ㄅ","ㄢˋ"]}},
+      {tone:"ˇ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˋ",back:{zh:"配備",zhBpmf:["ㄆ","ㄟˋ","ㄅ","ㄟˋ"]}}
+  ]},
+  { front: ["ㄆ","ㄠ"], tones: [
+      {tone:"",back:{zh:"拋棄",zhBpmf:["ㄆ","ㄠ","ㄑ","ㄧˋ"]}},
+      {tone:"ˊ",back:{zh:"刨刀",zhBpmf:["ㄆ","ㄠˊ","ㄉ","ㄠ"]}},
+      {tone:"ˇ",back:{zh:"跑步",zhBpmf:["ㄆ","ㄠˇ","ㄅ","ㄨˋ"]}},
+      {tone:"ˋ",back:{zh:"泡沫",zhBpmf:["ㄆ","ㄠˋ","ㄇ","ㄛˋ"]}}
+  ]},
+  { front: ["ㄆ","ㄡ"], tones: [
+      {tone:"",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˊ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˇ",back:{zh:"剖開",zhBpmf:["ㄆ","ㄡˇ","ㄎ","ㄞ"]}},
+      {tone:"ˋ",back:{zh:"XX",zhBpmf:[""]}}
+  ]},
+  { front: ["ㄆ","ㄢ"], tones: [
+      {tone:"",back:{zh:"攀爬",zhBpmf:["ㄆ","ㄢ","ㄆ","ㄚˊ"]}},
+      {tone:"ˊ",back:{zh:"盤腿",zhBpmf:["ㄆ","ㄢˊ","ㄊ","ㄨ","ㄟˇ"]}},
+      {tone:"ˇ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˋ",back:{zh:"判斷",zhBpmf:["ㄆ","ㄢˋ","ㄉ","ㄨ","ㄢˋ"]}}
+  ]},
+  { front: ["ㄆ","ㄣ"], tones: [
+      {tone:"",back:{zh:"噴嚏",zhBpmf:["ㄆ","ㄣ","ㄊ","ㄧˋ"]}},
+      {tone:"ˊ",back:{zh:"盆栽",zhBpmf:["ㄆ","ㄣˊ","ㄗ","ㄞ"]}},
+      {tone:"ˇ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˋ",back:{zh:"噴鼻",zhBpmf:["ㄆ","ㄣˋ","ㄅ","ㄧˊ"]}}
+  ]},
+  { front: ["ㄆ","ㄤ"], tones: [
+      {tone:"",back:{zh:"滂沱",zhBpmf:["ㄆ","ㄤ","ㄊ","ㄨ","ㄛˊ"]}},
+      {tone:"ˊ",back:{zh:"旁邊",zhBpmf:["ㄆ","ㄤˊ","ㄅ","ㄧ","ㄢ"]}},
+      {tone:"ˇ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˋ",back:{zh:"肥胖",zhBpmf:["ㄈ","ㄟˊ","ㄆ","ㄤˋ"]}}
+  ]},
+  { front: ["ㄆ","ㄥ"], tones: [
+      {tone:"",back:{zh:"烹飪",zhBpmf:["ㄆ","ㄥ","ㄖ","ㄣˋ"]}},
+      {tone:"ˊ",back:{zh:"朋友",zhBpmf:["ㄆ","ㄥˊ","ㄧ","ㄡˇ"]}},
+      {tone:"ˇ",back:{zh:"捧花",zhBpmf:["ㄆ","ㄥˇ","ㄏ","ㄨ","ㄚ"]}},
+      {tone:"ˋ",back:{zh:"碰撞",zhBpmf:["ㄆ","ㄥˋ","ㄓ","ㄨ","ㄤˋ"]}}
+  ]},
+  { front: ["ㄆ","ㄧ","ㄝ"], tones: [
+      {tone:"",back:{zh:"瞥見",zhBpmf:["ㄆ","ㄧ","ㄝ","ㄐ","ㄧ","ㄢˋ"]}},
+      {tone:"ˊ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˇ",back:{zh:"撇嘴",zhBpmf:["ㄆ","ㄧ","ㄝˇ","ㄗ","ㄨ","ㄟˇ"]}},
+      {tone:"ˋ",back:{zh:"嫳屑",zhBpmf:["ㄆ","ㄧ","ㄝˋ","ㄒ","ㄧ","ㄝˋ"], "note": "衣服輕飄"}}
+  ]},
+  { front: ["ㄆ","ㄧ","ㄠ"], tones: [
+      {tone:"",back:{zh:"飄浮",zhBpmf:["ㄆ","ㄧ","ㄠ","ㄈ","ㄨˊ"]}},
+      {tone:"ˊ",back:{zh:"瓢蟲",zhBpmf:["ㄆ","ㄧ","ㄠˊ","ㄔ","ㄨ","ㄥˊ"]}},
+      {tone:"ˇ",back:{zh:"漂白",zhBpmf:["ㄆ","ㄧ","ㄠˇ","ㄅ","ㄞˊ"]}},
+      {tone:"ˋ",back:{zh:"票券",zhBpmf:["ㄆ","ㄧ","ㄠˋ","ㄑ","ㄩ","ㄢˋ"]}}
+  ]},
+  { front: ["ㄆ","ㄧ","ㄢ"], tones: [
+      {tone:"",back:{zh:"偏心",zhBpmf:["ㄆ","ㄧ","ㄢ","ㄒ","ㄧ","ㄣ"]}},
+      {tone:"ˊ",back:{zh:"便宜",zhBpmf:["ㄆ","ㄧ","ㄢˊ","ㄧˊ"]}},
+      {tone:"ˇ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˋ",back:{zh:"片名",zhBpmf:["ㄆ","ㄧ","ㄢˋ","ㄇ","ㄧ","ㄥˊ"]}}
+  ]},
+  { front: ["ㄆ","ㄧ","ㄣ"], tones: [
+      {tone:"",back:{zh:"拼圖",zhBpmf:["ㄆ","ㄧ","ㄣ","ㄊ","ㄨˊ"]}},
+      {tone:"ˊ",back:{zh:"貧窮",zhBpmf:["ㄆ","ㄧ","ㄣˊ","ㄑ","ㄩ","ㄥˊ"]}},
+      {tone:"ˇ",back:{zh:"品質",zhBpmf:["ㄆ","ㄧ","ㄣˇ","ㄓˊ"]}},
+      {tone:"ˋ",back:{zh:"牝馬",zhBpmf:["ㄆ","ㄧ","ㄣˋ","ㄇ","ㄚˇ"]}}
+  ]},
+  { front: ["ㄆ","ㄧ","ㄥ"], tones: [
+      {tone:"",back:{zh:"乒乓",zhBpmf:["ㄆ","ㄧ","ㄥ","ㄆ","ㄤ"]}},
+      {tone:"ˊ",back:{zh:"蘋果",zhBpmf:["ㄆ","ㄧ","ㄥˊ","ㄍ","ㄨ","ㄛˇ"]}},
+      {tone:"ˇ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˋ",back:{zh:"聘請",zhBpmf:["ㄆ","ㄧ","ㄥˋ","ㄑ","ㄧ","ㄥˇ"]}}
+  ]}
+];
+
+const wrapper = document.getElementById("wrapper");
+
+data.forEach(item => {
+  const row = document.createElement("div");
+  row.className = "row";
+
+  const vowelBubble = document.createElement("div");
+  vowelBubble.className = "vowel-bubble";
+  vowelBubble.textContent = item.front.slice(1).join('');
+  row.appendChild(vowelBubble);
+
+  const grid = document.createElement("div");
+  grid.className = "grid";
+
+  item.tones.forEach(t => {
+    const card = document.createElement("div");
+    card.className = "card";
+    const inner = document.createElement("div");
+    inner.className = "inner";
+
+    const front = document.createElement("div");
+    front.className = "front";
+    const bpmfFront = document.createElement("div");
+    bpmfFront.className = "zhuyin-part";
+
+    item.front.forEach((s, idx) => {
+      const char = document.createElement("span");
+      char.className = "zhuyin-glyph";
+      char.textContent = s;
+      if(t.tone && t.tone !== "˙" && idx === item.front.length - 1){
+        const tone = document.createElement("span");
+        tone.className = "zhuyin-tone";
+        tone.textContent = t.tone;
+        char.appendChild(tone);
+      }
+      bpmfFront.appendChild(char);
+    });
+
+    front.appendChild(bpmfFront);
+
+    const back = document.createElement("div");
+    back.className = "back";
+
+    if(t.back && t.back.zh && t.back.zh !== "XX"){
+      back.classList.add("success"); 
+      const backContent = document.createElement("div");
+      backContent.className = "back-content";
+
+      const wordDiv = document.createElement("div");
+      wordDiv.className = "word-vertical";
+      for(const ch of t.back.zh){
+        const span = document.createElement("span");
+        span.textContent = ch;
+        wordDiv.appendChild(span);
+      }
+
+      const bpmfBack = document.createElement("div");
+      bpmfBack.className = "zhuyin-part";
+
+      t.back.zhBpmf.forEach((s) => {
+        const char = document.createElement("span");
+        char.className = "zhuyin-glyph";
+        const m = s.match(/^(.)([ˊˇˋ˙]?)$/);
+        if(m){
+          char.textContent = m[1];
+          if(m[2]){
+            if(m[2]==="˙"){
+              const dot = document.createElement("span");
+              dot.className = "zhuyin-dot";
+              dot.textContent = m[2];
+              char.appendChild(dot);
+            } else {
+              const tone = document.createElement("span");
+              tone.className = "zhuyin-tone";
+              tone.textContent = m[2];
+              char.appendChild(tone);
+            }
+          }
+        }else{
+          char.textContent = s;
+        }
+        bpmfBack.appendChild(char);
+      });
+
+      backContent.appendChild(wordDiv);
+      backContent.appendChild(bpmfBack);
+      back.appendChild(backContent);
+
+    } else {
+      back.classList.add("empty"); 
+      back.innerHTML = `<div class="fail">❌</div>`;
+    }
+
+    inner.appendChild(front);
+    inner.appendChild(back);
+    card.appendChild(inner);
+
+    card.addEventListener("click", ()=> {
+      card.classList.toggle("flipped");
+      if(t.back && t.back.zh && t.back.zh !== "XX") speak(t.back.zh); 
+    });
+
+    grid.appendChild(card);
+  });
+
+  row.appendChild(grid);
+  wrapper.appendChild(row);
+});
+</script>
+</body>
+</html>
