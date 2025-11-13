@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ㄅ 拼音翻牌練習</title>
-<!-- 在 <head> 裡加入 -->
+<title>拼音練習</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap">
 
 <style>
@@ -17,16 +16,56 @@ body {
 h1 {
   margin-bottom: 20px;
 }
+
+/* 整體容器 */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* 每一排：左邊泡泡 + 右邊四張卡 */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+}
+
+/* 泡泡樣式 */
+.vowel-bubble {
+  background: #fff9c4; /* 淡黃色 */
+  color: #333;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 3em;
+  height: 3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #fbc02d;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+
+/* 卡片排列 */
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
-  justify-content: center;
+  flex: 1;
 }
+
 .card {
   width: 100%;
   aspect-ratio: 5/7;
   perspective: 800px;
+  position: relative;
 }
 .inner {
   position: relative;
@@ -64,16 +103,19 @@ h1 {
   align-items: center;
 }
 
-/* 成功/失敗顏色 */
+/* 成功卡片 */
 .back.success {
-  background: #d4edda; /* 淡綠 */
+  background: #d4edda;
   border-color: #28a745;
 }
-.back.fail {
-  background: #f8d7da; /* 淡紅 */
-  border-color: #dc3545;
+
+/* 空白卡片 */
+.back.empty {
+  background: #ffe4e1; /* 淡粉色 */
+  border-color: #ffb6c1;
 }
 
+/* 失敗 ❌ 樣式 */
 .fail {
   color: red;
   font-size: 48px;
@@ -82,30 +124,25 @@ h1 {
 /* 書本直排注音 */
 .zhuyin-part {
   display: flex;
-  flex-direction: column;   /* 直排 */
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.15em;             /* 字距稍微拉開 */
+  gap: 0.15em;
   line-height: 1;
   font-family: "Noto Sans TC", "PingFang TC", "DFKai-SB", sans-serif;
 }
-
 .zhuyin-glyph {
   position: relative;
   font-weight: normal;
   font-size: 2em;
   text-align: center;
 }
-
-/* 聲調偏右上角，間距拉開 */
 .zhuyin-tone {
   position: absolute;
   font-size: 1em;
   top: -0.4em;
   right: -0.6em;
 }
-
-/* 輕聲在最上方，但不要太遠 */
 .zhuyin-dot {
   position: absolute;
   font-size: 0.65em;
@@ -139,8 +176,9 @@ h1 {
 </style>
 </head>
 <body>
-<h1>ㄅ 拼音翻牌練習</h1>
-<div class="grid" id="cards"></div>
+<h1>ㄅ 拼音練習</h1>
+
+<div class="wrapper" id="wrapper"></div>
 
 <script>
 // ---------------- 音訊與語音 ----------------
@@ -157,7 +195,6 @@ function pickPreferredVoice(voices){
   const isTW = v => /^zh/i.test(v.lang||'') && /tw/i.test(v.lang||'');
   const isG  = v => /google/i.test(v.name||'');
   const isMS = v => /microsoft/i.test(v.name||'');
-
   const N = voices.map(v => ({ v, name:norm(v.name), uri:norm(v.voiceURI) }));
   let p = N.find(x => isTW(x.v) && isMS(x.v) && (x.name.includes('yating') || x.uri.includes('yating'))); if(p) return p.v;
   p = N.find(x => isTW(x.v) && isMS(x.v) && (x.name.includes('zhiwei') || x.uri.includes('zhiwei'))); if(p) return p.v;
@@ -186,44 +223,120 @@ window.onload = ()=>{ initAudio(); setupSpeechSynthesis(); };
 //ㄅ 
 //"ㄧ", "ㄨ", "ㄚ", "ㄛ", "ㄞ", "ㄟ", "ㄠ", "ㄢ", "ㄣ", "ㄤ", "ㄥ","ㄧㄝ", "ㄧㄠ", "ㄧㄢ", "ㄧㄣ", "ㄧㄥ"
 
-const data = [
 
-//ㄅㄧ
+const data = [
   { front: ["ㄅ","ㄧ"], tones: [
       {tone:"", back:{zh:"逼真", zhBpmf:["ㄅ","ㄧ","ㄓ","ㄣ"]}},
       {tone:"ˊ", back:{zh:"鼻涕", zhBpmf:["ㄅ","ㄧˊ"," ㄊ","ㄧˋ"]}},
       {tone:"ˇ", back:{zh:"比賽", zhBpmf:["ㄅ","ㄧˇ","ㄙ","ㄞˋ"]}},
       {tone:"ˋ", back:{zh:"必須", zhBpmf:["ㄅ","ㄧˋ","ㄒ","ㄩ"]}}
   ]},
-
-//ㄅㄨ
   { front: ["ㄅ","ㄨ"], tones: [
       {tone:"",back:{zh:"逋欠",zhBpmf:["ㄅ","ㄨ","ㄑ","ㄧ","ㄢˋ"]}},
       {tone:"ˊ",back:{zh:"不會",zhBpmf:["ㄅ","ㄨˊ","ㄏ","ㄨ","ㄟˋ"]}},
       {tone:"ˇ",back:{zh:"補助",zhBpmf:["ㄅ","ㄨˇ","ㄓ","ㄨˋ"]}},
       {tone:"ˋ",back:{zh:"布置",zhBpmf:["ㄅ","ㄨˋ","ㄓˋ"]}}
   ]},
-
-//ㄅㄚ
   { front: ["ㄅ","ㄚ"], tones: [
       {tone:"",back:{zh:"巴掌",zhBpmf:["ㄅ","ㄚ","ㄓ","ㄤˇ"]}},
       {tone:"ˊ",back:{zh:"拔河",zhBpmf:["ㄅ","ㄚˊ","ㄏ","ㄜˊ"]}},
       {tone:"ˇ",back:{zh:"把握",zhBpmf:["ㄅ","ㄚˇ","ㄨ","ㄛˋ"]}},
       {tone:"ˋ",back:{zh:"爸爸",zhBpmf:["ㄅ","ㄚˋ","˙","ㄅ","ㄚ"]}}
   ]},
-
-//ㄅㄛ
   { front: ["ㄅ","ㄛ"], tones: [
       {tone:"",back:{zh:"波浪",zhBpmf:["ㄅ","ㄛ","ㄌ","ㄤˋ"]}},
       {tone:"ˊ",back:{zh:"博愛",zhBpmf:["ㄅ","ㄛˊ","ㄞˋ"]}},
       {tone:"ˇ",back:{zh:"跛腳",zhBpmf:["ㄅ","ㄛˇ","ㄐ","ㄧ","ㄠˇ"]}},
       {tone:"ˋ",back:{zh:"播放",zhBpmf:["ㄅ","ㄛˋ","ㄈ","ㄤˋ"]}}
+  ]},
+  { front: ["ㄅ","ㄞ"], tones: [
+      {tone:"",back:{zh:"掰開",zhBpmf:["ㄅ","ㄞ","ㄎ","ㄞ"]}},
+      {tone:"ˊ",back:{zh:"白天",zhBpmf:["ㄅ","ㄞˊ","ㄊ","ㄧ","ㄢ"]}},
+      {tone:"ˇ",back:{zh:"擺放",zhBpmf:["ㄅ","ㄞˇ","ㄈ","ㄤˋ"]}},
+      {tone:"ˋ",back:{zh:"敗退",zhBpmf:["ㄅ","ㄞˋ","ㄊ","ㄨ","ㄟˋ"]}}
+  ]},
+  { front: ["ㄅ","ㄟ"], tones: [
+      {tone:"",back:{zh:"悲傷",zhBpmf:["ㄅ","ㄟ","ㄕ","ㄤ"]}},
+      {tone:"ˊ",back:{zh:"",zhBpmf:[]}},
+      {tone:"ˇ",back:{zh:"北方",zhBpmf:["ㄅ","ㄟˇ","ㄈ","ㄤ"]}},
+      {tone:"ˋ",back:{zh:"背後",zhBpmf:["ㄅ","ㄟˋ","ㄏ","ㄡˋ"]}}
+  ]},
+  { front: ["ㄅ","ㄠ"], tones: [
+      {tone:"",back:{zh:"包裝",zhBpmf:["ㄅ","ㄠ","ㄓ","ㄨ","ㄤ"]}},
+      {tone:"ˊ",back:{zh:"冰雹",zhBpmf:["ㄅ","ㄧ","ㄥ","ㄅ","ㄠˊ"]}},
+      {tone:"ˇ",back:{zh:"保護",zhBpmf:["ㄅ","ㄠˇ","ㄏ","ㄨˋ"]}},
+      {tone:"ˋ",back:{zh:"抱怨",zhBpmf:["ㄅ","ㄠˋ","ㄩ","ㄢˋ"]}}
+  ]},
+  { front: ["ㄅ","ㄢ"], tones: [
+      {tone:"",back:{zh:"班級",zhBpmf:["ㄅ","ㄢ","ㄐ","ㄧˊ"]}},
+      {tone:"ˊ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˇ",back:{zh:"板擦",zhBpmf:["ㄅ","ㄢˇ","ㄘ","ㄚ"]}},
+      {tone:"ˋ",back:{zh:"辦法",zhBpmf:["ㄅ","ㄢˋ","ㄈ","ㄚˇ"]}}
+  ]},
+  { front: ["ㄅ","ㄣ"], tones: [
+      {tone:"",back:{zh:"奔跑",zhBpmf:["ㄅ","ㄣ","ㄆ","ㄠˇ"]}},
+      {tone:"ˊ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˇ",back:{zh:"本來",zhBpmf:["ㄅ","ㄣˇ","ㄌ","ㄞˊ"]}},
+      {tone:"ˋ",back:{zh:"笨拙",zhBpmf:["ㄅ","ㄣˋ","ㄓ","ㄨ","ㄛˊ"]}}
+  ]},
+  { front: ["ㄅ","ㄤ"], tones: [
+      {tone:"",back:{zh:"幫忙",zhBpmf:["ㄅ","ㄤ","ㄇ","ㄤˊ"]}},
+      {tone:"ˊ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˇ",back:{zh:"綁住",zhBpmf:["ㄅ","ㄤˇ","ㄓ","ㄨˋ"]}},
+      {tone:"ˋ",back:{zh:"棒球",zhBpmf:["ㄅ","ㄤˋ","ㄑ","ㄧ","ㄡˊ"]}}
+  ]},
+  { front: ["ㄅ","ㄥ"], tones: [
+      {tone:"",back:{zh:"繃帶",zhBpmf:["ㄅ","ㄥ","ㄉ","ㄞˋ"]}},
+      {tone:"ˊ",back:{zh:"甭想",zhBpmf:["ㄅ","ㄥˊ","ㄒ","ㄧ","ㄤˇ"]}},
+      {tone:"ˇ",back:{zh:"繃著",zhBpmf:["ㄅ","ㄥˇ","˙","ㄓ","ㄜ"]}},
+      {tone:"ˋ",back:{zh:"蹦跳",zhBpmf:["ㄅ","ㄥˋ","ㄊ","ㄧ","ㄠˋ"]}}
+  ]},
+  { front: ["ㄅ","ㄧ","ㄝ"], tones: [
+      {tone:"",back:{zh:"憋尿",zhBpmf:["ㄅ","ㄧ","ㄝ","ㄋ","ㄧ","ㄠˋ"]}},
+      {tone:"ˊ",back:{zh:"別離",zhBpmf:["ㄅ","ㄧ","ㄝˊ","ㄌ","ㄧˊ"]}},
+      {tone:"ˇ",back:{zh:"乾癟",zhBpmf:["ㄍ","ㄢ","ㄅ","ㄧ","ㄝˇ"]}},
+      {tone:"ˋ",back:{zh:"彆扭",zhBpmf:["ㄅ","ㄧ","ㄝˋ","ㄋ","ㄧ","ㄡˇ"]}}
+  ]},
+  { front: ["ㄅ","ㄧ","ㄠ"], tones: [
+      {tone:"",back:{zh:"飆車",zhBpmf:["ㄅ","ㄧ","ㄠ","ㄔ","ㄜ"]}},
+      {tone:"ˊ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˇ",back:{zh:"表達",zhBpmf:["ㄅ","ㄧ","ㄠˇ","ㄉ","ㄚˊ"]}},
+      {tone:"ˋ",back:{zh:"魚鰾",zhBpmf:["ㄩˊ","ㄅ","ㄧ","ㄠˋ"]}}
+  ]},
+  { front: ["ㄅ","ㄧ","ㄢ"], tones: [
+      {tone:"",back:{zh:"蝙蝠",zhBpmf:["ㄅ","ㄧ","ㄢ","ㄈ","ㄨˊ"]}},
+      {tone:"ˊ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˇ",back:{zh:"扁平",zhBpmf:["ㄅ","ㄧ","ㄢˇ","ㄆ","ㄧ","ㄥˊ"]}},
+      {tone:"ˋ",back:{zh:"變化",zhBpmf:["ㄅ","ㄧ","ㄢˋ","ㄏ","ㄨ","ㄚˋ"]}}
+  ]},
+  { front: ["ㄅ","ㄧ","ㄣ"], tones: [
+      {tone:"",back:{zh:"繽紛",zhBpmf:["ㄅ","ㄧ","ㄣ","ㄈ","ㄣ"]}},
+      {tone:"ˊ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˇ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˋ",back:{zh:"鬢腳",zhBpmf:["ㄅ","ㄧ","ㄣˋ","ㄐ","ㄧ","ㄠˇ"]}}
+  ]},
+  { front: ["ㄅ","ㄧ","ㄥ"], tones: [
+      {tone:"",back:{zh:"冰雪",zhBpmf:["ㄅ","ㄧ","ㄥ","ㄒ","ㄩ","ㄝˇ"]}},
+      {tone:"ˊ",back:{zh:"XX",zhBpmf:[""]}},
+      {tone:"ˇ",back:{zh:"餅乾",zhBpmf:["ㄅ","ㄧ","ㄥˇ","ㄍ","ㄢ"]}},
+      {tone:"ˋ",back:{zh:"病毒",zhBpmf:["ㄅ","ㄧ","ㄥˋ","ㄉ","ㄨˊ"]}}
   ]}
 ];
 
-const container = document.getElementById("cards");
+const wrapper = document.getElementById("wrapper");
 
 data.forEach(item => {
+  const row = document.createElement("div");
+  row.className = "row";
+
+  const vowelBubble = document.createElement("div");
+  vowelBubble.className = "vowel-bubble";
+  vowelBubble.textContent = item.front.slice(1).join('');
+  row.appendChild(vowelBubble);
+
+  const grid = document.createElement("div");
+  grid.className = "grid";
+
   item.tones.forEach(t => {
     const card = document.createElement("div");
     card.className = "card";
@@ -234,13 +347,6 @@ data.forEach(item => {
     front.className = "front";
     const bpmfFront = document.createElement("div");
     bpmfFront.className = "zhuyin-part";
-
-    if(t.tone === "˙"){
-      const dot = document.createElement("span");
-      dot.className = "zhuyin-dot";
-      dot.textContent = t.tone;
-      bpmfFront.appendChild(dot);
-    }
 
     item.front.forEach((s, idx) => {
       const char = document.createElement("span");
@@ -260,8 +366,8 @@ data.forEach(item => {
     const back = document.createElement("div");
     back.className = "back";
 
-    if(t.back){
-      back.classList.add("success"); // 有對應發音
+    if(t.back && t.back.zh && t.back.zh !== "XX"){
+      back.classList.add("success"); 
       const backContent = document.createElement("div");
       backContent.className = "back-content";
 
@@ -276,7 +382,7 @@ data.forEach(item => {
       const bpmfBack = document.createElement("div");
       bpmfBack.className = "zhuyin-part";
 
-      t.back.zhBpmf.forEach((s, idx) => {
+      t.back.zhBpmf.forEach((s) => {
         const char = document.createElement("span");
         char.className = "zhuyin-glyph";
         const m = s.match(/^(.)([ˊˇˋ˙]?)$/);
@@ -305,8 +411,8 @@ data.forEach(item => {
       backContent.appendChild(bpmfBack);
       back.appendChild(backContent);
 
-    }else{
-      back.classList.add("fail"); // 沒對應發音
+    } else {
+      back.classList.add("empty"); 
       back.innerHTML = `<div class="fail">❌</div>`;
     }
 
@@ -316,11 +422,14 @@ data.forEach(item => {
 
     card.addEventListener("click", ()=> {
       card.classList.toggle("flipped");
-      if(t.back) speak(t.back.zh); 
+      if(t.back && t.back.zh && t.back.zh !== "XX") speak(t.back.zh); 
     });
 
-    container.appendChild(card);
+    grid.appendChild(card);
   });
+
+  row.appendChild(grid);
+  wrapper.appendChild(row);
 });
 </script>
 </body>
