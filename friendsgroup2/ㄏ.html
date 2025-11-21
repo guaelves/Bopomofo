@@ -176,7 +176,7 @@ h1 {
 </style>
 </head>
 <body>
-<h1>ㄊ  拼音練習</h1>
+<h1>ㄏ  拼音練習</h1>
 
 <div class="wrapper" id="wrapper"></div>
 
@@ -220,164 +220,163 @@ function speak(text){
 window.onload = ()=>{ initAudio(); setupSpeechSynthesis(); };
 
 // ---------------- 卡片生成 ----------------
-// ㄊ
-//"ㄧ", "ㄨ", "ㄚ", "ㄜ", "ㄞ", "ㄟ", "ㄠ", "ㄡ", "ㄢ", "ㄤ", "ㄥ",
-  "ㄧㄝ", "ㄧㄠ", "ㄧㄡ", "ㄧㄢ", "ㄧㄥ", 
-  "ㄨㄛ", "ㄨㄟ", "ㄨㄢ", "ㄨㄣ", "ㄨㄥ"
+//ㄏ
+//"ㄨ", "ㄚ", "ㄜ", "ㄞ", "ㄟ", "ㄠ", "ㄡ", "ㄢ", "ㄣ", "ㄤ", "ㄥ",
+  "ㄨㄚ", "ㄨㄛ", "ㄨㄞ", "ㄨㄟ", "ㄨㄢ", "ㄨㄣ", "ㄨㄤ", "ㄨㄥ"
+
 
 
 const data = [
-
-  // ㄊ + ㄧ 
-  { front:["ㄊ","ㄧ"], tones:[
-    { tone:"",  back:{ zh:"踢球", zhBpmf:["ㄊ","ㄧ","ㄑ","ㄧ","ㄡˊ"] }},
-    { tone:"ˊ", back:{ zh:"提供", zhBpmf:["ㄊ","ㄧˊ","ㄍ","ㄨ","ㄥ"] }},
-    { tone:"ˇ", back:{ zh:"體會", zhBpmf:["ㄊ","ㄧˇ","ㄏ","ㄨ","ㄟˋ"] }},
-    { tone:"ˋ", back:{ zh:"替代", zhBpmf:["ㄊ","ㄧˋ","ㄉ","ㄞˋ"] }}
+  // ㄏ + ㄨ
+  { front:["ㄏ","ㄨ"], tones:[ 
+    { tone:"",  back:{ zh:"湖水", zhBpmf:["ㄏㄨˊ","ㄕㄨㄟˇ"] }},
+    { tone:"ˊ", back:{ zh:"胡說", zhBpmf:["ㄏㄨˊ","ㄕㄨㄛ"] }},
+    { tone:"ˇ", back:{ zh:"虎口", zhBpmf:["ㄏㄨˇ","ㄎㄡˇ"] }},
+    { tone:"ˋ", back:{ zh:"護理", zhBpmf:["ㄏㄨˋ","ㄌㄧˇ"] }}
   ]},
 
-  // ㄊ + ㄨ
-  { front:["ㄊ","ㄨ"], tones:[
-    { tone:"",  back:{ zh:"突然", zhBpmf:["ㄊ","ㄨ","ㄖ","ㄢˊ"] }},
-    { tone:"ˊ", back:{ zh:"圖案", zhBpmf:["ㄊ","ㄨˊ","ㄢˋ"] }},
-    { tone:"ˇ", back:{ zh:"土壤", zhBpmf:["ㄊ","ㄨˇ","ㄖ","ㄤˇ"] }},
-    { tone:"ˋ", back:{ zh:"兔子", zhBpmf:["ㄊ","ㄨˋ","˙","ㄗ"] }}
+  // ㄏ + ㄚ
+  { front:["ㄏ","ㄚ"], tones:[
+    { tone:"",  back:{ zh:"哈欠", zhBpmf:["ㄏㄚˉ","ㄑㄧㄢˋ"] }},
+    { tone:"ˊ", back:{ zh:"蛤蟆", zhBpmf:["ㄏㄚˊ","ㄇㄚˊ"] }},
+    { tone:"ˇ", back:{ zh:"哈囉", zhBpmf:["ㄏㄚˉ","ㄌㄨㄛˊ"] }},
+    { tone:"ˋ", back:{ zh:"哈爾", zhBpmf:["ㄏㄚˉ","ㄦˇ"] }}
   ]},
 
-  // ㄊ + ㄚ
-  { front:["ㄊ","ㄚ"], tones:[
-    { tone:"",  back:{ zh:"他們", zhBpmf:["ㄊ","ㄚ","˙","ㄇ","ㄣ"] }},
-    { tone:"ˊ", back:{ zh:"", zhBpmf:[] }},
-    { tone:"ˇ", back:{ zh:"塔樓", zhBpmf:["ㄊ","ㄚˇ","ㄌ","ㄡˊ"] }},
-    { tone:"ˋ", back:{ zh:"踏步", zhBpmf:["ㄊ","ㄚˋ","ㄅ","ㄨˋ"] }}
+  // ㄏ + ㄜ
+  { front:["ㄏ","ㄜ"], tones:[
+    { tone:"",  back:{ zh:"河流", zhBpmf:["ㄏㄜˊ","ㄌㄧㄡˊ"] }},
+    { tone:"ˊ", back:{ zh:"和氣", zhBpmf:["ㄏㄜˊ","ㄑㄧˋ"] }},
+    { tone:"ˇ", back:{ zh:"核對", zhBpmf:["ㄏㄜˊ","ㄉㄨㄟˋ"] }},
+    { tone:"ˋ", back:{ zh:"賀卡", zhBpmf:["ㄏㄜˋ","ㄎㄚˇ"] }}
   ]},
 
-  // ㄊ + ㄜ
-  { front:["ㄊ","ㄜ"], tones:[
-    { tone:"",  back:{ zh:"", zhBpmf:[] }},
-    { tone:"ˊ", back:{ zh:"", zhBpmf:[] }},
-    { tone:"ˇ", back:{ zh:"", zhBpmf:[] }},
-    { tone:"ˋ", back:{ zh:"特地", zhBpmf:["ㄊ","ㄜˋ","ㄉ","ㄧˋ"] }}
+  // ㄏ + ㄞ
+  { front:["ㄏ","ㄞ"], tones:[
+    { tone:"",  back:{ zh:"海洋", zhBpmf:["ㄏㄞˇ","ㄧㄤˊ"] }},
+    { tone:"ˊ", back:{ zh:"孩童", zhBpmf:["ㄏㄞˊ","ㄊㄨㄥˊ"] }},
+    { tone:"ˇ", back:{ zh:"海口", zhBpmf:["ㄏㄞˇ","ㄎㄡˇ"] }},
+    { tone:"ˋ", back:{ zh:"害怕", zhBpmf:["ㄏㄞˋ","ㄆㄚˋ"] }}
   ]},
 
-  // ㄊ + ㄞ
-  { front:["ㄊ","ㄞ"], tones:[
-    { tone:"",  back:{ zh:"胎兒", zhBpmf:["ㄊ","ㄞ","ㄦˊ"] }},
-    { tone:"ˊ", back:{ zh:"抬頭", zhBpmf:["ㄊ","ㄞˊ","ㄊ","ㄡˊ"] }},
-    { tone:"ˇ", back:{ zh:"", zhBpmf:[] }},
-    { tone:"ˋ", back:{ zh:"態度", zhBpmf:["ㄊ","ㄞˋ","ㄉ","ㄨˋ"] }}
+  // ㄏ + ㄟ
+  { front:["ㄏ","ㄟ"], tones:[
+    { tone:"",  back:{ zh:"黑板", zhBpmf:["ㄏㄟˉ","ㄅㄢˇ"] }},
+    { tone:"ˊ", back:{ zh:"黑糖", zhBpmf:["ㄏㄟˉ","ㄊㄤˊ"] }},
+    { tone:"ˇ", back:{ zh:"黑馬", zhBpmf:["ㄏㄟˉ","ㄇㄚˇ"] }},
+    { tone:"ˋ", back:{ zh:"嘿嘿", zhBpmf:["ㄏㄟˉ","ㄏㄟˉ"] }}
   ]},
 
-  // ㄊ + ㄠ
-  { front:["ㄊ","ㄠ"], tones:[
-    { tone:"",  back:{ zh:"掏錢", zhBpmf:["ㄊ","ㄠ","ㄑ","ㄧ","ㄢˊ"] }},
-    { tone:"ˊ", back:{ zh:"陶器", zhBpmf:["ㄊ","ㄠˊ","ㄑ","ㄧˋ"] }},
-    { tone:"ˇ", back:{ zh:"討論", zhBpmf:["ㄊ","ㄠˇ","ㄌ","ㄨ","ㄣˋ"] }},
-    { tone:"ˋ", back:{ zh:"套裝", zhBpmf:["ㄊ","ㄠˋ","ㄓ","ㄨ","ㄤ"] }}
+  // ㄏ + ㄠ
+  { front:["ㄏ","ㄠ"], tones:[
+    { tone:"",  back:{ zh:"好處", zhBpmf:["ㄏㄠˇ","ㄔㄨˋ"] }},
+    { tone:"ˊ", back:{ zh:"毫無", zhBpmf:["ㄏㄠˊ","ㄨˊ"] }},
+    { tone:"ˇ", back:{ zh:"好奇", zhBpmf:["ㄏㄠˋ","ㄑㄧˊ"] }},
+    { tone:"ˋ", back:{ zh:"號碼", zhBpmf:["ㄏㄠˋ","ㄇㄚˇ"] }}
   ]},
 
-  // ㄊ + ㄡ
-  { front:["ㄊ","ㄡ"], tones:[
-    { tone:"",  back:{ zh:"偷笑", zhBpmf:["ㄊ","ㄡ","ㄒ","ㄧ","ㄠˋ"] }},
-    { tone:"ˊ", back:{ zh:"投手", zhBpmf:["ㄊ","ㄡˊ","ㄕ","ㄡˇ"] }},
-    { tone:"ˇ", back:{ zh:"", zhBpmf:[] }}, 
-    { tone:"ˋ", back:{ zh:"透氣", zhBpmf:["ㄊ","ㄡˋ","ㄑ","ㄧˋ"] }}
+  // ㄏ + ㄡ
+  { front:["ㄏ","ㄡ"], tones:[
+    { tone:"",  back:{ zh:"後面", zhBpmf:["ㄏㄡˋ","ㄇㄧㄢˋ"] }},
+    { tone:"ˊ", back:{ zh:"喉嚨", zhBpmf:["ㄏㄡˊ","ㄌㄨㄥˊ"] }},
+    { tone:"ˇ", back:{ zh:"厚道", zhBpmf:["ㄏㄡˋ","ㄉㄠˋ"] }},
+    { tone:"ˋ", back:{ zh:"候選", zhBpmf:["ㄏㄡˋ","ㄒㄩㄢˇ"] }}
   ]},
 
-  // ㄊ + ㄢ
-  { front:["ㄊ","ㄢ"], tones:[
-    { tone:"",  back:{ zh:"攤位", zhBpmf:["ㄊ","ㄢ","ㄨ","ㄟˋ"] }},
-    { tone:"ˊ", back:{ zh:"彈琴", zhBpmf:["ㄊ","ㄢˊ","ㄑ","ㄧ","ㄣˊ"] }},
-    { tone:"ˇ", back:{ zh:"坦白", zhBpmf:["ㄊ","ㄢˇ","ㄅ","ㄞˊ"] }},
-    { tone:"ˋ", back:{ zh:"探望", zhBpmf:["ㄊ","ㄢˋ","ㄨ","ㄤˋ"] }}
+  // ㄏ + ㄢ
+  { front:["ㄏ","ㄢ"], tones:[
+    { tone:"",  back:{ zh:"寒風", zhBpmf:["ㄏㄢˊ","ㄈㄥ"] }},
+    { tone:"ˊ", back:{ zh:"含笑", zhBpmf:["ㄏㄢˊ","ㄒㄧㄠˋ"] }},
+    { tone:"ˇ", back:{ zh:"喊叫", zhBpmf:["ㄏㄢˇ","ㄐㄧㄠˋ"] }},
+    { tone:"ˋ", back:{ zh:"旱災", zhBpmf:["ㄏㄢˋ","ㄗㄞ"] }}
   ]},
 
-  // ㄊ + ㄤ
-  { front:["ㄊ","ㄤ"], tones:[
-    { tone:"",  back:{ zh:"湯包", zhBpmf:["ㄊ","ㄤ","ㄅ","ㄠ"] }},
-    { tone:"ˊ", back:{ zh:"糖果", zhBpmf:["ㄊ","ㄤˊ","ㄍ","ㄨ","ㄛˇ"] }},
-    { tone:"ˇ", back:{ zh:"躺下", zhBpmf:["ㄊ","ㄤˇ","ㄒ","ㄧ","ㄚˋ"] }},
-    { tone:"ˋ", back:{ zh:"燙傷", zhBpmf:["ㄊ","ㄤˋ","ㄕ","ㄤ"] }}
+  // ㄏ + ㄣ
+  { front:["ㄏ","ㄣ"], tones:[
+    { tone:"",  back:{ zh:"很少", zhBpmf:["ㄏㄣˇ","ㄕㄠˇ"] }},
+    { tone:"ˊ", back:{ zh:"恨意", zhBpmf:["ㄏㄣˋ","ㄧˋ"] }},
+    { tone:"ˇ", back:{ zh:"狠心", zhBpmf:["ㄏㄣˇ","ㄒㄧㄣ"] }},
+    { tone:"ˋ", back:{ zh:"痕跡", zhBpmf:["ㄏㄣˊ","ㄐㄧˋ"] }}
   ]},
 
-  // ㄊ + ㄥ
-  { front:["ㄊ","ㄥ"], tones:[
-    { tone:"",  back:{ zh:"", zhBpmf:[] }}, 
-    { tone:"ˊ", back:{ zh:"騰空", zhBpmf:["ㄊ","ㄥˊ","ㄎ","ㄨ","ㄥ"] }},
-    { tone:"ˇ", back:{ zh:"", zhBpmf:[] }},
-    { tone:"ˋ", back:{ zh:"", zhBpmf:[] }}
+  // ㄏ + ㄤ
+  { front:["ㄏ","ㄤ"], tones:[
+    { tone:"",  back:{ zh:"航班", zhBpmf:["ㄏㄤˊ","ㄅㄢ"] }},
+    { tone:"ˊ", back:{ zh:"行家", zhBpmf:["ㄏㄤˊ","ㄐㄧㄚ"] }},
+    { tone:"ˇ", back:{ zh:"巷弄", zhBpmf:["ㄏㄤˋ","ㄋㄨㄥˋ"] }},
+    { tone:"ˋ", back:{ zh:"夯實", zhBpmf:["ㄏㄤˉ","ㄕˊ"] }}
   ]},
 
-  // ㄊ + ㄧㄝ
-  { front:["ㄊ","ㄧ","ㄝ"], tones:[
-    { tone:"",  back:{ zh:"貼紙", zhBpmf:["ㄊ","ㄧ","ㄝ","ㄓˇ"] }},
-    { tone:"ˊ", back:{ zh:"", zhBpmf:[] }},
-    { tone:"ˇ", back:{ zh:"鐵馬", zhBpmf:["ㄊ","ㄧ","ㄝˇ","ㄇ","ㄚˇ"] }},
-    { tone:"ˋ", back:{ zh:"饕餮", zhBpmf:["ㄊ","ㄠ","ㄊ","ㄧ","ㄝˋ"] }}
+  // ㄏ + ㄥ
+  { front:["ㄏ","ㄥ"], tones:[
+    { tone:"",  back:{ zh:"橫幅", zhBpmf:["ㄏㄥˊ","ㄈㄨˊ"] }},
+    { tone:"ˊ", back:{ zh:"恒溫", zhBpmf:["ㄏㄥˊ","ㄨㄣ"] }},
+    { tone:"ˇ", back:{ zh:"哼歌", zhBpmf:["ㄏㄥˉ","ㄍㄜ"] }},
+    { tone:"ˋ", back:{ zh:"狠話", zhBpmf:["ㄏㄥˇ","ㄏㄨㄚˋ"] }}
   ]},
 
-  // ㄊ + ㄧㄠ
-  { front:["ㄊ","ㄧ","ㄠ"], tones:[
-    { tone:"",  back:{ zh:"挑選", zhBpmf:["ㄊ","ㄧ","ㄠ","ㄒ","ㄩ","ㄢˇ"] }},
-    { tone:"ˊ", back:{ zh:"條件", zhBpmf:["ㄊ","ㄧ","ㄠˊ","ㄐ","ㄧ","ㄢˋ"] }},
-    { tone:"ˇ", back:{ zh:"窈窕", zhBpmf:["ㄧ","ㄠˇ","ㄊ","ㄧ","ㄠˇ"] }}, 
-    { tone:"ˋ", back:{ zh:"跳舞", zhBpmf:["ㄊ","ㄧ","ㄠˋ","ㄨˇ"] }}
+  // ㄏ + ㄨㄚ
+  { front:["ㄏ","ㄨ","ㄚ"], tones:[
+    { tone:"",  back:{ zh:"花朵", zhBpmf:["ㄏㄨㄚˉ","ㄉㄨㄛˇ"] }},
+    { tone:"ˊ", back:{ zh:"華麗", zhBpmf:["ㄏㄨㄚˊ","ㄌㄧˋ"] }},
+    { tone:"ˇ", back:{ zh:"滑倒", zhBpmf:["ㄏㄨㄚˊ","ㄉㄠˇ"] }},
+    { tone:"ˋ", back:{ zh:"話題", zhBpmf:["ㄏㄨㄚˋ","ㄊㄧˊ"] }}
   ]},
 
-  // ㄊ + ㄧㄢ 
-  { front:["ㄊ","ㄧ","ㄢ"], tones:[
-    { tone:"",  back:{ zh:"天氣", zhBpmf:["ㄊ","ㄧ","ㄢ","ㄑ","ㄧˋ"] }},
-    { tone:"ˊ", back:{ zh:"田地", zhBpmf:["ㄊ","ㄧ","ㄢˊ","ㄉ","ㄧˋ"] }},
-    { tone:"ˇ", back:{ zh:"舔舌", zhBpmf:["ㄊ","ㄧ","ㄢˇ","ㄕ","ㄜˊ"] }},
-    { tone:"ˋ", back:{ zh:"", zhBpmf:[] }} 
+  // ㄏ + ㄨㄛ
+  { front:["ㄏ","ㄨ","ㄛ"], tones:[
+    { tone:"",  back:{ zh:"活力", zhBpmf:["ㄏㄨㄛˊ","ㄌㄧˋ"] }},
+    { tone:"ˊ", back:{ zh:"活動", zhBpmf:["ㄏㄨㄛˊ","ㄉㄨㄥˋ"] }},
+    { tone:"ˇ", back:{ zh:"夥伴", zhBpmf:["ㄏㄨㄛˇ","ㄅㄢˋ"] }},
+    { tone:"ˋ", back:{ zh:"獲得", zhBpmf:["ㄏㄨㄛˋ","ㄉㄜˊ"] }}
   ]},
 
-  // ㄊ + ㄧㄥ
-  { front:["ㄊ","ㄧ","ㄥ"], tones:[
-    { tone:"",  back:{ zh:"聽說", zhBpmf:["ㄊ","ㄧ","ㄥ","ㄕ","ㄨ","ㄛ"] }},
-    { tone:"ˊ", back:{ zh:"停車", zhBpmf:["ㄊ","ㄧ","ㄥˊ","ㄔ","ㄜ"] }},
-    { tone:"ˇ", back:{ zh:"挺好", zhBpmf:["ㄊ","ㄧ","ㄥˇ","ㄏ","ㄠˇ"] }},
-    { tone:"ˋ", back:{ zh:"聽任", zhBpmf:["ㄊ","ㄧ","ㄥˋ","ㄖ","ㄣˋ"] }} 
+  // ㄏ + ㄨㄞ
+  { front:["ㄏ","ㄨ","ㄞ"], tones:[
+    { tone:"",  back:{ zh:"懷疑", zhBpmf:["ㄏㄨㄞˊ","ㄧˊ"] }},
+    { tone:"ˊ", back:{ zh:"壞人", zhBpmf:["ㄏㄨㄞˋ","ㄖㄣˊ"] }},
+    { tone:"ˇ", back:{ zh:"懷古", zhBpmf:["ㄏㄨㄞˊ","ㄍㄨˇ"] }},
+    { tone:"ˋ", back:{ zh:"壞掉", zhBpmf:["ㄏㄨㄞˋ","ㄉㄧㄠˋ"] }}
   ]},
 
-  // ㄊ + ㄨㄛ
-  { front:["ㄊ","ㄨ","ㄛ"], tones:[
-    { tone:"",  back:{ zh:"拖鞋", zhBpmf:["ㄊ","ㄨ","ㄛ","ㄒ","ㄧ","ㄝˊ"] }},
-    { tone:"ˊ", back:{ zh:"駝背", zhBpmf:["ㄊ","ㄨ","ㄛˊ","ㄅ","ㄟˋ"] }},
-    { tone:"ˇ", back:{ zh:"妥善", zhBpmf:["ㄊ","ㄨ","ㄛˇ","ㄕ","ㄢˋ"] }},
-    { tone:"ˋ", back:{ zh:"拓展", zhBpmf:["ㄊ","ㄨ","ㄛˋ","ㄓ","ㄢˇ"] }}
+  // ㄏ + ㄨㄟ
+  { front:["ㄏ","ㄨ","ㄟ"], tones:[
+    { tone:"",  back:{ zh:"灰塵", zhBpmf:["ㄏㄨㄟˉ","ㄔㄣˊ"] }},
+    { tone:"ˊ", back:{ zh:"回家", zhBpmf:["ㄏㄨㄟˊ","ㄐㄧㄚ"] }},
+    { tone:"ˇ", back:{ zh:"悔改", zhBpmf:["ㄏㄨㄟˇ","ㄍㄞˇ"] }},
+    { tone:"ˋ", back:{ zh:"會議", zhBpmf:["ㄏㄨㄟˋ","ㄧˋ"] }}
   ]},
 
-  // ㄊ + ㄨㄟ
-  { front:["ㄊ","ㄨ","ㄟ"], tones:[
-    { tone:"",  back:{ zh:"推開", zhBpmf:["ㄊ","ㄨ","ㄟ","ㄎ","ㄞ"] }},
-    { tone:"ˊ", back:{ zh:"頹廢", zhBpmf:["ㄊ","ㄨ","ㄟˊ","ㄈ","ㄟˋ"] }}, 
-    { tone:"ˇ", back:{ zh:"腿部", zhBpmf:["ㄊ","ㄨ","ㄟˇ","ㄅ","ㄨˋ"] }},
-    { tone:"ˋ", back:{ zh:"退休", zhBpmf:["ㄊ","ㄨ","ㄟˋ","ㄒ","ㄧ","ㄡ"] }}
+  // ㄏ + ㄨㄢ
+  { front:["ㄏ","ㄨ","ㄢ"], tones:[
+    { tone:"",  back:{ zh:"歡迎", zhBpmf:["ㄏㄨㄢˉ","ㄧㄥˊ"] }},
+    { tone:"ˊ", back:{ zh:"環境", zhBpmf:["ㄏㄨㄢˊ","ㄐㄧㄥˋ"] }},
+    { tone:"ˇ", back:{ zh:"緩慢", zhBpmf:["ㄏㄨㄢˇ","ㄇㄢˋ"] }},
+    { tone:"ˋ", back:{ zh:"換衣", zhBpmf:["ㄏㄨㄢˋ","ㄧ"] }}
   ]},
 
-  // ㄊ + ㄨㄢ
-  { front:["ㄊ","ㄨ","ㄢ"], tones:[
-    { tone:"",  back:{ zh:"湍急", zhBpmf:["ㄊ","ㄨ","ㄢ","ㄐ","ㄧˊ"] }},
-    { tone:"ˊ", back:{ zh:"團體", zhBpmf:["ㄊ","ㄨ","ㄢˊ","ㄊ","ㄧˇ"] }},
-    { tone:"ˇ", back:{ zh:"", zhBpmf:[] }}, 
-    { tone:"ˋ", back:{ zh:"彖辭", zhBpmf:["ㄊ","ㄨ","ㄢˋ","ㄘˊ"] }} 
+  // ㄏ + ㄨㄣ
+  { front:["ㄏ","ㄨ","ㄣ"], tones:[
+    { tone:"",  back:{ zh:"昏迷", zhBpmf:["ㄏㄨㄣˉ","ㄇㄧˊ"] }},
+    { tone:"ˊ", back:{ zh:"婚禮", zhBpmf:["ㄏㄨㄣˉ","ㄌㄧˇ"] }},
+    { tone:"ˇ", back:{ zh:"混亂", zhBpmf:["ㄏㄨㄣˋ","ㄌㄨㄢˋ"] }},
+    { tone:"ˋ", back:{ zh:"渾厚", zhBpmf:["ㄏㄨㄣˊ","ㄏㄡˋ"] }}
   ]},
 
-  // ㄊ + ㄨㄣ
-  { front:["ㄊ","ㄨ","ㄣ"], tones:[
-    { tone:"",  back:{ zh:"吞下", zhBpmf:["ㄊ","ㄨ","ㄣ","ㄒ","ㄧ","ㄚˋ"] }},
-    { tone:"ˊ", back:{ zh:"囤積", zhBpmf:["ㄊ","ㄨ","ㄣˊ","ㄐ","ㄧ"] }},
-    { tone:"ˇ", back:{ zh:"", zhBpmf:[] }}, 
-    { tone:"ˋ", back:{ zh:"褪色", zhBpmf:["ㄊ","ㄨ","ㄣˋ","ㄙ","ㄜˋ"] }}  
+  // ㄏ + ㄨㄤ
+  { front:["ㄏ","ㄨ","ㄤ"], tones:[
+    { tone:"",  back:{ zh:"黃金", zhBpmf:["ㄏㄨㄤˊ","ㄐㄧㄣ"] }},
+    { tone:"ˊ", back:{ zh:"皇帝", zhBpmf:["ㄏㄨㄤˊ","ㄉㄧˋ"] }},
+    { tone:"ˇ", back:{ zh:"晃動", zhBpmf:["ㄏㄨㄤˋ","ㄉㄨㄥˋ"] }},
+    { tone:"ˋ", back:{ zh:"謊言", zhBpmf:["ㄏㄨㄤˇ","ㄧㄢˊ"] }}
   ]},
 
-  // ㄊ + ㄨㄥ
-  { front:["ㄊ","ㄨ","ㄥ"], tones:[
-    { tone:"",  back:{ zh:"通過", zhBpmf:["ㄊ","ㄨ","ㄥ","ㄍ","ㄨ","ㄛˋ"] }},
-    { tone:"ˊ", back:{ zh:"同學", zhBpmf:["ㄊ","ㄨ","ㄥˊ","ㄒ","ㄩ","ㄝˊ"] }},
-    { tone:"ˇ", back:{ zh:"統計", zhBpmf:["ㄊ","ㄨ","ㄥˇ","ㄐ","ㄧˋ"] }},
-    { tone:"ˋ", back:{ zh:"痛苦", zhBpmf:["ㄊ","ㄨ","ㄥˋ","ㄎ","ㄨˇ"] }}
+  // ㄏ + ㄨㄥ
+  { front:["ㄏ","ㄨ","ㄥ"], tones:[
+    { tone:"",  back:{ zh:"紅色", zhBpmf:["ㄏㄨㄥˊ","ㄙㄜˋ"] }},
+    { tone:"ˊ", back:{ zh:"洪水", zhBpmf:["ㄏㄨㄥˊ","ㄕㄨㄟˇ"] }},
+    { tone:"ˇ", back:{ zh:"哄騙", zhBpmf:["ㄏㄨㄥˇ","ㄆㄧㄢˋ"] }},
+    { tone:"ˋ", back:{ zh:"轟動", zhBpmf:["ㄏㄨㄥˉ","ㄉㄨㄥˋ"] }}
   ]}
 ];
 

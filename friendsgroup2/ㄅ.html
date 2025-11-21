@@ -225,96 +225,112 @@ window.onload = ()=>{ initAudio(); setupSpeechSynthesis(); };
 
 
 const data = [
+  // ㄅ + ㄧ
   { front: ["ㄅ","ㄧ"], tones: [
       {tone:"", back:{zh:"逼真", zhBpmf:["ㄅ","ㄧ","ㄓ","ㄣ"]}},
       {tone:"ˊ", back:{zh:"鼻涕", zhBpmf:["ㄅ","ㄧˊ"," ㄊ","ㄧˋ"]}},
       {tone:"ˇ", back:{zh:"比賽", zhBpmf:["ㄅ","ㄧˇ","ㄙ","ㄞˋ"]}},
       {tone:"ˋ", back:{zh:"必須", zhBpmf:["ㄅ","ㄧˋ","ㄒ","ㄩ"]}}
   ]},
+  //ㄅ+ㄨ
   { front: ["ㄅ","ㄨ"], tones: [
       {tone:"",back:{zh:"逋欠",zhBpmf:["ㄅ","ㄨ","ㄑ","ㄧ","ㄢˋ"]}},
       {tone:"ˊ",back:{zh:"不會",zhBpmf:["ㄅ","ㄨˊ","ㄏ","ㄨ","ㄟˋ"]}},
       {tone:"ˇ",back:{zh:"補助",zhBpmf:["ㄅ","ㄨˇ","ㄓ","ㄨˋ"]}},
       {tone:"ˋ",back:{zh:"布置",zhBpmf:["ㄅ","ㄨˋ","ㄓˋ"]}}
   ]},
+  //ㄅㄚ
   { front: ["ㄅ","ㄚ"], tones: [
       {tone:"",back:{zh:"巴掌",zhBpmf:["ㄅ","ㄚ","ㄓ","ㄤˇ"]}},
       {tone:"ˊ",back:{zh:"拔河",zhBpmf:["ㄅ","ㄚˊ","ㄏ","ㄜˊ"]}},
       {tone:"ˇ",back:{zh:"把握",zhBpmf:["ㄅ","ㄚˇ","ㄨ","ㄛˋ"]}},
       {tone:"ˋ",back:{zh:"爸爸",zhBpmf:["ㄅ","ㄚˋ","˙","ㄅ","ㄚ"]}}
   ]},
+  //ㄅ+ㄛ
   { front: ["ㄅ","ㄛ"], tones: [
       {tone:"",back:{zh:"波浪",zhBpmf:["ㄅ","ㄛ","ㄌ","ㄤˋ"]}},
       {tone:"ˊ",back:{zh:"博愛",zhBpmf:["ㄅ","ㄛˊ","ㄞˋ"]}},
       {tone:"ˇ",back:{zh:"跛腳",zhBpmf:["ㄅ","ㄛˇ","ㄐ","ㄧ","ㄠˇ"]}},
       {tone:"ˋ",back:{zh:"播放",zhBpmf:["ㄅ","ㄛˋ","ㄈ","ㄤˋ"]}}
   ]},
+  //ㄅ+ㄞ
   { front: ["ㄅ","ㄞ"], tones: [
       {tone:"",back:{zh:"掰開",zhBpmf:["ㄅ","ㄞ","ㄎ","ㄞ"]}},
       {tone:"ˊ",back:{zh:"白天",zhBpmf:["ㄅ","ㄞˊ","ㄊ","ㄧ","ㄢ"]}},
       {tone:"ˇ",back:{zh:"擺放",zhBpmf:["ㄅ","ㄞˇ","ㄈ","ㄤˋ"]}},
       {tone:"ˋ",back:{zh:"敗退",zhBpmf:["ㄅ","ㄞˋ","ㄊ","ㄨ","ㄟˋ"]}}
   ]},
+  //ㄅ+ㄟ
   { front: ["ㄅ","ㄟ"], tones: [
       {tone:"",back:{zh:"悲傷",zhBpmf:["ㄅ","ㄟ","ㄕ","ㄤ"]}},
       {tone:"ˊ",back:{zh:"",zhBpmf:[]}},
       {tone:"ˇ",back:{zh:"北方",zhBpmf:["ㄅ","ㄟˇ","ㄈ","ㄤ"]}},
       {tone:"ˋ",back:{zh:"背後",zhBpmf:["ㄅ","ㄟˋ","ㄏ","ㄡˋ"]}}
   ]},
+  //ㄅ+ㄠ
   { front: ["ㄅ","ㄠ"], tones: [
       {tone:"",back:{zh:"包裝",zhBpmf:["ㄅ","ㄠ","ㄓ","ㄨ","ㄤ"]}},
       {tone:"ˊ",back:{zh:"冰雹",zhBpmf:["ㄅ","ㄧ","ㄥ","ㄅ","ㄠˊ"]}},
       {tone:"ˇ",back:{zh:"保護",zhBpmf:["ㄅ","ㄠˇ","ㄏ","ㄨˋ"]}},
       {tone:"ˋ",back:{zh:"抱怨",zhBpmf:["ㄅ","ㄠˋ","ㄩ","ㄢˋ"]}}
   ]},
+  //ㄅ+ㄢ
   { front: ["ㄅ","ㄢ"], tones: [
       {tone:"",back:{zh:"班級",zhBpmf:["ㄅ","ㄢ","ㄐ","ㄧˊ"]}},
       {tone:"ˊ",back:{zh:"XX",zhBpmf:[""]}},
       {tone:"ˇ",back:{zh:"板擦",zhBpmf:["ㄅ","ㄢˇ","ㄘ","ㄚ"]}},
       {tone:"ˋ",back:{zh:"辦法",zhBpmf:["ㄅ","ㄢˋ","ㄈ","ㄚˇ"]}}
   ]},
+  //ㄅ+ㄣ
   { front: ["ㄅ","ㄣ"], tones: [
       {tone:"",back:{zh:"奔跑",zhBpmf:["ㄅ","ㄣ","ㄆ","ㄠˇ"]}},
       {tone:"ˊ",back:{zh:"XX",zhBpmf:[""]}},
       {tone:"ˇ",back:{zh:"本來",zhBpmf:["ㄅ","ㄣˇ","ㄌ","ㄞˊ"]}},
       {tone:"ˋ",back:{zh:"笨拙",zhBpmf:["ㄅ","ㄣˋ","ㄓ","ㄨ","ㄛˊ"]}}
   ]},
+  //ㄅ+ㄤ
   { front: ["ㄅ","ㄤ"], tones: [
       {tone:"",back:{zh:"幫忙",zhBpmf:["ㄅ","ㄤ","ㄇ","ㄤˊ"]}},
       {tone:"ˊ",back:{zh:"",zhBpmf:[""]}},
       {tone:"ˇ",back:{zh:"綁住",zhBpmf:["ㄅ","ㄤˇ","ㄓ","ㄨˋ"]}},
       {tone:"ˋ",back:{zh:"棒球",zhBpmf:["ㄅ","ㄤˋ","ㄑ","ㄧ","ㄡˊ"]}}
   ]},
+  //ㄅ+ㄥ
   { front: ["ㄅ","ㄥ"], tones: [
       {tone:"",back:{zh:"繃帶",zhBpmf:["ㄅ","ㄥ","ㄉ","ㄞˋ"]}},
       {tone:"ˊ",back:{zh:"甭想",zhBpmf:["ㄅ","ㄥˊ","ㄒ","ㄧ","ㄤˇ"]}},
       {tone:"ˇ",back:{zh:"繃著",zhBpmf:["ㄅ","ㄥˇ","˙","ㄓ","ㄜ"]}},
       {tone:"ˋ",back:{zh:"蹦跳",zhBpmf:["ㄅ","ㄥˋ","ㄊ","ㄧ","ㄠˋ"]}}
   ]},
+  //ㄅ+ㄧㄝ
   { front: ["ㄅ","ㄧ","ㄝ"], tones: [
       {tone:"",back:{zh:"憋尿",zhBpmf:["ㄅ","ㄧ","ㄝ","ㄋ","ㄧ","ㄠˋ"]}},
       {tone:"ˊ",back:{zh:"別離",zhBpmf:["ㄅ","ㄧ","ㄝˊ","ㄌ","ㄧˊ"]}},
       {tone:"ˇ",back:{zh:"乾癟",zhBpmf:["ㄍ","ㄢ","ㄅ","ㄧ","ㄝˇ"]}},
       {tone:"ˋ",back:{zh:"彆扭",zhBpmf:["ㄅ","ㄧ","ㄝˋ","ㄋ","ㄧ","ㄡˇ"]}}
   ]},
+  //ㄅ+ㄧㄠ
   { front: ["ㄅ","ㄧ","ㄠ"], tones: [
       {tone:"",back:{zh:"飆車",zhBpmf:["ㄅ","ㄧ","ㄠ","ㄔ","ㄜ"]}},
       {tone:"ˊ",back:{zh:"",zhBpmf:[""]}},
       {tone:"ˇ",back:{zh:"表達",zhBpmf:["ㄅ","ㄧ","ㄠˇ","ㄉ","ㄚˊ"]}},
       {tone:"ˋ",back:{zh:"魚鰾",zhBpmf:["ㄩˊ","ㄅ","ㄧ","ㄠˋ"]}}
   ]},
+  //ㄅ+ㄧㄢ
   { front: ["ㄅ","ㄧ","ㄢ"], tones: [
       {tone:"",back:{zh:"蝙蝠",zhBpmf:["ㄅ","ㄧ","ㄢ","ㄈ","ㄨˊ"]}},
       {tone:"ˊ",back:{zh:"",zhBpmf:[""]}},
       {tone:"ˇ",back:{zh:"扁平",zhBpmf:["ㄅ","ㄧ","ㄢˇ","ㄆ","ㄧ","ㄥˊ"]}},
       {tone:"ˋ",back:{zh:"變化",zhBpmf:["ㄅ","ㄧ","ㄢˋ","ㄏ","ㄨ","ㄚˋ"]}}
   ]},
+  //ㄅ+ㄧㄣ
   { front: ["ㄅ","ㄧ","ㄣ"], tones: [
       {tone:"",back:{zh:"繽紛",zhBpmf:["ㄅ","ㄧ","ㄣ","ㄈ","ㄣ"]}},
       {tone:"ˊ",back:{zh:"",zhBpmf:[""]}},
       {tone:"ˇ",back:{zh:"",zhBpmf:[""]}},
       {tone:"ˋ",back:{zh:"鬢腳",zhBpmf:["ㄅ","ㄧ","ㄣˋ","ㄐ","ㄧ","ㄠˇ"]}}
   ]},
+  //ㄅ+ㄧㄥ
   { front: ["ㄅ","ㄧ","ㄥ"], tones: [
       {tone:"",back:{zh:"冰雪",zhBpmf:["ㄅ","ㄧ","ㄥ","ㄒ","ㄩ","ㄝˇ"]}},
       {tone:"ˊ",back:{zh:"",zhBpmf:[""]}},

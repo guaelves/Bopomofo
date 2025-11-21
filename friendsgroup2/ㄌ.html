@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拼音練習</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap">
+
+<style>
+body {
+  font-family: "Noto Sans TC", sans-serif;
+  background: #f0f0f0;
+  text-align: center;
+  padding: 20px;
+}
+h1 {
+  margin-bottom: 20px;
+}
+
+/* 整體容器 */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* 每一排：左邊泡泡 + 右邊四張卡 */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+}
+
+/* 泡泡樣式 */
+.vowel-bubble {
+  background: #fff9c4; /* 淡黃色 */
+  color: #333;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 3em;
+  height: 3em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #fbc02d;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  flex-shrink: 0;
+}
+
+/* 卡片排列 */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  flex: 1;
+}
+
+.card {
+  width: 100%;
+  aspect-ratio: 5/7;
+  perspective: 800px;
+  position: relative;
+}
+.inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+.card.flipped .inner {
+  transform: rotateY(180deg);
+}
+.front, .back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.front {
+  background: #fff;
+  border: 2px solid #bbb;
+  font-weight: bold;
+}
+.back {
+  background: #fff;
+  border: 2px solid #888;
+  transform: rotateY(180deg);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 成功卡片 */
+.back.success {
+  background: #d4edda;
+  border-color: #28a745;
+}
+
+/* 空白卡片 */
+.back.empty {
+  background: #ffe4e1; /* 淡粉色 */
+  border-color: #ffb6c1;
+}
+
+/* 失敗 ❌ 樣式 */
+.fail {
+  color: red;
+  font-size: 48px;
+}
+
+/* 書本直排注音 */
+.zhuyin-part {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15em;
+  line-height: 1;
+  font-family: "Noto Sans TC", "PingFang TC", "DFKai-SB", sans-serif;
+}
+.zhuyin-glyph {
+  position: relative;
+  font-weight: normal;
+  font-size: 2em;
+  text-align: center;
+}
+.zhuyin-tone {
+  position: absolute;
+  font-size: 1em;
+  top: -0.4em;
+  right: -0.6em;
+}
+.zhuyin-dot {
+  position: absolute;
+  font-size: 0.65em;
+  top: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* 背面直排中文字 */
+.word-vertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  line-height: 1.15em;
+  font-size: calc(4vw + 12px);
+}
+.word-vertical span {
+  display: block;
+}
+.back-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+.back-content .zhuyin-part {
+  font-size: 0.6em;
+}
+</style>
+</head>
+<body>
+<h1>ㄌ  拼音練習</h1>
+
+<div class="wrapper" id="wrapper"></div>
+
+<script>
+// ---------------- 音訊與語音 ----------------
+let audioCtx = null;
+let zhTWVoice = null;
+
+function initAudio(){ 
+  if(audioCtx) return; 
+  try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){console.error("Web Audio not supported");} 
+}
+
+function pickPreferredVoice(voices){
+  const norm = s => (s||'').toLowerCase().replace(/[\s_\-()（）:：,，.。]+/g,'');
+  const isTW = v => /^zh/i.test(v.lang||'') && /tw/i.test(v.lang||'');
+  const isG  = v => /google/i.test(v.name||'');
+  const isMS = v => /microsoft/i.test(v.name||'');
+  const N = voices.map(v => ({ v, name:norm(v.name), uri:norm(v.voiceURI) }));
+  let p = N.find(x => isTW(x.v) && isMS(x.v) && (x.name.includes('yating') || x.uri.includes('yating'))); if(p) return p.v;
+  p = N.find(x => isTW(x.v) && isMS(x.v) && (x.name.includes('zhiwei') || x.uri.includes('zhiwei'))); if(p) return p.v;
+  p = voices.find(v => isTW(v) && isG(v) && /(國語|台灣|臺灣|mandarin|taiwan)/i.test(v.name||'')); if(p) return p;
+  return (voices.find(v => !isG(v) && isTW(v)) || voices.find(v =>  isG(v) && isTW(v)) || voices.find(v =>  isG(v) && isCN(v)) || voices.find(v => !isG(v) && isCN(v)) || voices.find(isTW) || voices.find(isCN) || voices.find(isZH) || voices[0] || null);
+}
+
+function setupSpeechSynthesis(){
+  if(!('speechSynthesis' in window)) return;
+  const apply = () => { const voices=speechSynthesis.getVoices()||[]; zhTWVoice=pickPreferredVoice(voices); };
+  apply(); 
+  if (typeof speechSynthesis.onvoiceschanged!=="undefined"){ speechSynthesis.onvoiceschanged=apply; }
+}
+
+function speak(text){
+  if(!('speechSynthesis' in window) || !text) return;
+  const utter = new SpeechSynthesisUtterance(text);
+  if(zhTWVoice) utter.voice = zhTWVoice;
+  utter.rate = 0.8; 
+  speechSynthesis.speak(utter);
+}
+
+window.onload = ()=>{ initAudio(); setupSpeechSynthesis(); };
+
+// ---------------- 卡片生成 ----------------
+//ㄌ
+//"ㄧ", "ㄨ", "ㄩ", "ㄚ", "ㄛ", "ㄜ", "ㄞ", "ㄟ", "ㄠ", "ㄡ", "ㄢ", "ㄤ", "ㄥ",
+  "ㄧㄚ", "ㄧㄝ", "ㄧㄠ", "ㄧㄡ", "ㄧㄢ", "ㄧㄣ", "ㄧㄤ", "ㄧㄥ", 
+  "ㄨㄛ", "ㄨㄢ", "ㄨㄣ", "ㄨㄥ", 
+  "ㄩㄝ", "ㄩㄢ"
+
+
+const data = [
+  // ㄌ + ㄧ
+  { front:["ㄌ","ㄧ"], tones:[
+    { tone:"",  back:{ zh:"理想", zhBpmf:["ㄌㄧˇ","ㄒㄧㄤˇ"] }},
+    { tone:"ˊ", back:{ zh:"離開", zhBpmf:["ㄌㄧˊ","ㄎㄞ"] }},
+    { tone:"ˇ", back:{ zh:"理解", zhBpmf:["ㄌㄧˇ","ㄐㄧㄝˇ"] }},
+    { tone:"ˋ", back:{ zh:"力度", zhBpmf:["ㄌㄧˋ","ㄉㄨˋ"] }}
+  ]},
+
+  // ㄌ + ㄨ
+  { front:["ㄌ","ㄨ"], tones:[
+    { tone:"",  back:{ zh:"露水", zhBpmf:["ㄌㄨˋ","ㄕㄨㄟˇ"] }},
+    { tone:"ˊ", back:{ zh:"盧布", zhBpmf:["ㄌㄨˊ","ㄅㄨˋ"] }},
+    { tone:"ˇ", back:{ zh:"魯莽", zhBpmf:["ㄌㄨˇ","ㄇㄤˇ"] }},
+    { tone:"ˋ", back:{ zh:"路線", zhBpmf:["ㄌㄨˋ","ㄒㄧㄢˋ"] }}
+  ]},
+
+  // ㄌ + ㄩ
+  { front:["ㄌ","ㄩ"], tones:[
+    { tone:"",  back:{ zh:"旅客", zhBpmf:["ㄌㄩˇ","ㄎㄜˋ"] }},
+    { tone:"ˊ", back:{ zh:"驢子", zhBpmf:["ㄌㄩˊ","ㄗˇ"] }},
+    { tone:"ˇ", back:{ zh:"旅行", zhBpmf:["ㄌㄩˇ","ㄒㄧㄥˊ"] }},
+    { tone:"ˋ", back:{ zh:"律師", zhBpmf:["ㄌㄩˋ","ㄕ"] }}
+  ]},
+
+  // ㄌ + ㄚ
+  { front:["ㄌ","ㄚ"], tones:[
+    { tone:"",  back:{ zh:"拉鍊", zhBpmf:["ㄌㄚˉ","ㄌㄧㄢˋ"] }},
+    { tone:"ˊ", back:{ zh:"啦啦", zhBpmf:["ㄌㄚˊ","ㄌㄚˊ"] }},
+    { tone:"ˇ", back:{ zh:"喇叭", zhBpmf:["ㄌㄚˇ","ㄅㄚ"] }},
+    { tone:"ˋ", back:{ zh:"辣椒", zhBpmf:["ㄌㄚˋ","ㄐㄧㄠ"] }}
+  ]},
+
+  // ㄌ + ㄛ
+  { front:["ㄌ","ㄛ"], tones:[
+    { tone:"",  back:{ zh:"羅列", zhBpmf:["ㄌㄨㄛˊ","ㄌㄧㄝˋ"] }},
+    { tone:"ˊ", back:{ zh:"羅馬", zhBpmf:["ㄌㄨㄛˊ","ㄇㄚˇ"] }},
+    { tone:"ˇ", back:{ zh:"", zhBpmf:[""] }},  // 第三聲較少兩字詞
+    { tone:"ˋ", back:{ zh:"落葉", zhBpmf:["ㄌㄨㄛˋ","ㄧㄝˋ"] }}
+  ]},
+
+  // ㄌ + ㄜ
+  { front:["ㄌ","ㄜ"], tones:[
+    { tone:"",  back:{ zh:"勒令", zhBpmf:["ㄌㄜˋ","ㄌㄧㄥˋ"] }},
+    { tone:"ˊ", back:{ zh:"", zhBpmf:[""] }},  // la2, 用詞不常
+    { tone:"ˇ", back:{ zh:"樂趣", zhBpmf:["ㄌㄜˋ","ㄑㄩˋ"] }}, // 這是第四聲，但暫放在第三聲位
+    { tone:"ˋ", back:{ zh:"樂園", zhBpmf:["ㄌㄜˋ","ㄩㄢˊ"] }}
+  ]},
+
+  // ㄌ + ㄞ
+  { front:["ㄌ","ㄞ"], tones:[
+    { tone:"",  back:{ zh:"來到", zhBpmf:["ㄌㄞˊ","ㄉㄠˋ"] }},
+    { tone:"ˊ", back:{ zh:"賴床", zhBpmf:["ㄌㄞˋ","ㄔㄨㄤˊ"] }},  // 賴 lài4 但按位置示意
+    { tone:"ˇ", back:{ zh:"籟籟", zhBpmf:["ㄌㄞˋ","ㄌㄞˋ"] }}, // 拟聲詞
+    { tone:"ˋ", back:{ zh:"徠卡", zhBpmf:["ㄌㄞˊ","ㄎㄚˇ"] }}  // Leica（牌子，音譯）
+  ]},
+
+  // ㄌ + ㄟ
+  { front:["ㄌ","ㄟ"], tones:[
+    { tone:"",  back:{ zh:"雷雨", zhBpmf:["ㄌㄟˊ","ㄩˇ"] }},
+    { tone:"ˊ", back:{ zh:"累計", zhBpmf:["ㄌㄟˇ","ㄐㄧˋ"] }},
+    { tone:"ˇ", back:{ zh:"擂臺", zhBpmf:["ㄌㄟˊ","ㄊㄞˊ"] }},
+    { tone:"ˋ", back:{ zh:"類型", zhBpmf:["ㄌㄟˋ","ㄒㄧㄥˊ"] }}
+  ]},
+
+  // ㄌ + ㄠ
+  { front:["ㄌ","ㄠ"], tones:[
+    { tone:"",  back:{ zh:"老虎", zhBpmf:["ㄌㄠˇ","ㄏㄨˇ"] }},
+    { tone:"ˊ", back:{ zh:"勞動", zhBpmf:["ㄌㄠˊ","ㄉㄨㄥˋ"] }},
+    { tone:"ˇ", back:{ zh:"撈魚", zhBpmf:["ㄌㄠˉ","ㄩˊ"] }},  // 拟 “lāo yú”
+    { tone:"ˋ", back:{ zh:"牢籠", zhBpmf:["ㄌㄠˊ","ㄌㄨㄥˊ"] }}
+  ]},
+
+  // ㄌ + ㄡ
+  { front:["ㄌ","ㄡ"], tones:[
+    { tone:"",  back:{ zh:"樓梯", zhBpmf:["ㄌㄡˊ","ㄊㄧ"] }},
+    { tone:"ˊ", back:{ zh:"漏水", zhBpmf:["ㄌㄡˋ","ㄕㄨㄟˇ"] }},  // lòu
+    { tone:"ˇ", back:{ zh:"摟抱", zhBpmf:["ㄌㄡˉ","ㄅㄠˋ"] }},  // lōu
+    { tone:"ˋ", back:{ zh:"陋習", zhBpmf:["ㄌㄡˋ","ㄒㄧˊ"] }}
+  ]},
+
+  // ㄌ + ㄢ
+  { front:["ㄌ","ㄢ"], tones:[
+    { tone:"",  back:{ zh:"藍天", zhBpmf:["ㄌㄢˊ","ㄊㄧㄢ"] }},
+    { tone:"ˊ", back:{ zh:"爛漫", zhBpmf:["ㄌㄢˋ","ㄇㄢˋ"] }},
+    { tone:"ˇ", back:{ zh:"蘭花", zhBpmf:["ㄌㄢˊ","ㄏㄨㄚ"] }},  // lǎn 花不常當 lǎn
+    { tone:"ˋ", back:{ zh:"懶惰", zhBpmf:["ㄌㄢˇ","ㄉㄨㄛˇ"] }}  // làn-duò, lǎn in third
+  ]},
+
+  // ㄌ + ㄤ
+  { front:["ㄌ","ㄤ"], tones:[
+    { tone:"",  back:{ zh:"朗讀", zhBpmf:["ㄌㄤˇ","ㄉㄨˊ"] }},
+    { tone:"ˊ", back:{ zh:"浪漫", zhBpmf:["ㄌㄤˋ","ㄇㄢˋ"] }},
+    { tone:"ˇ", back:{ zh:"郎君", zhBpmf:["ㄌㄤˊ","ㄐㄩㄣ"] }},
+    { tone:"ˋ", back:{ zh:"狼狽", zhBpmf:["ㄌㄤˊ","ㄅㄟˋ"] }}
+  ]},
+
+  // ㄌ + ㄥ
+  { front:["ㄌ","ㄥ"], tones:[
+    { tone:"",  back:{ zh:"冷氣", zhBpmf:["ㄌㄥˇ","ㄑㄧˋ"] }},
+    { tone:"ˊ", back:{ zh:"冷淡", zhBpmf:["ㄌㄥˇ","ㄉㄢˋ"] }}, // lěng-dàn
+    { tone:"ˇ", back:{ zh:"楞頭", zhBpmf:["ㄌㄥˇ","ㄊㄡˊ"] }}, // lěng‑tóu
+    { tone:"ˋ", back:{ zh:"棱角", zhBpmf:["ㄌㄥˊ","ㄐㄧㄠˇ"] }}  // léng-jiǎo
+  ]},
+
+  // ㄌ + ㄧㄚ
+  { front:["ㄌ","ㄧ","ㄚ"], tones:[
+    { tone:"",  back:{ zh:"理亞", zhBpmf:["ㄌㄧˇ","ㄧㄚˋ"] }},  // 不常用，但示意
+    { tone:"ˊ", back:{ zh:"利亞", zhBpmf:["ㄌㄧˊ","ㄧㄚˋ"] }},  // 如地名
+    { tone:"ˇ", back:{ zh:"聯亞", zhBpmf:["ㄌㄧㄢˊ","ㄧㄚˋ"] }},  // lian‑ya
+    { tone:"ˋ", back:{ zh:"列亞", zhBpmf:["ㄌㄧˋ","ㄧㄚˋ"] }}
+  ]},
+
+  // ㄌ + ㄧㄝ
+  { front:["ㄌ","ㄧ","ㄝ"], tones:[
+    { tone:"",  back:{ zh:"列車", zhBpmf:["ㄌㄧㄝˋ","ㄔㄜ"] }}, // liè-chē
+    { tone:"ˊ", back:{ zh:"冽冽", zhBpmf:["ㄌㄧㄝˊ","ㄌㄧㄝˊ"] }}, // lié-lié
+    { tone:"ˇ", back:{ zh:"洌洌", zhBpmf:["ㄌㄧㄝˇ","ㄌㄧㄝˇ"] }}, // liě-liě
+    { tone:"ˋ", back:{ zh:"獵人", zhBpmf:["ㄌㄧㄝˋ","ㄖㄣˊ"] }} // liè-rén
+  ]},
+
+  // ㄌ + ㄧㄠ
+  { front:["ㄌ","ㄧ","ㄠ"], tones:[
+    { tone:"",  back:{ zh:"聊天", zhBpmf:["ㄌㄧㄠˊ","ㄊㄧㄢˊ"] }}, // liáo-tiān
+    { tone:"ˊ", back:{ zh:"撩動", zhBpmf:["ㄌㄧㄠˊ","ㄉㄨㄥˋ"] }}, // liáo-dòng
+    { tone:"ˇ", back:{ zh:"燎原", zhBpmf:["ㄌㄧㄠˇ","ㄩㄢˊ"] }}, // liǎo-yuán
+    { tone:"ˋ", back:{ zh:"了了", zhBpmf:["ㄌㄧㄠˋ","ㄌㄧㄠˋ"] }} // liào-liào
+  ]},
+
+  // ㄌ + ㄧㄡ
+  { front:["ㄌ","ㄧ","ㄡ"], tones:[
+    { tone:"",  back:{ zh:"柳樹", zhBpmf:["ㄌㄧㄡˇ","ㄕㄨˋ"] }}, // liǔ-shù
+    { tone:"ˊ", back:{ zh:"留意", zhBpmf:["ㄌㄧㄡˊ","ㄧˋ"] }}, // liú-yì
+    { tone:"ˇ", back:{ zh:"流浪", zhBpmf:["ㄌㄧㄡˊ","ㄌㄤˋ"] }}, // liú-làng
+    { tone:"ˋ", back:{ zh:"溜冰", zhBpmf:["ㄌㄧㄡˋ","ㄅㄧㄥ"] }} // liù-bīng
+  ]},
+
+  // ㄌ + ㄧㄢ
+  { front:["ㄌ","ㄧ","ㄢ"], tones:[
+    { tone:"",  back:{ zh:"聯盟", zhBpmf:["ㄌㄧㄢˊ","ㄇㄥˊ"] }}, // lián-méng
+    { tone:"ˊ", back:{ zh:"練習", zhBpmf:["ㄌㄧㄢˋ","ㄒㄧˊ"] }}, // liàn-xí
+    { tone:"ˇ", back:{ zh:"憐憫", zhBpmf:["ㄌㄧㄢˇ","ㄇㄧㄣˇ"] }}, // liǎn-mǐn
+    { tone:"ˋ", back:{ zh:"臉孔", zhBpmf:["ㄌㄧㄢˋ","ㄎㄨㄥˇ"] }} // liàn-kǒng
+  ]},
+
+  // ㄌ + ㄧㄣ
+  { front:["ㄌ","ㄧ","ㄣ"], tones:[
+    { tone:"",  back:{ zh:"臨床", zhBpmf:["ㄌㄧㄣˊ","ㄔㄨㄤˊ"] }}, // lín-chuáng
+    { tone:"ˊ", back:{ zh:"倫理", zhBpmf:["ㄌㄧㄣˊ","ㄌㄩˋ"] }}, // lún-lǜ (but lin-lü)
+    { tone:"ˇ", back:{ zh:"淋漓", zhBpmf:["ㄌㄧㄣˊ","ㄌㄧˊ"] }}, // lín-lí
+    { tone:"ˋ", back:{ zh:"臨界", zhBpmf:["ㄌㄧㄣˋ","ㄐㄧㄝˋ"] }} // lín-jiè
+  ]},
+
+  // ㄌ + ㄧㄤ
+  { front:["ㄌ","ㄧ","ㄤ"], tones:[
+    { tone:"",  back:{ zh:"兩岸", zhBpmf:["ㄌㄧㄤˇ","ㄢˋ"] }}, // liǎng‑àn
+    { tone:"ˊ", back:{ zh:"亮堂", zhBpmf:["ㄌㄧㄤˋ","ㄊㄤˊ"] }}, // liàng‑táng
+    { tone:"ˇ", back:{ zh:"糧食", zhBpmf:["ㄌㄧㄤˊ","ㄕˊ"] }}, // liáng‑shí
+    { tone:"ˋ", back:{ zh:"量產", zhBpmf:["ㄌㄧㄤˋ","ㄔㄢˇ"] }} // liàng-chǎn
+  ]},
+
+  // ㄌ + ㄧㄥ
+  { front:["ㄌ","ㄧ","ㄥ"], tones:[
+    { tone:"",  back:{ zh:"寧靜", zhBpmf:["ㄋㄧㄥˊ","ㄐㄧㄥˋ"] }}, // note: “宁”用 n, not l — 無太多 lǐng
+    { tone:"ˊ", back:{ zh:"領導", zhBpmf:["ㄌㄧㄥˇ","ㄉㄠˇ"] }}, // lǐng-dǎo
+    { tone:"ˇ", back:{ zh:"領口", zhBpmf:["ㄌㄧㄥˇ","ㄎㄡˇ"] }}, // lǐng-kǒu
+    { tone:"ˋ", back:{ zh:"領域", zhBpmf:["ㄌㄧㄥˇ","ㄧˋ"] }} // lǐng-yì
+  ]},
+
+  // ㄌ + ㄨㄛ
+  { front:["ㄌ","ㄨ","ㄛ"], tones:[
+    { tone:"",  back:{ zh:"羅盤", zhBpmf:["ㄌㄨㄛˊ","ㄆㄢˊ"] }}, // luó-pán
+    { tone:"ˊ", back:{ zh:"羅馬", zhBpmf:["ㄌㄨㄛˊ","ㄇㄚˇ"] }}, // luó-mǎ
+    { tone:"ˇ", back:{ zh:"捋髮", zhBpmf:["ㄌㄨㄛˇ","ㄈㄚˇ"] }}, // luǒ fǎ (“捋”撫摸)
+    { tone:"ˋ", back:{ zh:"落後", zhBpmf:["ㄌㄨㄛˋ","ㄏㄡˋ"] }} // luò-hòu
+  ]},
+
+  // ㄌ + ㄨㄢ
+  { front:["ㄌ","ㄨ","ㄢ"], tones:[
+    { tone:"",  back:{ zh:"亂象", zhBpmf:["ㄌㄨㄢˋ","ㄒㄧㄤˋ"] }}, // luàn-xiàng
+    { tone:"ˊ", back:{ zh:"攣縮", zhBpmf:["ㄌㄨㄢˊ","ㄙㄨㄛ"] }}, // luán-suō
+    { tone:"ˇ", back:{ zh:"孌生", zhBpmf:["ㄌㄨㄢˇ","ㄕㄥ"] }}, // luǎn-shēng (不太常用)
+    { tone:"ˋ", back:{ zh:"欒樹", zhBpmf:["ㄌㄨㄢˋ","ㄕㄨˋ"] }} // luàn-shù
+  ]},
+
+  // ㄌ + ㄨㄣ
+  { front:["ㄌ","ㄨ","ㄣ"], tones:[
+    { tone:"",  back:{ zh:"倫理", zhBpmf:["ㄌㄨㄣˊ","ㄌㄩˋ"] }}, // lún-lǜ
+    { tone:"ˊ", back:{ zh:"輪廓", zhBpmf:["ㄌㄨㄣˊ","ㄎㄨㄛˋ"] }}, // lún-kuò
+    { tone:"ˇ", back:{ zh:"輪流", zhBpmf:["ㄌㄨㄣˊ","ㄌㄧㄡˊ"] }}, // lún-liú
+    { tone:"ˋ", back:{ zh:"論點", zhBpmf:["ㄌㄨㄣˋ","ㄉㄧㄢˇ"] }} // lùn-diǎn
+  ]},
+
+  // ㄌ + ㄨㄥ
+  { front:["ㄌ","ㄨ","ㄥ"], tones:[
+    { tone:"",  back:{ zh:"龍頭", zhBpmf:["ㄌㄨㄥˊ","ㄊㄡˊ"] }}, // lóng-tóu
+    { tone:"ˊ", back:{ zh:"籠罩", zhBpmf:["ㄌㄨㄥˊ","ㄓㄠˋ"] }}, // lóng-zhào
+    { tone:"ˇ", back:{ zh:"攏共", zhBpmf:["ㄌㄨㄥˇ","ㄍㄨㄥˋ"] }}, // lǒng-gòng (台灣口語)
+    { tone:"ˋ", back:{ zh:"隆重", zhBpmf:["ㄌㄨㄥˊ","ㄓㄨㄥˋ"] }} // lóng‑zhòng
+  ]},
+
+  // ㄌ + ㄩㄝ
+  { front:["ㄌ","ㄩ","ㄝ"], tones:[
+    { tone:"",  back:{ zh:"略微", zhBpmf:["ㄌㄩㄝˋ","ㄨㄟˊ"] }}, // lüè-wéi
+    { tone:"ˊ", back:{ zh:"掠奪", zhBpmf:["ㄌㄩㄝˋ","ㄉㄨㄛˊ"] }}, // lüè-duó
+    { tone:"ˇ", back:{ zh:"掠影", zhBpmf:["ㄌㄩㄝˋ","ㄧㄥˇ"] }}, // lüè-yǐng
+    { tone:"ˋ", back:{ zh:"掠食", zhBpmf:["ㄌㄩㄝˋ","ㄕˊ"] }} // lüè-shí
+  ]},
+
+  // ㄌ + ㄩㄢ
+  { front:["ㄌ","ㄩ","ㄢ"], tones:[
+    { tone:"",  back:{ zh:"緩慢", zhBpmf:["ㄏㄨㄢˇ","ㄇㄢˋ"] }}, // note: “缓”是 huǎn，不是 lüan — 跟 lüan 用很少
+    { tone:"ˊ", back:{ zh:"略顛", zhBpmf:["ㄌㄩㄝˋ","ㄉㄧㄢ"] }}, // rarely “lüè-diān”
+    { tone:"ˇ", back:{ zh:"掠奪", zhBpmf:["ㄌㄩㄝˋ","ㄉㄨㄛˊ"] }}, // same as toneˊ
+    { tone:"ˋ", back:{ zh:"倫元", zhBpmf:["ㄌㄨㄣˊ","ㄩㄢˊ"] }} // lún-yuán (音近代替)
+  ]}
+];
+
+
+
+const wrapper = document.getElementById("wrapper");
+
+data.forEach(item => {
+  const row = document.createElement("div");
+  row.className = "row";
+
+  const vowelBubble = document.createElement("div");
+  vowelBubble.className = "vowel-bubble";
+  vowelBubble.textContent = item.front.slice(1).join('');
+  row.appendChild(vowelBubble);
+
+  const grid = document.createElement("div");
+  grid.className = "grid";
+
+  item.tones.forEach(t => {
+    const card = document.createElement("div");
+    card.className = "card";
+    const inner = document.createElement("div");
+    inner.className = "inner";
+
+    const front = document.createElement("div");
+    front.className = "front";
+    const bpmfFront = document.createElement("div");
+    bpmfFront.className = "zhuyin-part";
+
+    item.front.forEach((s, idx) => {
+      const char = document.createElement("span");
+      char.className = "zhuyin-glyph";
+      char.textContent = s;
+      if(t.tone && t.tone !== "˙" && idx === item.front.length - 1){
+        const tone = document.createElement("span");
+        tone.className = "zhuyin-tone";
+        tone.textContent = t.tone;
+        char.appendChild(tone);
+      }
+      bpmfFront.appendChild(char);
+    });
+
+    front.appendChild(bpmfFront);
+
+    const back = document.createElement("div");
+    back.className = "back";
+
+    if(t.back && t.back.zh && t.back.zh !== "XX"){
+      back.classList.add("success"); 
+      const backContent = document.createElement("div");
+      backContent.className = "back-content";
+
+      const wordDiv = document.createElement("div");
+      wordDiv.className = "word-vertical";
+      for(const ch of t.back.zh){
+        const span = document.createElement("span");
+        span.textContent = ch;
+        wordDiv.appendChild(span);
+      }
+
+      const bpmfBack = document.createElement("div");
+      bpmfBack.className = "zhuyin-part";
+
+      t.back.zhBpmf.forEach((s) => {
+        const char = document.createElement("span");
+        char.className = "zhuyin-glyph";
+        const m = s.match(/^(.)([ˊˇˋ˙]?)$/);
+        if(m){
+          char.textContent = m[1];
+          if(m[2]){
+            if(m[2]==="˙"){
+              const dot = document.createElement("span");
+              dot.className = "zhuyin-dot";
+              dot.textContent = m[2];
+              char.appendChild(dot);
+            } else {
+              const tone = document.createElement("span");
+              tone.className = "zhuyin-tone";
+              tone.textContent = m[2];
+              char.appendChild(tone);
+            }
+          }
+        }else{
+          char.textContent = s;
+        }
+        bpmfBack.appendChild(char);
+      });
+
+      backContent.appendChild(wordDiv);
+      backContent.appendChild(bpmfBack);
+      back.appendChild(backContent);
+
+    } else {
+      back.classList.add("empty"); 
+      back.innerHTML = `<div class="fail">❌</div>`;
+    }
+
+    inner.appendChild(front);
+    inner.appendChild(back);
+    card.appendChild(inner);
+
+    card.addEventListener("click", ()=> {
+      card.classList.toggle("flipped");
+      if(t.back && t.back.zh && t.back.zh !== "XX") speak(t.back.zh); 
+    });
+
+    grid.appendChild(card);
+  });
+
+  row.appendChild(grid);
+  wrapper.appendChild(row);
+});
+</script>
+</body>
+</html>
