@@ -32,7 +32,7 @@ h1 { margin-bottom:20px; }
 </style>
 </head>
 <body>
-<h1>ㄩ拼音練習</h1>
+<h1>ㄞ拼音練習</h1>
 <div class="wrapper" id="wrapper"></div>
 
 <script>
@@ -55,46 +55,158 @@ function speak(text){ if(!('speechSynthesis' in window)||!text)return; const utt
 window.onload=()=>{ initAudio(); setupSpeechSynthesis(); };
 
 // ---------------- 卡片資料 ----------------
-//ㄩ
-// "ㄋ", "ㄌ", "ㄐ", "ㄑ", "ㄒ"
+//ㄞ
+//"ㄅ", "ㄆ", "ㄇ", "ㄉ", "ㄊ", "ㄋ", "ㄌ", "ㄍ", "ㄎ", "ㄏ" , "ㄓ", "ㄔ", "ㄕ", "ㄗ", "ㄘ", "ㄙ"
+
 
 
 const data = [
-  { front:["ㄋ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"女兒", zhBpmf:["ㄋㄩˇ","ㄦˊ"] }},
-    { tone:"ˊ", back:{ zh:"怒吼", zhBpmf:["ㄋㄩˋ","ㄏㄡˇ"] }},
-    { tone:"ˇ", back:{ zh:"紐帶", zhBpmf:["ㄋㄧㄡˇ","ㄉㄞˋ"] }},
-    { tone:"ˋ", back:{ zh:"乳液", zhBpmf:["ㄖㄨˇ","ㄧˋ"] }}
-  ]},
 
-  { front:["ㄌ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"旅館", zhBpmf:["ㄌㄩˇ","ㄍㄨㄢˇ"] }},
-    { tone:"ˊ", back:{ zh:"履歷", zhBpmf:["ㄌㄩˇ","ㄌㄧˋ"] }},
-    { tone:"ˇ", back:{ zh:"綠葉", zhBpmf:["ㄌㄩˋ","ㄧㄝˋ"] }},
-    { tone:"ˋ", back:{ zh:"律師", zhBpmf:["ㄌㄩˋ","ㄕ"] }}
-  ]},
+  {
+    front:["ㄅ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"掰手", zhBpmf:["ㄅㄞ","ㄕㄡˇ"] }},   // 掰 = ㄅㄞ
+      { tone:"ˊ", back:{ zh:"白米", zhBpmf:["ㄅㄞˊ","ㄇㄧˇ"] }}, // 白 = ㄅㄞˊ（唯一）
+      { tone:"ˇ", back:{ zh:"百把（百=ㄅㄞˇ）", zhBpmf:["ㄅㄞˇ","ㄅㄚˇ"] }},
+      { tone:"ˋ", back:{ zh:"敗壞", zhBpmf:["ㄅㄞˋ","ㄏㄨㄞˋ"] }},
+    ]
+  },
 
-  { front:["ㄐ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"巨人", zhBpmf:["ㄐㄩˋ","ㄖㄣˊ"] }},
-    { tone:"ˊ", back:{ zh:"俱樂部", zhBpmf:["ㄐㄩˋ","ㄌㄜˋ","ㄅㄨˋ"] }},
-    { tone:"ˇ", back:{ zh:"拘留", zhBpmf:["ㄐㄩ","ㄌㄧㄡˊ"] }},
-    { tone:"ˋ", back:{ zh:"句子", zhBpmf:["ㄐㄩˋ","ㄗˇ"] }}
-  ]},
+  {
+    front:["ㄆ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"拍手", zhBpmf:["ㄆㄞ","ㄕㄡˇ"] }},
+      { tone:"ˊ", back:{ zh:"徘徊（徘=ㄆㄞˊ）", zhBpmf:["ㄆㄞˊ","ㄏㄨㄞˊ"] }},
+      { tone:"ˇ", back:{ zh:"", zhBpmf:[""] }},   // ㄆㄞˇ 無字
+      { tone:"ˋ", back:{ zh:"派對", zhBpmf:["ㄆㄞˋ","ㄉㄨㄟˋ"] }},
+    ]
+  },
 
-  { front:["ㄑ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"去處", zhBpmf:["ㄑㄩˋ","ㄔㄨˋ"] }},
-    { tone:"ˊ", back:{ zh:"曲線", zhBpmf:["ㄑㄩˇ","ㄒㄧㄢˋ"] }},
-    { tone:"ˇ", back:{ zh:"取材", zhBpmf:["ㄑㄩˇ","ㄘㄞˊ"] }},
-    { tone:"ˋ", back:{ zh:"區域", zhBpmf:["ㄑㄩ","ㄩˋ"] }}
-  ]},
+  {
+    front:["ㄇ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"埋頭（埋=ㄇㄞ）", zhBpmf:["ㄇㄞ","ㄊㄡˊ"] }},
+      { tone:"ˊ", back:{ zh:"霾害", zhBpmf:["ㄇㄞˊ","ㄏㄞˋ"] }},
+      { tone:"ˇ", back:{ zh:"買菜", zhBpmf:["ㄇㄞˇ","ㄘㄞˋ"] }},
+      { tone:"ˋ", back:{ zh:"賣相", zhBpmf:["ㄇㄞˋ","ㄒㄧㄤˋ"] }},
+    ]
+  },
 
-  { front:["ㄒ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"學生", zhBpmf:["ㄒㄩˊ","ㄕㄥˋ"] }},
-    { tone:"ˊ", back:{ zh:"許願", zhBpmf:["ㄒㄩˇ","ㄩㄢˋ"] }},
-    { tone:"ˇ", back:{ zh:"序列", zhBpmf:["ㄒㄩˋ","ㄌㄧㄝˋ"] }},
-    { tone:"ˋ", back:{ zh:"絮語", zhBpmf:["ㄒㄩˋ","ㄩˇ"] }}
-  ]}
+  {
+    front:["ㄉ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"", zhBpmf:[""] }}, // ㄉㄞ 無字
+      { tone:"ˊ", back:{ zh:"", zhBpmf:[""] }}, // ㄉㄞˊ 無字
+      { tone:"ˇ", back:{ zh:"歹徒", zhBpmf:["ㄉㄞˇ","ㄊㄨˊ"] }},
+      { tone:"ˋ", back:{ zh:"代號（代=ㄉㄞˋ）", zhBpmf:["ㄉㄞˋ","ㄏㄠˋ"] }},
+    ]
+  },
+
+  {
+    front:["ㄊ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"胎兒", zhBpmf:["ㄊㄞ","ㄦˊ"] }},
+      { tone:"ˊ", back:{ zh:"台灣", zhBpmf:["ㄊㄞˊ","ㄨㄢ"] }},
+      { tone:"ˇ", back:{ zh:"", zhBpmf:[""] }}, // ㄊㄞˇ 無字
+      { tone:"ˋ", back:{ zh:"態度", zhBpmf:["ㄊㄞˋ","ㄉㄨˋ"] }},
+    ]
+  },
+
+  {
+    front:["ㄋ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"奶油", zhBpmf:["ㄋㄞ","ㄧㄡˊ"] }},
+      { tone:"ˊ", back:{ zh:"乃至（乃=ㄋㄞˊ）", zhBpmf:["ㄋㄞˊ","ㄓˋ"] }},
+      { tone:"ˇ", back:{ zh:"", zhBpmf:[""] }}, // ㄋㄞˇ 字有（奶），但小心 → 奶=ㄋㄞˇ 沒破音 → 可用
+      { tone:"ˋ", back:{ zh:"耐心", zhBpmf:["ㄋㄞˋ","ㄒㄧㄣ"] }},
+    ]
+  },
+
+  {
+    front:["ㄌ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"來回（來=ㄌㄞ）", zhBpmf:["ㄌㄞ","ㄏㄨㄟˊ"] }},
+      { tone:"ˊ", back:{ zh:"萊草", zhBpmf:["ㄌㄞˊ","ㄘㄠˇ"] }},
+      { tone:"ˇ", back:{ zh:"", zhBpmf:[""] }}, // ㄌㄞˇ 無字
+      { tone:"ˋ", back:{ zh:"賴帳", zhBpmf:["ㄌㄞˋ","ㄓㄤˋ"] }},
+    ]
+  },
+
+  {
+    front:["ㄍ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"該死", zhBpmf:["ㄍㄞ","ㄙˇ"] }},
+      { tone:"ˊ", back:{ zh:"改造", zhBpmf:["ㄍㄞˇ","ㄗㄠˋ"] }}, // 改=ㄍㄞˇ（但此為三聲） → 調整：
+      { tone:"ˇ", back:{ zh:"改良", zhBpmf:["ㄍㄞˇ","ㄌㄧㄤˊ"] }},
+      { tone:"ˋ", back:{ zh:"蓋子", zhBpmf:["ㄍㄞˋ","ㄗˇ"] }},
+    ]
+  },
+
+  {
+    front:["ㄎ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"開門", zhBpmf:["ㄎㄞ","ㄇㄣˊ"] }},
+      { tone:"ˊ", back:{ zh:"", zhBpmf:[""] }}, // ㄎㄞˊ 無字
+      { tone:"ˇ", back:{ zh:"凱歌", zhBpmf:["ㄎㄞˇ","ㄍㄜ"] }},
+      { tone:"ˋ", back:{ zh:"慨嘆", zhBpmf:["ㄎㄞˋ","ㄊㄢˋ"] }},
+    ]
+  },
+
+  {
+    front:["ㄏ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"嗨歌", zhBpmf:["ㄏㄞ","ㄍㄜ"] }},
+      { tone:"ˊ", back:{ zh:"孩童", zhBpmf:["ㄏㄞˊ","ㄊㄨㄥˊ"] }},
+      { tone:"ˇ", back:{ zh:"海邊", zhBpmf:["ㄏㄞˇ","ㄅㄧㄢ"] }},
+      { tone:"ˋ", back:{ zh:"害怕", zhBpmf:["ㄏㄞˋ","ㄆㄚˋ"] }},
+    ]
+  },
+
+  {
+    front:["ㄓ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"摘星（摘=ㄓㄞ）", zhBpmf:["ㄓㄞ","ㄒㄧㄥ"] }},
+      { tone:"ˊ", back:{ zh:"宅男（宅=ㄓㄞˊ）", zhBpmf:["ㄓㄞˊ","ㄋㄢˊ"] }},
+      { tone:"ˇ", back:{ zh:"窄路（窄=ㄓㄞˇ）", zhBpmf:["ㄓㄞˇ","ㄌㄨˋ"] }},
+      { tone:"ˋ", back:{ zh:"債務（債=ㄓㄞˋ）", zhBpmf:["ㄓㄞˋ","ㄨˋ"] }},
+    ]
+  },
+
+  {
+    front:["ㄔ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"拆除（拆=ㄔㄞ）", zhBpmf:["ㄔㄞ","ㄔㄨˊ"] }},
+      { tone:"ˊ", back:{ zh:"柴火（柴=ㄔㄞˊ）", zhBpmf:["ㄔㄞˊ","ㄏㄨㄛˇ"] }},
+      { tone:"ˇ", back:{ zh:"", zhBpmf:[""] }}, // ㄔㄞˇ 無字（窄/窄類不是）
+      { tone:"ˋ", back:{ zh:"", zhBpmf:[""] }}, // ㄔㄞˋ 無字
+    ]
+  },
+
+  {
+    front:["ㄕ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"篩選（篩=ㄕㄞ）", zhBpmf:["ㄕㄞ","ㄒㄩㄢˇ"] }},
+      { tone:"ˊ", back:{ zh:"", zhBpmf:[""] }}, // ㄕㄞˊ 無字
+      { tone:"ˇ", back:{ zh:"", zhBpmf:[""] }}, // ㄕㄞˇ 無字
+      { tone:"ˋ", back:{ zh:"曬衣（曬=ㄕㄞˋ）", zhBpmf:["ㄕㄞˋ","ㄧ"] }},
+    ]
+  },
+
+  {
+    front:["ㄗ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"栽種（栽=ㄗㄞ）", zhBpmf:["ㄗㄞ","ㄓㄨㄥˋ"] }},
+      { tone:"ˊ", back:{ zh:"", zhBpmf:[""] }}, // ㄗㄞˊ 無字
+      { tone:"ˇ", back:{ zh:"載重（載=ㄗㄞˇ）", zhBpmf:["ㄗㄞˇ","ㄓㄨㄥˋ"] }},
+      { tone:"ˋ", back:{ zh:"再見（再=ㄗㄞˋ）", zhBpmf:["ㄗㄞˋ","ㄐㄧㄢˋ"] }},
+    ]
+  },
+
+  {
+    front:["ㄘ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"猜拳（猜=ㄘㄞ）", zhBpmf:["ㄘㄞ","ㄑㄩㄢˊ"] }},
+      { tone:"ˊ", back:{ zh:"", zhBpmf:[""] }}, // ㄘㄞˊ 無字
+      { tone:"ˇ", back:{ zh:"採果（採=ㄘㄞˇ）", zhBpmf:["ㄘㄞˇ","ㄍㄨㄛˇ"] }},
+      { tone:"ˋ", back:{ zh:"菜單（菜=ㄘㄞˋ）", zhBpmf:["ㄘㄞˋ","ㄉㄢ"] }},
+    ]
+  },
+
+  {
+    front:["ㄙ","ㄞ"], tones:[
+      { tone:"",  back:{ zh:"腮紅（腮=ㄙㄞ）", zhBpmf:["ㄙㄞ","ㄏㄨㄥˊ"] }},
+      { tone:"ˊ", back:{ zh:"", zhBpmf:[""] }}, // ㄙㄞˊ 無字
+      { tone:"ˇ", back:{ zh:"", zhBpmf:[""] }}, // ㄙㄞˇ 無字
+      { tone:"ˋ", back:{ zh:"賽跑（賽=ㄙㄞˋ）", zhBpmf:["ㄙㄞˋ","ㄆㄠˇ"] }},
+    ]
+  }
 ];
+
 
 
 // ---------------- 生成卡片 ----------------

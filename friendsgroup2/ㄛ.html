@@ -32,7 +32,7 @@ h1 { margin-bottom:20px; }
 </style>
 </head>
 <body>
-<h1>ㄩ拼音練習</h1>
+<h1>ㄛ拼音練習</h1>
 <div class="wrapper" id="wrapper"></div>
 
 <script>
@@ -55,47 +55,53 @@ function speak(text){ if(!('speechSynthesis' in window)||!text)return; const utt
 window.onload=()=>{ initAudio(); setupSpeechSynthesis(); };
 
 // ---------------- 卡片資料 ----------------
-//ㄩ
-// "ㄋ", "ㄌ", "ㄐ", "ㄑ", "ㄒ"
+//ㄛ
+//"ㄅ", "ㄆ", "ㄇ", "ㄈ", "ㄌ"
+
 
 
 const data = [
-  { front:["ㄋ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"女兒", zhBpmf:["ㄋㄩˇ","ㄦˊ"] }},
-    { tone:"ˊ", back:{ zh:"怒吼", zhBpmf:["ㄋㄩˋ","ㄏㄡˇ"] }},
-    { tone:"ˇ", back:{ zh:"紐帶", zhBpmf:["ㄋㄧㄡˇ","ㄉㄞˋ"] }},
-    { tone:"ˋ", back:{ zh:"乳液", zhBpmf:["ㄖㄨˇ","ㄧˋ"] }}
-  ]},
-
-  { front:["ㄌ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"旅館", zhBpmf:["ㄌㄩˇ","ㄍㄨㄢˇ"] }},
-    { tone:"ˊ", back:{ zh:"履歷", zhBpmf:["ㄌㄩˇ","ㄌㄧˋ"] }},
-    { tone:"ˇ", back:{ zh:"綠葉", zhBpmf:["ㄌㄩˋ","ㄧㄝˋ"] }},
-    { tone:"ˋ", back:{ zh:"律師", zhBpmf:["ㄌㄩˋ","ㄕ"] }}
-  ]},
-
-  { front:["ㄐ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"巨人", zhBpmf:["ㄐㄩˋ","ㄖㄣˊ"] }},
-    { tone:"ˊ", back:{ zh:"俱樂部", zhBpmf:["ㄐㄩˋ","ㄌㄜˋ","ㄅㄨˋ"] }},
-    { tone:"ˇ", back:{ zh:"拘留", zhBpmf:["ㄐㄩ","ㄌㄧㄡˊ"] }},
-    { tone:"ˋ", back:{ zh:"句子", zhBpmf:["ㄐㄩˋ","ㄗˇ"] }}
-  ]},
-
-  { front:["ㄑ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"去處", zhBpmf:["ㄑㄩˋ","ㄔㄨˋ"] }},
-    { tone:"ˊ", back:{ zh:"曲線", zhBpmf:["ㄑㄩˇ","ㄒㄧㄢˋ"] }},
-    { tone:"ˇ", back:{ zh:"取材", zhBpmf:["ㄑㄩˇ","ㄘㄞˊ"] }},
-    { tone:"ˋ", back:{ zh:"區域", zhBpmf:["ㄑㄩ","ㄩˋ"] }}
-  ]},
-
-  { front:["ㄒ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"學生", zhBpmf:["ㄒㄩˊ","ㄕㄥˋ"] }},
-    { tone:"ˊ", back:{ zh:"許願", zhBpmf:["ㄒㄩˇ","ㄩㄢˋ"] }},
-    { tone:"ˇ", back:{ zh:"序列", zhBpmf:["ㄒㄩˋ","ㄌㄧㄝˋ"] }},
-    { tone:"ˋ", back:{ zh:"絮語", zhBpmf:["ㄒㄩˋ","ㄩˇ"] }}
-  ]}
+  {
+    front:["ㄅ","ㄛ"], tones:[
+      { tone:"",  back:{ zh:"波浪", zhBpmf:["ㄅㄛ","ㄌㄤˋ"] }},
+      { tone:"ˊ", back:{ zh:"伯伯", zhBpmf:["ㄅㄛˊ","ㄅㄛˊ"] }},  // ㄅㄛˊ = bó
+      { tone:"ˇ", back:{ zh:"跛腳", zhBpmf:["ㄅㄛˇ","ㄐㄧㄠˇ"] }},
+      { tone:"ˋ", back:{ zh:"播種", zhBpmf:["ㄅㄛˋ","ㄓㄨㄥˇ"] }},
+    ]
+  },
+  {
+    front:["ㄆ","ㄛ"], tones:[
+      { tone:"",  back:{ zh:"坡地", zhBpmf:["ㄆㄛ","ㄉㄧˋ"] }},
+      { tone:"ˊ", back:{ zh:"婆婆", zhBpmf:["ㄆㄛˊ","ㄆㄛˊ"] }},
+      { tone:"ˇ", back:{ zh:"頗有", zhBpmf:["ㄆㄛˇ","ㄧㄡˇ"] }},
+      { tone:"ˋ", back:{ zh:"破案", zhBpmf:["ㄆㄛˋ","ㄢˋ"] }},
+    ]
+  },
+  {
+    front:["ㄇ","ㄛ"], tones:[
+      { tone:"",  back:{ zh:"摸魚", zhBpmf:["ㄇㄛ","ㄩˊ"] }},
+      { tone:"ˊ", back:{ zh:"魔法", zhBpmf:["ㄇㄛˊ","ㄈㄚˇ"] }},
+      { tone:"ˇ", back:{ zh:"抹布（讀 ㄇㄛˇ 布）", zhBpmf:["ㄇㄛˇ","ㄅㄨˋ"] }},
+      { tone:"ˋ", back:{ zh:"末端", zhBpmf:["ㄇㄛˋ","ㄉㄨㄢ"] }},
+    ]
+  },
+  {
+    front:["ㄈ","ㄛ"], tones:[
+      { tone:"",  back:{ zh:"佛像（讀 ㄈㄛˊ 像）", zhBpmf:["ㄈㄛ","ㄒㄧㄤˋ"] }}, // ㄈㄛ = fo
+      { tone:"ˊ", back:{ zh:"佛門（讀 ㄈㄛˊ 門）", zhBpmf:["ㄈㄛˊ","ㄇㄣˊ"] }},
+      { tone:"ˇ", back:{ zh:"否則（讀 ㄈㄡˇ）", zhBpmf:["（無標準 ㄈㄛˇ 音）",""] }}, 
+      { tone:"ˋ", back:{ zh:"（罕見無實詞）", zhBpmf:["",""] }},
+    ]
+  },
+  {
+    front:["ㄌ","ㄛ"], tones:[
+      { tone:"",  back:{ zh:"捞魚（讀 ㄌㄠ 魚，少見 ㄌㄛ）", zhBpmf:["ㄌㄛ","ㄩˊ"] }},
+      { tone:"ˊ", back:{ zh:"羅馬", zhBpmf:["ㄌㄛˊ","ㄇㄚˇ"] }},
+      { tone:"ˇ", back:{ zh:"裸露", zhBpmf:["ㄌㄛˇ","ㄌㄡˋ"] }},
+      { tone:"ˋ", back:{ zh:"落地（讀 ㄌㄨㄛˋ）", zhBpmf:["ㄌㄛˋ","ㄉㄧˋ"] }},
+    ]
+  }
 ];
-
 
 // ---------------- 生成卡片 ----------------
 const wrapper = document.getElementById("wrapper");

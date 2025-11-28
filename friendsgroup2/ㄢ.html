@@ -32,7 +32,7 @@ h1 { margin-bottom:20px; }
 </style>
 </head>
 <body>
-<h1>ㄩ拼音練習</h1>
+<h1>ㄢ拼音練習</h1>
 <div class="wrapper" id="wrapper"></div>
 
 <script>
@@ -55,44 +55,118 @@ function speak(text){ if(!('speechSynthesis' in window)||!text)return; const utt
 window.onload=()=>{ initAudio(); setupSpeechSynthesis(); };
 
 // ---------------- 卡片資料 ----------------
-//ㄩ
-// "ㄋ", "ㄌ", "ㄐ", "ㄑ", "ㄒ"
+//ㄢ
+//"ㄅ", "ㄆ", "ㄇ", "ㄈ", "ㄉ", "ㄊ", "ㄋ", "ㄌ", "ㄍ", "ㄎ", "ㄏ" , "ㄓ", "ㄔ", "ㄕ", "ㄖ", "ㄗ", "ㄘ", "ㄙ"
 
 
-const data = [
-  { front:["ㄋ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"女兒", zhBpmf:["ㄋㄩˇ","ㄦˊ"] }},
-    { tone:"ˊ", back:{ zh:"怒吼", zhBpmf:["ㄋㄩˋ","ㄏㄡˇ"] }},
-    { tone:"ˇ", back:{ zh:"紐帶", zhBpmf:["ㄋㄧㄡˇ","ㄉㄞˋ"] }},
-    { tone:"ˋ", back:{ zh:"乳液", zhBpmf:["ㄖㄨˇ","ㄧˋ"] }}
+const data=[
+  {front:["ㄅ","ㄢ"],tones:[
+    {tone:"",back:{zh:"班級",zhBpmf:["ㄅㄢ","ㄐㄧˊ"]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"版本",zhBpmf:["ㄅㄢˇ","ㄅㄣˇ"]}},
+    {tone:"ˋ",back:{zh:"辦公",zhBpmf:["ㄅㄢˋ","ㄍㄨㄥ"]}}
   ]},
-
-  { front:["ㄌ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"旅館", zhBpmf:["ㄌㄩˇ","ㄍㄨㄢˇ"] }},
-    { tone:"ˊ", back:{ zh:"履歷", zhBpmf:["ㄌㄩˇ","ㄌㄧˋ"] }},
-    { tone:"ˇ", back:{ zh:"綠葉", zhBpmf:["ㄌㄩˋ","ㄧㄝˋ"] }},
-    { tone:"ˋ", back:{ zh:"律師", zhBpmf:["ㄌㄩˋ","ㄕ"] }}
+  {front:["ㄆ","ㄢ"],tones:[
+    {tone:"",back:{zh:"攀岩",zhBpmf:["ㄆㄢ","ㄧㄢˊ"]}},
+    {tone:"ˊ",back:{zh:"盤子",zhBpmf:["ㄆㄢˊ","ㄗˇ"]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"判別",zhBpmf:["ㄆㄢˋ","ㄅㄧㄝˊ"]}}
   ]},
-
-  { front:["ㄐ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"巨人", zhBpmf:["ㄐㄩˋ","ㄖㄣˊ"] }},
-    { tone:"ˊ", back:{ zh:"俱樂部", zhBpmf:["ㄐㄩˋ","ㄌㄜˋ","ㄅㄨˋ"] }},
-    { tone:"ˇ", back:{ zh:"拘留", zhBpmf:["ㄐㄩ","ㄌㄧㄡˊ"] }},
-    { tone:"ˋ", back:{ zh:"句子", zhBpmf:["ㄐㄩˋ","ㄗˇ"] }}
+  {front:["ㄇ","ㄢ"],tones:[
+    {tone:"",back:{zh:"滿意",zhBpmf:["ㄇㄢ","ㄧˋ"]}},
+    {tone:"ˊ",back:{zh:"蠻好",zhBpmf:["ㄇㄢˊ","ㄏㄠˇ"]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"蔓延",zhBpmf:["ㄇㄢˋ","ㄧㄢˊ"]}}
   ]},
-
-  { front:["ㄑ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"去處", zhBpmf:["ㄑㄩˋ","ㄔㄨˋ"] }},
-    { tone:"ˊ", back:{ zh:"曲線", zhBpmf:["ㄑㄩˇ","ㄒㄧㄢˋ"] }},
-    { tone:"ˇ", back:{ zh:"取材", zhBpmf:["ㄑㄩˇ","ㄘㄞˊ"] }},
-    { tone:"ˋ", back:{ zh:"區域", zhBpmf:["ㄑㄩ","ㄩˋ"] }}
+  {front:["ㄈ","ㄢ"],tones:[
+    {tone:"",back:{zh:"番茄",zhBpmf:["ㄈㄢ","ㄑㄧㄝˊ"]}},
+    {tone:"ˊ",back:{zh:"凡例",zhBpmf:["ㄈㄢˊ","ㄌㄧˋ"]}},
+    {tone:"ˇ",back:{zh:"返校",zhBpmf:["ㄈㄢˇ","ㄒㄧㄠˋ"]}},
+    {tone:"ˋ",back:{zh:"飯店",zhBpmf:["ㄈㄢˋ","ㄉㄧㄢˋ"]}}
   ]},
-
-  { front:["ㄒ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"學生", zhBpmf:["ㄒㄩˊ","ㄕㄥˋ"] }},
-    { tone:"ˊ", back:{ zh:"許願", zhBpmf:["ㄒㄩˇ","ㄩㄢˋ"] }},
-    { tone:"ˇ", back:{ zh:"序列", zhBpmf:["ㄒㄩˋ","ㄌㄧㄝˋ"] }},
-    { tone:"ˋ", back:{ zh:"絮語", zhBpmf:["ㄒㄩˋ","ㄩˇ"] }}
+  {front:["ㄉ","ㄢ"],tones:[
+    {tone:"",back:{zh:"單位",zhBpmf:["ㄉㄢ","ㄨㄟˋ"]}},
+    {tone:"ˊ",back:{zh:"擔任",zhBpmf:["ㄉㄢˊ","ㄖㄣˋ"]}},
+    {tone:"ˇ",back:{zh:"彈藥",zhBpmf:["ㄉㄢˇ","ㄧㄠˋ"]}},
+    {tone:"ˋ",back:{zh:"膽量",zhBpmf:["ㄉㄢˋ","ㄌㄧㄤˋ"]}}
+  ]},
+  {front:["ㄊ","ㄢ"],tones:[
+    {tone:"",back:{zh:"探討",zhBpmf:["ㄊㄢ","ㄊㄠˇ"]}},
+    {tone:"ˊ",back:{zh:"彈簧",zhBpmf:["ㄊㄢˊ","ㄏㄨㄤˊ"]}},
+    {tone:"ˇ",back:{zh:"談話",zhBpmf:["ㄊㄢˇ","ㄏㄨㄚˋ"]}},
+    {tone:"ˋ",back:{zh:"攤販",zhBpmf:["ㄊㄢˋ","ㄈㄢˋ"]}}
+  ]},
+  {front:["ㄋ","ㄢ"],tones:[
+    {tone:"",back:{zh:"南方",zhBpmf:["ㄋㄢ","ㄈㄤ"]}},
+    {tone:"ˊ",back:{zh:"難題",zhBpmf:["ㄋㄢˊ","ㄊㄧˊ"]}},
+    {tone:"ˇ",back:{zh:"男孩",zhBpmf:["ㄋㄢˇ","ㄏㄞˊ"]}},
+    {tone:"ˋ",back:{zh:"男子",zhBpmf:["ㄋㄢˋ","ㄗˇ"]}}
+  ]},
+  {front:["ㄌ","ㄢ"],tones:[
+    {tone:"",back:{zh:"藍天",zhBpmf:["ㄌㄢ","ㄊㄧㄢ"]}},
+    {tone:"ˊ",back:{zh:"懶惰",zhBpmf:["ㄌㄢˊ","ㄉㄨㄛˇ"]}},
+    {tone:"ˇ",back:{zh:"爛泥",zhBpmf:["ㄌㄢˇ","ㄋㄧˊ"]}},
+    {tone:"ˋ",back:{zh:"爛帳",zhBpmf:["ㄌㄢˋ","ㄓㄤˋ"]}}
+  ]},
+  {front:["ㄍ","ㄢ"],tones:[
+    {tone:"",back:{zh:"乾淨",zhBpmf:["ㄍㄢ","ㄐㄧㄥˋ"]}},
+    {tone:"ˊ",back:{zh:"幹活",zhBpmf:["ㄍㄢˊ","ㄏㄨㄛˊ"]}},
+    {tone:"ˇ",back:{zh:"干涉",zhBpmf:["ㄍㄢˇ","ㄕㄜˋ"]}},
+    {tone:"ˋ",back:{zh:"感動",zhBpmf:["ㄍㄢˋ","ㄉㄨㄥˋ"]}}
+  ]},
+  {front:["ㄎ","ㄢ"],tones:[
+    {tone:"",back:{zh:"看見",zhBpmf:["ㄎㄢ","ㄐㄧㄢˋ"]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"坎坷",zhBpmf:["ㄎㄢˇ","ㄎㄜˇ"]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄏ","ㄢ"],tones:[
+    {tone:"",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˊ",back:{zh:"寒冷",zhBpmf:["ㄏㄢˊ","ㄌㄥˇ"]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄓ","ㄢ"],tones:[
+    {tone:"",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"戰爭",zhBpmf:["ㄓㄢˋ","ㄓㄥ"]}}
+  ]},
+  {front:["ㄔ","ㄢ"],tones:[
+    {tone:"",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"蠶豆",zhBpmf:["ㄘㄢˊ","ㄉㄡˋ"]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄕ","ㄢ"],tones:[
+    {tone:"",back:{zh:"山川",zhBpmf:["ㄕㄢ","ㄔㄨㄢ"]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄖ","ㄢ"],tones:[
+    {tone:"",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"染色",zhBpmf:["ㄖㄢˇ","ㄙㄜˋ"]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄗ","ㄢ"],tones:[
+    {tone:"",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄘ","ㄢ"],tones:[
+    {tone:"",back:{zh:"餐桌",zhBpmf:["ㄘㄢ","ㄓㄨㄛ"]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄙ","ㄢ"],tones:[
+    {tone:"",back:{zh:"散步",zhBpmf:["ㄙㄢ","ㄅㄨˋ"]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
   ]}
 ];
 

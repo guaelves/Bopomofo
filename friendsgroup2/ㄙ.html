@@ -176,7 +176,7 @@ h1 {
 </style>
 </head>
 <body>
-<h1>ㄙ  拼音練習</h1>
+<h1>ㄙ拼音練習</h1>
 
 <div class="wrapper" id="wrapper"></div>
 
@@ -227,7 +227,7 @@ window.onload = ()=>{ initAudio(); setupSpeechSynthesis(); };
 
 
 const data = [
-  // ㄙ + ㄨ
+
   { front:["ㄙ","ㄨ"], tones:[
     { tone:"",  back:{ zh:"蘇醒", zhBpmf:["ㄙㄨ","ㄒㄧㄥˇ"] }},
     { tone:"ˊ", back:{ zh:"俗話", zhBpmf:["ㄙㄨˊ","ㄏㄨㄚˋ"] }},
@@ -235,7 +235,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"速度", zhBpmf:["ㄙㄨˋ","ㄉㄨˋ"] }}
   ]},
 
-  // ㄙ + ㄚ
+ 
   { front:["ㄙ","ㄚ"], tones:[
     { tone:"",  back:{ zh:"撒謊", zhBpmf:["ㄙㄚ","ㄏㄨㄤˇ"] }},
     { tone:"ˊ", back:{ zh:"薩滿", zhBpmf:["ㄙㄚˋ","ㄇㄢˇ"] }}, // 二聲無 → 補位
@@ -243,7 +243,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"撒布", zhBpmf:["ㄙㄚˋ","ㄅㄨˋ"] }}
   ]},
 
-  // ㄙ + ㄜ
+ 
   { front:["ㄙ","ㄜ"], tones:[
     { tone:"",  back:{ zh:"色彩", zhBpmf:["ㄙㄜˋ","ㄘㄞˇ"] }},
     { tone:"ˊ", back:{ zh:"瑟瑟", zhBpmf:["ㄙㄜˋ*","ㄙㄜˋ"] }}, // 二聲無 → 補位
@@ -251,7 +251,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"塞住", zhBpmf:["ㄙㄜˋ","ㄓㄨˋ"] }}
   ]},
 
-  // ㄙ + ㄞ
+  
   { front:["ㄙ","ㄞ"], tones:[
     { tone:"",  back:{ zh:"賽跑", zhBpmf:["ㄙㄞˋ","ㄆㄠˇ"] }},
     { tone:"ˊ", back:{ zh:"塞車", zhBpmf:["ㄙㄞˋ","ㄔㄜ"] }}, // 二聲無 → 補位
@@ -259,7 +259,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"塞滿", zhBpmf:["ㄙㄞˋ","ㄇㄢˇ"] }}
   ]},
 
-  // ㄙ + ㄠ
+  
   { front:["ㄙ","ㄠ"], tones:[
     { tone:"",  back:{ zh:"掃地", zhBpmf:["ㄙㄠˇ","ㄉㄧˋ"] }},
     { tone:"ˊ", back:{ zh:"騷動", zhBpmf:["ㄙㄠˉ*","ㄉㄨㄥˋ"] }}, // 二聲無 → 補位
@@ -267,7 +267,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"掃描", zhBpmf:["ㄙㄠˇ*","ㄇㄧㄠˊ"] }} // 四聲近音補
   ]},
 
-  // ㄙ + ㄡ
+ 
   { front:["ㄙ","ㄡ"], tones:[
     { tone:"",  back:{ zh:"搜尋", zhBpmf:["ㄙㄡˊ","ㄒㄩㄣˊ"] }},
     { tone:"ˊ", back:{ zh:"臭味", zhBpmf:["ㄙㄡˋ","ㄨㄟˋ"] }}, // 二聲補位
@@ -275,7 +275,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"搜查", zhBpmf:["ㄙㄡˊ*","ㄔㄚˊ"] }}
   ]},
 
-  // ㄙ + ㄢ
+  
   { front:["ㄙ","ㄢ"], tones:[
     { tone:"",  back:{ zh:"三角", zhBpmf:["ㄙㄢ","ㄐㄧㄠˇ"] }},
     { tone:"ˊ", back:{ zh:"散步", zhBpmf:["ㄙㄢˋ*","ㄅㄨˋ"] }}, // 二聲補位
@@ -283,7 +283,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"散發", zhBpmf:["ㄙㄢˋ","ㄈㄚ"] }}
   ]},
 
-  // ㄙ + ㄣ
+  
   { front:["ㄙ","ㄣ"], tones:[
     { tone:"",  back:{ zh:"森林", zhBpmf:["ㄙㄣ","ㄌㄧㄣˊ"] }},
     { tone:"ˊ", back:{ zh:"森嚴", zhBpmf:["ㄙㄣˉ*","ㄧㄢˊ"] }}, // 二聲無 → 補位
@@ -291,7 +291,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"森冷", zhBpmf:["ㄙㄣˉ*","ㄌㄥˇ"] }}
   ]},
 
-  // ㄙ + ㄤ
+ 
   { front:["ㄙ","ㄤ"], tones:[
     { tone:"",  back:{ zh:"桑樹", zhBpmf:["ㄙㄤ","ㄕㄨˋ"] }},
     { tone:"ˊ", back:{ zh:"嗓子", zhBpmf:["ㄙㄤˇ","ㄗˇ"] }},
@@ -299,7 +299,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"喪禮", zhBpmf:["ㄙㄤˋ","ㄌㄧˇ"] }}
   ]},
 
-  // ㄙ + ㄥ
+  
   { front:["ㄙ","ㄥ"], tones:[
     { tone:"",  back:{ zh:"僧人", zhBpmf:["ㄙㄥ","ㄖㄣˊ"] }},
     { tone:"ˊ", back:{ zh:"嵩山", zhBpmf:["ㄙㄥˉ*","ㄕㄢ"] }}, // 二聲無 → 補位
@@ -307,7 +307,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"鬆弛", zhBpmf:["ㄙㄨㄥˉ*","ㄔˊ"] }} // 四聲補位
   ]},
 
-  // ㄙ + ㄨㄛ
+  
   { front:["ㄙ","ㄨ","ㄛ"], tones:[
     { tone:"",  back:{ zh:"索取", zhBpmf:["ㄙㄨㄛˇ","ㄑㄩˇ"] }},
     { tone:"ˊ", back:{ zh:"瑣碎", zhBpmf:["ㄙㄨㄛˇ*","ㄙㄨㄟˋ"] }}, // 二聲補位
@@ -315,7 +315,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"縮小", zhBpmf:["ㄙㄨㄛˋ","ㄒㄧㄠˇ"] }}
   ]},
 
-  // ㄙ + ㄨㄟ
+  
   { front:["ㄙ","ㄨ","ㄟ"], tones:[
     { tone:"",  back:{ zh:"隨便", zhBpmf:["ㄙㄨㄟˊ","ㄅㄧㄢˋ"] }},
     { tone:"ˊ", back:{ zh:"歲月", zhBpmf:["ㄙㄨㄟˋ","ㄩㄝˋ"] }}, // 二聲補位
@@ -323,7 +323,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"遂心", zhBpmf:["ㄙㄨㄟˋ","ㄒㄧㄣ"] }}
   ]},
 
-  // ㄙ + ㄨㄢ
+  
   { front:["ㄙ","ㄨ","ㄢ"], tones:[
     { tone:"",  back:{ zh:"算術", zhBpmf:["ㄙㄨㄢˋ","ㄕㄨˋ"] }},
     { tone:"ˊ", back:{ zh:"蒜頭", zhBpmf:["ㄙㄨㄢˋ*","ㄊㄡˊ"] }}, // 二聲補位
@@ -331,7 +331,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"算計", zhBpmf:["ㄙㄨㄢˋ","ㄐㄧˋ"] }}
   ]},
 
-  // ㄙ + ㄨㄣ
+  
   { front:["ㄙ","ㄨ","ㄣ"], tones:[
     { tone:"",  back:{ zh:"孫子", zhBpmf:["ㄙㄨㄣ","ㄗˇ"] }},
     { tone:"ˊ", back:{ zh:"損失", zhBpmf:["ㄙㄨㄣˇ*","ㄕ"] }}, // 二聲補位
@@ -339,7 +339,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"損壞", zhBpmf:["ㄙㄨㄣˇ*","ㄏㄨㄞˋ"] }}
   ]},
 
-  // ㄙ + ㄨㄥ
+  
   { front:["ㄙ","ㄨ","ㄥ"], tones:[
     { tone:"",  back:{ zh:"松樹", zhBpmf:["ㄙㄨㄥ","ㄕㄨˋ"] }},
     { tone:"ˊ", back:{ zh:"鬆散", zhBpmf:["ㄙㄨㄥˇ*","ㄙㄢˋ"] }}, // 二聲補位
@@ -349,7 +349,7 @@ const data = [
 ];
 
 
-
+// ---------------- 生成卡片 ----------------
 const wrapper = document.getElementById("wrapper");
 
 data.forEach(item => {

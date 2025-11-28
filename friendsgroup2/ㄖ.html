@@ -176,7 +176,7 @@ h1 {
 </style>
 </head>
 <body>
-<h1>ㄖ  拼音練習</h1>
+<h1>ㄖ拼音練習</h1>
 
 <div class="wrapper" id="wrapper"></div>
 
@@ -226,7 +226,7 @@ window.onload = ()=>{ initAudio(); setupSpeechSynthesis(); };
 
 
 const data = [
-  // ㄖ + ㄨ
+
   { front:["ㄖ","ㄨ"], tones:[
     { tone:"",  back:{ zh:"如同", zhBpmf:["ㄖㄨ","ㄊㄨㄥˊ"] }},
     { tone:"ˊ", back:{ zh:"儒家", zhBpmf:["ㄖㄨˊ","ㄐㄧㄚ"] }},
@@ -234,7 +234,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"入學", zhBpmf:["ㄖㄨˋ","ㄒㄩㄝˊ"] }}
   ]},
 
-  // ㄖ + ㄜ
+ 
   { front:["ㄖ","ㄜ"], tones:[
     { tone:"",  back:{ zh:"熱鬧", zhBpmf:["ㄖㄜˋ","ㄋㄠˋ"] }},
     { tone:"ˊ", back:{ zh:"惹人", zhBpmf:["ㄖㄜˇ","ㄖㄣˊ"] }}, // 無二聲，用常見語補位
@@ -242,7 +242,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"熱情", zhBpmf:["ㄖㄜˋ","ㄑㄧㄥˊ"] }}
   ]},
 
-  // ㄖ + ㄠ
+  
   { front:["ㄖ","ㄠ"], tones:[
     { tone:"",  back:{ zh:"饒恕", zhBpmf:["ㄖㄠˊ","ㄕㄨˋ"] }},
     { tone:"ˊ", back:{ zh:"擾動", zhBpmf:["ㄖㄠˇ","ㄉㄨㄥˋ"] }},
@@ -250,7 +250,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"繞道", zhBpmf:["ㄖㄠˋ","ㄉㄠˋ"] }}
   ]},
 
-  // ㄖ + ㄡ
+ 
   { front:["ㄖ","ㄡ"], tones:[
     { tone:"",  back:{ zh:"揉麵", zhBpmf:["ㄖㄡˊ","ㄇㄧㄢˋ"] }},
     { tone:"ˊ", back:{ zh:"柔軟", zhBpmf:["ㄖㄡˊ","ㄖㄨㄢˇ"] }},
@@ -258,7 +258,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"肉類", zhBpmf:["ㄖㄡˋ","ㄌㄟˋ"] }}
   ]},
 
-  // ㄖ + ㄢ
+ 
   { front:["ㄖ","ㄢ"], tones:[
     { tone:"",  back:{ zh:"然後", zhBpmf:["ㄖㄢˊ","ㄏㄡˋ"] }},
     { tone:"ˊ", back:{ zh:"燃油", zhBpmf:["ㄖㄢˊ","ㄧㄡˊ"] }},
@@ -266,7 +266,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"染色", zhBpmf:["ㄖㄢˇ","ㄙㄜˋ"] }}
   ]},
 
-  // ㄖ + ㄣ
+  
   { front:["ㄖ","ㄣ"], tones:[
     { tone:"",  back:{ zh:"人口", zhBpmf:["ㄖㄣˊ","ㄎㄡˇ"] }},
     { tone:"ˊ", back:{ zh:"仁慈", zhBpmf:["ㄖㄣˊ","ㄘˊ"] }},
@@ -274,7 +274,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"任務", zhBpmf:["ㄖㄣˋ","ㄨˋ"] }}
   ]},
 
-  // ㄖ + ㄤ
+ 
   { front:["ㄖ","ㄤ"], tones:[
     { tone:"",  back:{ zh:"讓路", zhBpmf:["ㄖㄤˋ","ㄌㄨˋ"] }},
     { tone:"ˊ", back:{ zh:"瓤子", zhBpmf:["ㄖㄤˊ","ㄗˇ"] }},
@@ -282,7 +282,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"讓步", zhBpmf:["ㄖㄤˋ","ㄅㄨˋ"] }}
   ]},
 
-  // ㄖ + ㄥ
+  
   { front:["ㄖ","ㄥ"], tones:[
     { tone:"",  back:{ zh:"仍然", zhBpmf:["ㄖㄥˊ","ㄖㄢˊ"] }},
     { tone:"ˊ", back:{ zh:"扔掉", zhBpmf:["ㄖㄥ","ㄉㄧㄠˋ"] }}, // 二聲罕用，用常見語補位
@@ -290,7 +290,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"認證", zhBpmf:["ㄖㄣˋ","ㄓㄥˋ"] }} // ㄖㄥˋ 幾乎不用 → 用最接近常用字補位
   ]},
 
-  // ㄖ + ㄨㄛ
+  
   { front:["ㄖ","ㄨ","ㄛ"], tones:[
     { tone:"",  back:{ zh:"弱點", zhBpmf:["ㄖㄨㄛˋ","ㄉㄧㄢˇ"] }},
     { tone:"ˊ", back:{ zh:"挪動", zhBpmf:["ㄖㄨㄛˊ","ㄉㄨㄥˋ"] }}, // 二聲罕用 → 補位
@@ -298,7 +298,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"偌大", zhBpmf:["ㄖㄨㄛˋ","ㄉㄚˋ"] }}
   ]},
 
-  // ㄖ + ㄨㄟ
+ 
   { front:["ㄖ","ㄨ","ㄟ"], tones:[
     { tone:"",  back:{ zh:"瑞雪", zhBpmf:["ㄖㄨㄟˋ","ㄒㄩㄝˇ"] }},
     { tone:"ˊ", back:{ zh:"蕊花", zhBpmf:["ㄖㄨㄟˇ","ㄏㄨㄚ"] }}, // 二聲罕用 → 補位
@@ -306,7 +306,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"睿智", zhBpmf:["ㄖㄨㄟˋ","ㄓˋ"] }}
   ]},
 
-  // ㄖ + ㄨㄢ
+  
   { front:["ㄖ","ㄨ","ㄢ"], tones:[
     { tone:"",  back:{ zh:"軟體", zhBpmf:["ㄖㄨㄢˇ","ㄊㄧˇ"] }},
     { tone:"ˊ", back:{ zh:"阮姓", zhBpmf:["ㄖㄨㄢˊ","ㄒㄧㄥˋ"] }}, // 二聲補位
@@ -314,7 +314,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"潤滑", zhBpmf:["ㄖㄨㄣˋ","ㄏㄨㄚˊ"] }} // ㄖㄨㄢˋ 幾乎不用 → 用 ㄖㄨㄣˋ 補
   ]},
 
-  // ㄖ + ㄨㄣ
+  
   { front:["ㄖ","ㄨ","ㄣ"], tones:[
     { tone:"",  back:{ zh:"潤餅", zhBpmf:["ㄖㄨㄣˋ","ㄅㄧㄥˇ"] }},
     { tone:"ˊ", back:{ zh:"閏月", zhBpmf:["ㄖㄨㄣˋ","ㄩㄝˋ"] }}, // 二聲無 → 補位
@@ -322,7 +322,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"潤色", zhBpmf:["ㄖㄨㄣˋ","ㄙㄜˋ"] }}
   ]},
 
-  // ㄖ + ㄨㄥ
+  
   { front:["ㄖ","ㄨ","ㄥ"], tones:[
     { tone:"",  back:{ zh:"榮耀", zhBpmf:["ㄖㄨㄥˊ","ㄧㄠˋ"] }},
     { tone:"ˊ", back:{ zh:"融化", zhBpmf:["ㄖㄨㄥˊ","ㄏㄨㄚˋ"] }},
@@ -332,7 +332,7 @@ const data = [
 ];
 
 
-
+// ---------------- 生成卡片 ----------------
 const wrapper = document.getElementById("wrapper");
 
 data.forEach(item => {

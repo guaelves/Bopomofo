@@ -32,7 +32,7 @@ h1 { margin-bottom:20px; }
 </style>
 </head>
 <body>
-<h1>ㄩ拼音練習</h1>
+<h1>ㄥ拼音練習</h1>
 <div class="wrapper" id="wrapper"></div>
 
 <script>
@@ -55,46 +55,121 @@ function speak(text){ if(!('speechSynthesis' in window)||!text)return; const utt
 window.onload=()=>{ initAudio(); setupSpeechSynthesis(); };
 
 // ---------------- 卡片資料 ----------------
-//ㄩ
-// "ㄋ", "ㄌ", "ㄐ", "ㄑ", "ㄒ"
+//ㄥ
+//"ㄅ", "ㄆ", "ㄇ", "ㄈ", "ㄉ", "ㄊ", "ㄋ", "ㄌ", "ㄍ", "ㄎ", "ㄏ" , "ㄓ", "ㄔ", "ㄕ", "ㄖ", "ㄗ", "ㄘ", "ㄙ"
 
 
-const data = [
-  { front:["ㄋ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"女兒", zhBpmf:["ㄋㄩˇ","ㄦˊ"] }},
-    { tone:"ˊ", back:{ zh:"怒吼", zhBpmf:["ㄋㄩˋ","ㄏㄡˇ"] }},
-    { tone:"ˇ", back:{ zh:"紐帶", zhBpmf:["ㄋㄧㄡˇ","ㄉㄞˋ"] }},
-    { tone:"ˋ", back:{ zh:"乳液", zhBpmf:["ㄖㄨˇ","ㄧˋ"] }}
+const data=[
+  {front:["ㄅ","ㄥ"],tones:[
+    {tone:"",back:{zh:"崩塌",zhBpmf:["ㄅㄥ","ㄊㄚˇ"]}},
+    {tone:"ˊ",back:{zh:"蹦跳",zhBpmf:["ㄅㄥˊ","ㄊㄧㄠˋ"]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
   ]},
-
-  { front:["ㄌ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"旅館", zhBpmf:["ㄌㄩˇ","ㄍㄨㄢˇ"] }},
-    { tone:"ˊ", back:{ zh:"履歷", zhBpmf:["ㄌㄩˇ","ㄌㄧˋ"] }},
-    { tone:"ˇ", back:{ zh:"綠葉", zhBpmf:["ㄌㄩˋ","ㄧㄝˋ"] }},
-    { tone:"ˋ", back:{ zh:"律師", zhBpmf:["ㄌㄩˋ","ㄕ"] }}
+  {front:["ㄆ","ㄥ"],tones:[
+    {tone:"",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˊ",back:{zh:"砰然",zhBpmf:["ㄆㄥˊ","ㄖㄢˊ"]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
   ]},
-
-  { front:["ㄐ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"巨人", zhBpmf:["ㄐㄩˋ","ㄖㄣˊ"] }},
-    { tone:"ˊ", back:{ zh:"俱樂部", zhBpmf:["ㄐㄩˋ","ㄌㄜˋ","ㄅㄨˋ"] }},
-    { tone:"ˇ", back:{ zh:"拘留", zhBpmf:["ㄐㄩ","ㄌㄧㄡˊ"] }},
-    { tone:"ˋ", back:{ zh:"句子", zhBpmf:["ㄐㄩˋ","ㄗˇ"] }}
+  {front:["ㄇ","ㄥ"],tones:[
+    {tone:"",back:{zh:"蒙面",zhBpmf:["ㄇㄥ","ㄇㄧㄢˋ"]}},
+    {tone:"ˊ",back:{zh:"夢想",zhBpmf:["ㄇㄥˊ","ㄒㄧㄤˇ"]}},
+    {tone:"ˇ",back:{zh:"猛然",zhBpmf:["ㄇㄥˇ","ㄖㄢˊ"]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
   ]},
-
-  { front:["ㄑ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"去處", zhBpmf:["ㄑㄩˋ","ㄔㄨˋ"] }},
-    { tone:"ˊ", back:{ zh:"曲線", zhBpmf:["ㄑㄩˇ","ㄒㄧㄢˋ"] }},
-    { tone:"ˇ", back:{ zh:"取材", zhBpmf:["ㄑㄩˇ","ㄘㄞˊ"] }},
-    { tone:"ˋ", back:{ zh:"區域", zhBpmf:["ㄑㄩ","ㄩˋ"] }}
+  {front:["ㄈ","ㄥ"],tones:[
+    {tone:"",back:{zh:"封面",zhBpmf:["ㄈㄥ","ㄇㄧㄢˋ"]}},
+    {tone:"ˊ",back:{zh:"風景",zhBpmf:["ㄈㄥˊ","ㄐㄧㄥˇ"]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
   ]},
-
-  { front:["ㄒ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"學生", zhBpmf:["ㄒㄩˊ","ㄕㄥˋ"] }},
-    { tone:"ˊ", back:{ zh:"許願", zhBpmf:["ㄒㄩˇ","ㄩㄢˋ"] }},
-    { tone:"ˇ", back:{ zh:"序列", zhBpmf:["ㄒㄩˋ","ㄌㄧㄝˋ"] }},
-    { tone:"ˋ", back:{ zh:"絮語", zhBpmf:["ㄒㄩˋ","ㄩˇ"] }}
+  {front:["ㄉ","ㄥ"],tones:[
+    {tone:"",back:{zh:"登山",zhBpmf:["ㄉㄥ","ㄕㄢ"]}},
+    {tone:"ˊ",back:{zh:"燈籠",zhBpmf:["ㄉㄥˊ","ㄌㄨㄥˊ"]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"等候",zhBpmf:["ㄉㄥˋ","ㄏㄡˋ"]}}
+  ]},
+  {front:["ㄊ","ㄥ"],tones:[
+    {tone:"",back:{zh:"疼痛",zhBpmf:["ㄊㄥ","ㄊㄨㄥˋ"]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄋ","ㄥ"],tones:[
+    {tone:"",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄌ","ㄥ"],tones:[
+    {tone:"",back:{zh:"冷氣",zhBpmf:["ㄌㄥ","ㄑㄧˋ"]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄍ","ㄥ"],tones:[
+    {tone:"",back:{zh:"更好",zhBpmf:["ㄍㄥ","ㄏㄠˇ"]}},
+    {tone:"ˊ",back:{zh:"梗概",zhBpmf:["ㄍㄥˊ","ㄍㄞˋ"]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄎ","ㄥ"],tones:[
+    {tone:"",back:{zh:"坑口",zhBpmf:["ㄎㄥ","ㄎㄡˇ"]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄏ","ㄥ"],tones:[
+    {tone:"",back:{zh:"恆星",zhBpmf:["ㄏㄥ","ㄒㄧㄥ"]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄓ","ㄥ"],tones:[
+    {tone:"",back:{zh:"正確",zhBpmf:["ㄓㄥ","ㄑㄩㄝˋ"]}},
+    {tone:"ˊ",back:{zh:"爭論",zhBpmf:["ㄓㄥˊ","ㄌㄨㄣˋ"]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"整齊",zhBpmf:["ㄓㄥˋ","ㄑㄧˊ"]}}
+  ]},
+  {front:["ㄔ","ㄥ"],tones:[
+    {tone:"",back:{zh:"承認",zhBpmf:["ㄔㄥ","ㄖㄣˋ"]}},
+    {tone:"ˊ",back:{zh:"澄清",zhBpmf:["ㄔㄥˊ","ㄑㄧㄥ"]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄕ","ㄥ"],tones:[
+    {tone:"",back:{zh:"聲音",zhBpmf:["ㄕㄥ","ㄧㄣ"]}},
+    {tone:"ˊ",back:{zh:"升高",zhBpmf:["ㄕㄥˊ","ㄍㄠ"]}},
+    {tone:"ˇ",back:{zh:"生氣",zhBpmf:["ㄕㄥˇ","ㄑㄧˋ"]}},
+    {tone:"ˋ",back:{zh:"剩餘",zhBpmf:["ㄕㄥˋ","ㄩˋ"]}}
+  ]},
+  {front:["ㄖ","ㄥ"],tones:[
+    {tone:"",back:{zh:"仍然",zhBpmf:["ㄖㄥ","ㄖㄢˊ"]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄗ","ㄥ"],tones:[
+    {tone:"",back:{zh:"增長",zhBpmf:["ㄗㄥ","ㄓㄤˇ"]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄘ","ㄥ"],tones:[
+    {tone:"",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
+  ]},
+  {front:["ㄙ","ㄥ"],tones:[
+    {tone:"",back:{zh:"僧人",zhBpmf:["ㄙㄥ","ㄖㄣˊ"]}},
+    {tone:"ˊ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˇ",back:{zh:"",zhBpmf:["",""]}},
+    {tone:"ˋ",back:{zh:"",zhBpmf:["",""]}}
   ]}
 ];
+
 
 
 // ---------------- 生成卡片 ----------------

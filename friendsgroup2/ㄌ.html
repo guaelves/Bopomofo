@@ -176,7 +176,7 @@ h1 {
 </style>
 </head>
 <body>
-<h1>ㄌ  拼音練習</h1>
+<h1>ㄌ拼音練習</h1>
 
 <div class="wrapper" id="wrapper"></div>
 
@@ -228,7 +228,7 @@ window.onload = ()=>{ initAudio(); setupSpeechSynthesis(); };
 
 
 const data = [
-  // ㄌ + ㄧ
+
   { front:["ㄌ","ㄧ"], tones:[
     { tone:"",  back:{ zh:"理想", zhBpmf:["ㄌㄧˇ","ㄒㄧㄤˇ"] }},
     { tone:"ˊ", back:{ zh:"離開", zhBpmf:["ㄌㄧˊ","ㄎㄞ"] }},
@@ -236,7 +236,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"力度", zhBpmf:["ㄌㄧˋ","ㄉㄨˋ"] }}
   ]},
 
-  // ㄌ + ㄨ
   { front:["ㄌ","ㄨ"], tones:[
     { tone:"",  back:{ zh:"露水", zhBpmf:["ㄌㄨˋ","ㄕㄨㄟˇ"] }},
     { tone:"ˊ", back:{ zh:"盧布", zhBpmf:["ㄌㄨˊ","ㄅㄨˋ"] }},
@@ -244,7 +243,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"路線", zhBpmf:["ㄌㄨˋ","ㄒㄧㄢˋ"] }}
   ]},
 
-  // ㄌ + ㄩ
   { front:["ㄌ","ㄩ"], tones:[
     { tone:"",  back:{ zh:"旅客", zhBpmf:["ㄌㄩˇ","ㄎㄜˋ"] }},
     { tone:"ˊ", back:{ zh:"驢子", zhBpmf:["ㄌㄩˊ","ㄗˇ"] }},
@@ -252,7 +250,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"律師", zhBpmf:["ㄌㄩˋ","ㄕ"] }}
   ]},
 
-  // ㄌ + ㄚ
   { front:["ㄌ","ㄚ"], tones:[
     { tone:"",  back:{ zh:"拉鍊", zhBpmf:["ㄌㄚˉ","ㄌㄧㄢˋ"] }},
     { tone:"ˊ", back:{ zh:"啦啦", zhBpmf:["ㄌㄚˊ","ㄌㄚˊ"] }},
@@ -260,7 +257,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"辣椒", zhBpmf:["ㄌㄚˋ","ㄐㄧㄠ"] }}
   ]},
 
-  // ㄌ + ㄛ
   { front:["ㄌ","ㄛ"], tones:[
     { tone:"",  back:{ zh:"羅列", zhBpmf:["ㄌㄨㄛˊ","ㄌㄧㄝˋ"] }},
     { tone:"ˊ", back:{ zh:"羅馬", zhBpmf:["ㄌㄨㄛˊ","ㄇㄚˇ"] }},
@@ -268,7 +264,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"落葉", zhBpmf:["ㄌㄨㄛˋ","ㄧㄝˋ"] }}
   ]},
 
-  // ㄌ + ㄜ
   { front:["ㄌ","ㄜ"], tones:[
     { tone:"",  back:{ zh:"勒令", zhBpmf:["ㄌㄜˋ","ㄌㄧㄥˋ"] }},
     { tone:"ˊ", back:{ zh:"", zhBpmf:[""] }},  // la2, 用詞不常
@@ -276,7 +271,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"樂園", zhBpmf:["ㄌㄜˋ","ㄩㄢˊ"] }}
   ]},
 
-  // ㄌ + ㄞ
   { front:["ㄌ","ㄞ"], tones:[
     { tone:"",  back:{ zh:"來到", zhBpmf:["ㄌㄞˊ","ㄉㄠˋ"] }},
     { tone:"ˊ", back:{ zh:"賴床", zhBpmf:["ㄌㄞˋ","ㄔㄨㄤˊ"] }},  // 賴 lài4 但按位置示意
@@ -284,7 +278,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"徠卡", zhBpmf:["ㄌㄞˊ","ㄎㄚˇ"] }}  // Leica（牌子，音譯）
   ]},
 
-  // ㄌ + ㄟ
   { front:["ㄌ","ㄟ"], tones:[
     { tone:"",  back:{ zh:"雷雨", zhBpmf:["ㄌㄟˊ","ㄩˇ"] }},
     { tone:"ˊ", back:{ zh:"累計", zhBpmf:["ㄌㄟˇ","ㄐㄧˋ"] }},
@@ -292,7 +285,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"類型", zhBpmf:["ㄌㄟˋ","ㄒㄧㄥˊ"] }}
   ]},
 
-  // ㄌ + ㄠ
   { front:["ㄌ","ㄠ"], tones:[
     { tone:"",  back:{ zh:"老虎", zhBpmf:["ㄌㄠˇ","ㄏㄨˇ"] }},
     { tone:"ˊ", back:{ zh:"勞動", zhBpmf:["ㄌㄠˊ","ㄉㄨㄥˋ"] }},
@@ -300,7 +292,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"牢籠", zhBpmf:["ㄌㄠˊ","ㄌㄨㄥˊ"] }}
   ]},
 
-  // ㄌ + ㄡ
   { front:["ㄌ","ㄡ"], tones:[
     { tone:"",  back:{ zh:"樓梯", zhBpmf:["ㄌㄡˊ","ㄊㄧ"] }},
     { tone:"ˊ", back:{ zh:"漏水", zhBpmf:["ㄌㄡˋ","ㄕㄨㄟˇ"] }},  // lòu
@@ -308,7 +299,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"陋習", zhBpmf:["ㄌㄡˋ","ㄒㄧˊ"] }}
   ]},
 
-  // ㄌ + ㄢ
   { front:["ㄌ","ㄢ"], tones:[
     { tone:"",  back:{ zh:"藍天", zhBpmf:["ㄌㄢˊ","ㄊㄧㄢ"] }},
     { tone:"ˊ", back:{ zh:"爛漫", zhBpmf:["ㄌㄢˋ","ㄇㄢˋ"] }},
@@ -316,7 +306,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"懶惰", zhBpmf:["ㄌㄢˇ","ㄉㄨㄛˇ"] }}  // làn-duò, lǎn in third
   ]},
 
-  // ㄌ + ㄤ
   { front:["ㄌ","ㄤ"], tones:[
     { tone:"",  back:{ zh:"朗讀", zhBpmf:["ㄌㄤˇ","ㄉㄨˊ"] }},
     { tone:"ˊ", back:{ zh:"浪漫", zhBpmf:["ㄌㄤˋ","ㄇㄢˋ"] }},
@@ -324,7 +313,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"狼狽", zhBpmf:["ㄌㄤˊ","ㄅㄟˋ"] }}
   ]},
 
-  // ㄌ + ㄥ
   { front:["ㄌ","ㄥ"], tones:[
     { tone:"",  back:{ zh:"冷氣", zhBpmf:["ㄌㄥˇ","ㄑㄧˋ"] }},
     { tone:"ˊ", back:{ zh:"冷淡", zhBpmf:["ㄌㄥˇ","ㄉㄢˋ"] }}, // lěng-dàn
@@ -332,7 +320,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"棱角", zhBpmf:["ㄌㄥˊ","ㄐㄧㄠˇ"] }}  // léng-jiǎo
   ]},
 
-  // ㄌ + ㄧㄚ
   { front:["ㄌ","ㄧ","ㄚ"], tones:[
     { tone:"",  back:{ zh:"理亞", zhBpmf:["ㄌㄧˇ","ㄧㄚˋ"] }},  // 不常用，但示意
     { tone:"ˊ", back:{ zh:"利亞", zhBpmf:["ㄌㄧˊ","ㄧㄚˋ"] }},  // 如地名
@@ -340,7 +327,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"列亞", zhBpmf:["ㄌㄧˋ","ㄧㄚˋ"] }}
   ]},
 
-  // ㄌ + ㄧㄝ
   { front:["ㄌ","ㄧ","ㄝ"], tones:[
     { tone:"",  back:{ zh:"列車", zhBpmf:["ㄌㄧㄝˋ","ㄔㄜ"] }}, // liè-chē
     { tone:"ˊ", back:{ zh:"冽冽", zhBpmf:["ㄌㄧㄝˊ","ㄌㄧㄝˊ"] }}, // lié-lié
@@ -348,7 +334,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"獵人", zhBpmf:["ㄌㄧㄝˋ","ㄖㄣˊ"] }} // liè-rén
   ]},
 
-  // ㄌ + ㄧㄠ
   { front:["ㄌ","ㄧ","ㄠ"], tones:[
     { tone:"",  back:{ zh:"聊天", zhBpmf:["ㄌㄧㄠˊ","ㄊㄧㄢˊ"] }}, // liáo-tiān
     { tone:"ˊ", back:{ zh:"撩動", zhBpmf:["ㄌㄧㄠˊ","ㄉㄨㄥˋ"] }}, // liáo-dòng
@@ -356,7 +341,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"了了", zhBpmf:["ㄌㄧㄠˋ","ㄌㄧㄠˋ"] }} // liào-liào
   ]},
 
-  // ㄌ + ㄧㄡ
   { front:["ㄌ","ㄧ","ㄡ"], tones:[
     { tone:"",  back:{ zh:"柳樹", zhBpmf:["ㄌㄧㄡˇ","ㄕㄨˋ"] }}, // liǔ-shù
     { tone:"ˊ", back:{ zh:"留意", zhBpmf:["ㄌㄧㄡˊ","ㄧˋ"] }}, // liú-yì
@@ -364,7 +348,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"溜冰", zhBpmf:["ㄌㄧㄡˋ","ㄅㄧㄥ"] }} // liù-bīng
   ]},
 
-  // ㄌ + ㄧㄢ
   { front:["ㄌ","ㄧ","ㄢ"], tones:[
     { tone:"",  back:{ zh:"聯盟", zhBpmf:["ㄌㄧㄢˊ","ㄇㄥˊ"] }}, // lián-méng
     { tone:"ˊ", back:{ zh:"練習", zhBpmf:["ㄌㄧㄢˋ","ㄒㄧˊ"] }}, // liàn-xí
@@ -372,7 +355,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"臉孔", zhBpmf:["ㄌㄧㄢˋ","ㄎㄨㄥˇ"] }} // liàn-kǒng
   ]},
 
-  // ㄌ + ㄧㄣ
   { front:["ㄌ","ㄧ","ㄣ"], tones:[
     { tone:"",  back:{ zh:"臨床", zhBpmf:["ㄌㄧㄣˊ","ㄔㄨㄤˊ"] }}, // lín-chuáng
     { tone:"ˊ", back:{ zh:"倫理", zhBpmf:["ㄌㄧㄣˊ","ㄌㄩˋ"] }}, // lún-lǜ (but lin-lü)
@@ -380,7 +362,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"臨界", zhBpmf:["ㄌㄧㄣˋ","ㄐㄧㄝˋ"] }} // lín-jiè
   ]},
 
-  // ㄌ + ㄧㄤ
   { front:["ㄌ","ㄧ","ㄤ"], tones:[
     { tone:"",  back:{ zh:"兩岸", zhBpmf:["ㄌㄧㄤˇ","ㄢˋ"] }}, // liǎng‑àn
     { tone:"ˊ", back:{ zh:"亮堂", zhBpmf:["ㄌㄧㄤˋ","ㄊㄤˊ"] }}, // liàng‑táng
@@ -388,7 +369,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"量產", zhBpmf:["ㄌㄧㄤˋ","ㄔㄢˇ"] }} // liàng-chǎn
   ]},
 
-  // ㄌ + ㄧㄥ
   { front:["ㄌ","ㄧ","ㄥ"], tones:[
     { tone:"",  back:{ zh:"寧靜", zhBpmf:["ㄋㄧㄥˊ","ㄐㄧㄥˋ"] }}, // note: “宁”用 n, not l — 無太多 lǐng
     { tone:"ˊ", back:{ zh:"領導", zhBpmf:["ㄌㄧㄥˇ","ㄉㄠˇ"] }}, // lǐng-dǎo
@@ -396,7 +376,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"領域", zhBpmf:["ㄌㄧㄥˇ","ㄧˋ"] }} // lǐng-yì
   ]},
 
-  // ㄌ + ㄨㄛ
   { front:["ㄌ","ㄨ","ㄛ"], tones:[
     { tone:"",  back:{ zh:"羅盤", zhBpmf:["ㄌㄨㄛˊ","ㄆㄢˊ"] }}, // luó-pán
     { tone:"ˊ", back:{ zh:"羅馬", zhBpmf:["ㄌㄨㄛˊ","ㄇㄚˇ"] }}, // luó-mǎ
@@ -404,7 +383,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"落後", zhBpmf:["ㄌㄨㄛˋ","ㄏㄡˋ"] }} // luò-hòu
   ]},
 
-  // ㄌ + ㄨㄢ
   { front:["ㄌ","ㄨ","ㄢ"], tones:[
     { tone:"",  back:{ zh:"亂象", zhBpmf:["ㄌㄨㄢˋ","ㄒㄧㄤˋ"] }}, // luàn-xiàng
     { tone:"ˊ", back:{ zh:"攣縮", zhBpmf:["ㄌㄨㄢˊ","ㄙㄨㄛ"] }}, // luán-suō
@@ -412,7 +390,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"欒樹", zhBpmf:["ㄌㄨㄢˋ","ㄕㄨˋ"] }} // luàn-shù
   ]},
 
-  // ㄌ + ㄨㄣ
   { front:["ㄌ","ㄨ","ㄣ"], tones:[
     { tone:"",  back:{ zh:"倫理", zhBpmf:["ㄌㄨㄣˊ","ㄌㄩˋ"] }}, // lún-lǜ
     { tone:"ˊ", back:{ zh:"輪廓", zhBpmf:["ㄌㄨㄣˊ","ㄎㄨㄛˋ"] }}, // lún-kuò
@@ -420,7 +397,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"論點", zhBpmf:["ㄌㄨㄣˋ","ㄉㄧㄢˇ"] }} // lùn-diǎn
   ]},
 
-  // ㄌ + ㄨㄥ
   { front:["ㄌ","ㄨ","ㄥ"], tones:[
     { tone:"",  back:{ zh:"龍頭", zhBpmf:["ㄌㄨㄥˊ","ㄊㄡˊ"] }}, // lóng-tóu
     { tone:"ˊ", back:{ zh:"籠罩", zhBpmf:["ㄌㄨㄥˊ","ㄓㄠˋ"] }}, // lóng-zhào
@@ -428,7 +404,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"隆重", zhBpmf:["ㄌㄨㄥˊ","ㄓㄨㄥˋ"] }} // lóng‑zhòng
   ]},
 
-  // ㄌ + ㄩㄝ
   { front:["ㄌ","ㄩ","ㄝ"], tones:[
     { tone:"",  back:{ zh:"略微", zhBpmf:["ㄌㄩㄝˋ","ㄨㄟˊ"] }}, // lüè-wéi
     { tone:"ˊ", back:{ zh:"掠奪", zhBpmf:["ㄌㄩㄝˋ","ㄉㄨㄛˊ"] }}, // lüè-duó
@@ -436,7 +411,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"掠食", zhBpmf:["ㄌㄩㄝˋ","ㄕˊ"] }} // lüè-shí
   ]},
 
-  // ㄌ + ㄩㄢ
   { front:["ㄌ","ㄩ","ㄢ"], tones:[
     { tone:"",  back:{ zh:"緩慢", zhBpmf:["ㄏㄨㄢˇ","ㄇㄢˋ"] }}, // note: “缓”是 huǎn，不是 lüan — 跟 lüan 用很少
     { tone:"ˊ", back:{ zh:"略顛", zhBpmf:["ㄌㄩㄝˋ","ㄉㄧㄢ"] }}, // rarely “lüè-diān”
@@ -446,7 +420,7 @@ const data = [
 ];
 
 
-
+// ---------------- 生成卡片 ----------------
 const wrapper = document.getElementById("wrapper");
 
 data.forEach(item => {

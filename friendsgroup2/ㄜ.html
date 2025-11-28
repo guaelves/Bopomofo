@@ -32,7 +32,7 @@ h1 { margin-bottom:20px; }
 </style>
 </head>
 <body>
-<h1>ㄩ拼音練習</h1>
+<h1>ㄜ拼音練習</h1>
 <div class="wrapper" id="wrapper"></div>
 
 <script>
@@ -55,47 +55,122 @@ function speak(text){ if(!('speechSynthesis' in window)||!text)return; const utt
 window.onload=()=>{ initAudio(); setupSpeechSynthesis(); };
 
 // ---------------- 卡片資料 ----------------
-//ㄩ
-// "ㄋ", "ㄌ", "ㄐ", "ㄑ", "ㄒ"
+//ㄜ
+//"ㄉ", "ㄊ", "ㄋ", "ㄌ", "ㄍ", "ㄎ", "ㄏ" , "ㄓ", "ㄔ", "ㄕ", "ㄖ", "ㄗ", "ㄘ", "ㄙ"
+
 
 
 const data = [
-  { front:["ㄋ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"女兒", zhBpmf:["ㄋㄩˇ","ㄦˊ"] }},
-    { tone:"ˊ", back:{ zh:"怒吼", zhBpmf:["ㄋㄩˋ","ㄏㄡˇ"] }},
-    { tone:"ˇ", back:{ zh:"紐帶", zhBpmf:["ㄋㄧㄡˇ","ㄉㄞˋ"] }},
-    { tone:"ˋ", back:{ zh:"乳液", zhBpmf:["ㄖㄨˇ","ㄧˋ"] }}
-  ]},
-
-  { front:["ㄌ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"旅館", zhBpmf:["ㄌㄩˇ","ㄍㄨㄢˇ"] }},
-    { tone:"ˊ", back:{ zh:"履歷", zhBpmf:["ㄌㄩˇ","ㄌㄧˋ"] }},
-    { tone:"ˇ", back:{ zh:"綠葉", zhBpmf:["ㄌㄩˋ","ㄧㄝˋ"] }},
-    { tone:"ˋ", back:{ zh:"律師", zhBpmf:["ㄌㄩˋ","ㄕ"] }}
-  ]},
-
-  { front:["ㄐ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"巨人", zhBpmf:["ㄐㄩˋ","ㄖㄣˊ"] }},
-    { tone:"ˊ", back:{ zh:"俱樂部", zhBpmf:["ㄐㄩˋ","ㄌㄜˋ","ㄅㄨˋ"] }},
-    { tone:"ˇ", back:{ zh:"拘留", zhBpmf:["ㄐㄩ","ㄌㄧㄡˊ"] }},
-    { tone:"ˋ", back:{ zh:"句子", zhBpmf:["ㄐㄩˋ","ㄗˇ"] }}
-  ]},
-
-  { front:["ㄑ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"去處", zhBpmf:["ㄑㄩˋ","ㄔㄨˋ"] }},
-    { tone:"ˊ", back:{ zh:"曲線", zhBpmf:["ㄑㄩˇ","ㄒㄧㄢˋ"] }},
-    { tone:"ˇ", back:{ zh:"取材", zhBpmf:["ㄑㄩˇ","ㄘㄞˊ"] }},
-    { tone:"ˋ", back:{ zh:"區域", zhBpmf:["ㄑㄩ","ㄩˋ"] }}
-  ]},
-
-  { front:["ㄒ","ㄩ"], tones:[
-    { tone:"", back:{ zh:"學生", zhBpmf:["ㄒㄩˊ","ㄕㄥˋ"] }},
-    { tone:"ˊ", back:{ zh:"許願", zhBpmf:["ㄒㄩˇ","ㄩㄢˋ"] }},
-    { tone:"ˇ", back:{ zh:"序列", zhBpmf:["ㄒㄩˋ","ㄌㄧㄝˋ"] }},
-    { tone:"ˋ", back:{ zh:"絮語", zhBpmf:["ㄒㄩˋ","ㄩˇ"] }}
-  ]}
-];
-
+  {
+    front:["ㄉ","ㄜ"], tones:[
+      { tone:"",  back:{ zh:"的確（實際讀 ㄉㄧˊ）", zhBpmf:["ㄉㄜ","ㄑㄩㄝˋ"] }},
+      { tone:"ˊ", back:{ zh:"德國", zhBpmf:["ㄉㄜˊ","ㄍㄨㄛˊ"] }},
+      { tone:"ˇ", back:{ zh:"底欸（少用）", zhBpmf:["ㄉㄜˇ","ㄟˊ"] }},
+      { tone:"ˋ", back:{ zh:"的話（讀 ㄉㄜ˙ 詞尾）", zhBpmf:["ㄉㄜˋ","ㄏㄨㄚˋ"] }},
+    ]
+  },
+  {
+    front:["ㄊ","ㄜ"], tones:[
+      { tone:"",  back:{ zh:"特務（實際讀 ㄊㄜˋ）", zhBpmf:["ㄊㄜ","ㄨˋ"] }},
+      { tone:"ˊ", back:{ zh:"特長", zhBpmf:["ㄊㄜˊ","ㄔㄤˊ"] }},
+      { tone:"ˇ", back:{ zh:"忑忑（罕用）", zhBpmf:["ㄊㄜˇ","ㄊㄜˇ"] }},
+      { tone:"ˋ", back:{ zh:"特性", zhBpmf:["ㄊㄜˋ","ㄒㄧㄥˋ"] }},
+    ]
+  },
+  {
+    front:["ㄋ","ㄜ"], tones:[
+      { tone:"",  back:{ zh:"呢喃（實際讀 ㄋㄜˊ）", zhBpmf:["ㄋㄜ","ㄋㄢˊ"] }},
+      { tone:"ˊ", back:{ zh:"呢喃", zhBpmf:["ㄋㄜˊ","ㄋㄢˊ"] }},
+      { tone:"ˇ", back:{ zh:"哪呢（語氣）", zhBpmf:["ㄋㄜˇ","ㄋㄜ"] }},
+      { tone:"ˋ", back:{ zh:"嫩餓（少用）", zhBpmf:["ㄋㄜˋ","ㄜˋ"] }},
+    ]
+  },
+  {
+    front:["ㄌ","ㄜ"], tones:[
+      { tone:"",  back:{ zh:"樂器（讀 ㄩㄝˋˋ 器）", zhBpmf:["ㄌㄜ","ㄑㄧˋ"] }},
+      { tone:"ˊ", back:{ zh:"勒索（讀 ㄌㄜˊ 索）", zhBpmf:["ㄌㄜˊ","ㄙㄨㄛˇ"] }},
+      { tone:"ˇ", back:{ zh:"肋骨（讀 ㄌㄟˋ 骨）", zhBpmf:["ㄌㄜˇ","ㄍㄨˇ"] }},
+      { tone:"ˋ", back:{ zh:"樂隊（讀 ㄩㄝˋ）", zhBpmf:["ㄌㄜˋ","ㄉㄨㄟˋ"] }},
+    ]
+  },
+  {
+    front:["ㄍ","ㄜ"], tones:[
+      { tone:"",  back:{ zh:"歌聲", zhBpmf:["ㄍㄜ","ㄕㄥ"] }},
+      { tone:"ˊ", back:{ zh:"格子", zhBpmf:["ㄍㄜˊ","ㄗˇ"] }},
+      { tone:"ˇ", back:{ zh:"葛藤", zhBpmf:["ㄍㄜˇ","ㄊㄥˊ"] }},
+      { tone:"ˋ", back:{ zh:"各種", zhBpmf:["ㄍㄜˋ","ㄓㄨㄥˇ"] }},
+    ]
+  },
+  {
+    front:["ㄎ","ㄜ"], tones:[
+      { tone:"",  back:{ zh:"科學", zhBpmf:["ㄎㄜ","ㄒㄩㄝˊ"] }},
+      { tone:"ˊ", back:{ zh:"咳嗽（讀 ㄎㄜˊ）", zhBpmf:["ㄎㄜˊ","ㄙㄡˋ"] }},
+      { tone:"ˇ", back:{ zh:"可口（讀 ㄎㄜˇ）", zhBpmf:["ㄎㄜˇ","ㄎㄡˇ"] }},
+      { tone:"ˋ", back:{ zh:"客人", zhBpmf:["ㄎㄜˋ","ㄖㄣˊ"] }},
+    ]
+  },
+  {
+    front:["ㄏ","ㄜ"], tones:[
+      { tone:"",  back:{ zh:"呵護", zhBpmf:["ㄏㄜ","ㄏㄨˋ"] }},
+      { tone:"ˊ", back:{ zh:"河流", zhBpmf:["ㄏㄜˊ","ㄌㄧㄡˊ"] }},
+      { tone:"ˇ", back:{ zh:"可（口語讀 ㄏㄜˇ）", zhBpmf:["ㄏㄜˇ",""] }},
+      { tone:"ˋ", back:{ zh:"賀卡", zhBpmf:["ㄏㄜˋ","ㄎㄚˇ"] }},
+    ]
+  },
+  {
+    front:["ㄓ","ㄜ"], tones:[
+      { tone:"",  back:{ zh:"遮雨", zhBpmf:["ㄓㄜ","ㄩˇ"] }},
+      { tone:"ˊ", back:{ zh:"折騰（讀 ㄓㄜˊ）", zhBpmf:["ㄓㄜˊ","ㄊㄥ˙"] }},
+      { tone:"ˇ", back:{ zh:"者們", zhBpmf:["ㄓㄜˇ","ㄇㄣ˙"] }},
+      { tone:"ˋ", back:{ zh:"這樣（實際讀 ㄓㄜˋ）", zhBpmf:["ㄓㄜˋ","ㄧㄤˋ"] }},
+    ]
+  },
+  {
+    front:["ㄔ","ㄜ"], tones:[
+      { tone:"",  back:{ zh:"車子（讀 ㄔㄜ）", zhBpmf:["ㄔㄜ","ㄗˇ"] }},
+      { tone:"ˊ", back:{ zh:"扯皮（讀 ㄔㄜˊ）", zhBpmf:["ㄔㄜˊ","ㄆㄧˊ"] }},
+      { tone:"ˇ", back:{ zh:"車伕（讀 ㄔㄜˇ）", zhBpmf:["ㄔㄜˇ","ㄈㄨ"] }},
+      { tone:"ˋ", back:{ zh:"徹底（讀 ㄔㄜˋ）", zhBpmf:["ㄔㄜˋ","ㄉㄧˇ"] }},
+    ]
+  },
+  {
+    front:["ㄕ","ㄜ"], tones:[
+      { tone:"",  back:{ zh:"奢華", zhBpmf:["ㄕㄜ","ㄏㄨㄚˊ"] }},
+      { tone:"ˊ", back:{ zh:"蛇皮", zhBpmf:["ㄕㄜˊ","ㄆㄧˊ"] }},
+      { tone:"ˇ", back:{ zh:"捨得", zhBpmf:["ㄕㄜˇ","ㄉㄜˊ"] }},
+      { tone:"ˋ", back:{ zh:"社區", zhBpmf:["ㄕㄜˋ","ㄑㄩ"] }},
+    ]
+  },
+  {
+    front:["ㄖ","ㄜ"], tones:[
+      { tone:"",  back:{ zh:"熱水（讀 ㄖㄜˋ）", zhBpmf:["ㄖㄜ","ㄕㄨㄟˇ"] }},
+      { tone:"ˊ", back:{ zh:"惹人", zhBpmf:["ㄖㄜˊ","ㄖㄣˊ"] }},
+      { tone:"ˇ", back:{ zh:"惹我（口語）", zhBpmf:["ㄖㄜˇ","ㄨㄛˇ"] }},
+      { tone:"ˋ", back:{ zh:"熱情", zhBpmf:["ㄖㄜˋ","ㄑㄧㄥˊ"] }},
+    ]
+  },
+  {
+    front:["ㄗ","ㄜ"], tones:[
+      { tone:"",  back:{ zh:"則是", zhBpmf:["ㄗㄜ","ㄕˋ"] }},
+      { tone:"ˊ", back:{ zh:"責任", zhBpmf:["ㄗㄜˊ","ㄖㄣˋ"] }},
+      { tone:"ˇ", back:{ zh:"怎麼（口語實際讀 ㄗㄜˇ）", zhBpmf:["ㄗㄜˇ","ㄇㄜ˙"] }},
+      { tone:"ˋ", back:{ zh:"仄聲（較少）", zhBpmf:["ㄗㄜˋ","ㄕㄥ"] }},
+    ]
+  },
+  {
+    front:["ㄘ","ㄜ"], tones:[
+      { tone:"",  back:{ zh:"側面（讀 ㄘㄜˋ 面）", zhBpmf:["ㄘㄜ","ㄇㄧㄢˋ"] }},
+      { tone:"ˊ", back:{ zh:"策劃（讀 ㄘㄜˋ）", zhBpmf:["ㄘㄜˊ","ㄏㄨㄚˋ"] }},
+      { tone:"ˇ", back:{ zh:"測試（讀 ㄘㄜˋ）", zhBpmf:["ㄘㄜˇ","ㄕˋ"] }},
+      { tone:"ˋ", back:{ zh:"側身（讀 ㄘㄜˋ）", zhBpmf:["ㄘㄜˋ","ㄕㄣ"] }},
+    ]
+  },
+  {
+    front:["ㄙ","ㄜ"], tones:[
+      { tone:"",  back:{ zh:"瑟縮（讀 ㄙㄜˋ）", zhBpmf:["ㄙㄜ","ㄙㄨㄛ"] }},
+      { tone:"ˊ", back:{ zh:"澀感（讀 ㄙㄜˋ 感）", zhBpmf:["ㄙㄜˊ","ㄍㄢˇ"] }},
+      { tone:"ˇ", back:{ zh:"色子（讀 ㄙㄞˇ 子）", zhBpmf:["ㄙㄜˇ","ㄗˇ"] }},
+      { tone:"ˋ", back:{ zh:"色彩（讀 ㄙㄜˋ 彩）", zhBpmf:["ㄙ]()
 
 // ---------------- 生成卡片 ----------------
 const wrapper = document.getElementById("wrapper");

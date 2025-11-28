@@ -176,7 +176,7 @@ h1 {
 </style>
 </head>
 <body>
-<h1>ㄊ  拼音練習</h1>
+<h1>ㄊ拼音練習</h1>
 
 <div class="wrapper" id="wrapper"></div>
 
@@ -228,7 +228,6 @@ window.onload = ()=>{ initAudio(); setupSpeechSynthesis(); };
 
 const data = [
 
-  // ㄊ + ㄧ 
   { front:["ㄊ","ㄧ"], tones:[
     { tone:"",  back:{ zh:"踢球", zhBpmf:["ㄊ","ㄧ","ㄑ","ㄧ","ㄡˊ"] }},
     { tone:"ˊ", back:{ zh:"提供", zhBpmf:["ㄊ","ㄧˊ","ㄍ","ㄨ","ㄥ"] }},
@@ -236,7 +235,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"替代", zhBpmf:["ㄊ","ㄧˋ","ㄉ","ㄞˋ"] }}
   ]},
 
-  // ㄊ + ㄨ
   { front:["ㄊ","ㄨ"], tones:[
     { tone:"",  back:{ zh:"突然", zhBpmf:["ㄊ","ㄨ","ㄖ","ㄢˊ"] }},
     { tone:"ˊ", back:{ zh:"圖案", zhBpmf:["ㄊ","ㄨˊ","ㄢˋ"] }},
@@ -244,7 +242,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"兔子", zhBpmf:["ㄊ","ㄨˋ","˙","ㄗ"] }}
   ]},
 
-  // ㄊ + ㄚ
   { front:["ㄊ","ㄚ"], tones:[
     { tone:"",  back:{ zh:"他們", zhBpmf:["ㄊ","ㄚ","˙","ㄇ","ㄣ"] }},
     { tone:"ˊ", back:{ zh:"", zhBpmf:[] }},
@@ -252,7 +249,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"踏步", zhBpmf:["ㄊ","ㄚˋ","ㄅ","ㄨˋ"] }}
   ]},
 
-  // ㄊ + ㄜ
   { front:["ㄊ","ㄜ"], tones:[
     { tone:"",  back:{ zh:"", zhBpmf:[] }},
     { tone:"ˊ", back:{ zh:"", zhBpmf:[] }},
@@ -260,7 +256,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"特地", zhBpmf:["ㄊ","ㄜˋ","ㄉ","ㄧˋ"] }}
   ]},
 
-  // ㄊ + ㄞ
   { front:["ㄊ","ㄞ"], tones:[
     { tone:"",  back:{ zh:"胎兒", zhBpmf:["ㄊ","ㄞ","ㄦˊ"] }},
     { tone:"ˊ", back:{ zh:"抬頭", zhBpmf:["ㄊ","ㄞˊ","ㄊ","ㄡˊ"] }},
@@ -268,7 +263,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"態度", zhBpmf:["ㄊ","ㄞˋ","ㄉ","ㄨˋ"] }}
   ]},
 
-  // ㄊ + ㄠ
   { front:["ㄊ","ㄠ"], tones:[
     { tone:"",  back:{ zh:"掏錢", zhBpmf:["ㄊ","ㄠ","ㄑ","ㄧ","ㄢˊ"] }},
     { tone:"ˊ", back:{ zh:"陶器", zhBpmf:["ㄊ","ㄠˊ","ㄑ","ㄧˋ"] }},
@@ -276,7 +270,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"套裝", zhBpmf:["ㄊ","ㄠˋ","ㄓ","ㄨ","ㄤ"] }}
   ]},
 
-  // ㄊ + ㄡ
   { front:["ㄊ","ㄡ"], tones:[
     { tone:"",  back:{ zh:"偷笑", zhBpmf:["ㄊ","ㄡ","ㄒ","ㄧ","ㄠˋ"] }},
     { tone:"ˊ", back:{ zh:"投手", zhBpmf:["ㄊ","ㄡˊ","ㄕ","ㄡˇ"] }},
@@ -284,7 +277,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"透氣", zhBpmf:["ㄊ","ㄡˋ","ㄑ","ㄧˋ"] }}
   ]},
 
-  // ㄊ + ㄢ
   { front:["ㄊ","ㄢ"], tones:[
     { tone:"",  back:{ zh:"攤位", zhBpmf:["ㄊ","ㄢ","ㄨ","ㄟˋ"] }},
     { tone:"ˊ", back:{ zh:"彈琴", zhBpmf:["ㄊ","ㄢˊ","ㄑ","ㄧ","ㄣˊ"] }},
@@ -292,7 +284,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"探望", zhBpmf:["ㄊ","ㄢˋ","ㄨ","ㄤˋ"] }}
   ]},
 
-  // ㄊ + ㄤ
   { front:["ㄊ","ㄤ"], tones:[
     { tone:"",  back:{ zh:"湯包", zhBpmf:["ㄊ","ㄤ","ㄅ","ㄠ"] }},
     { tone:"ˊ", back:{ zh:"糖果", zhBpmf:["ㄊ","ㄤˊ","ㄍ","ㄨ","ㄛˇ"] }},
@@ -300,7 +291,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"燙傷", zhBpmf:["ㄊ","ㄤˋ","ㄕ","ㄤ"] }}
   ]},
 
-  // ㄊ + ㄥ
   { front:["ㄊ","ㄥ"], tones:[
     { tone:"",  back:{ zh:"", zhBpmf:[] }}, 
     { tone:"ˊ", back:{ zh:"騰空", zhBpmf:["ㄊ","ㄥˊ","ㄎ","ㄨ","ㄥ"] }},
@@ -308,7 +298,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"", zhBpmf:[] }}
   ]},
 
-  // ㄊ + ㄧㄝ
   { front:["ㄊ","ㄧ","ㄝ"], tones:[
     { tone:"",  back:{ zh:"貼紙", zhBpmf:["ㄊ","ㄧ","ㄝ","ㄓˇ"] }},
     { tone:"ˊ", back:{ zh:"", zhBpmf:[] }},
@@ -316,7 +305,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"饕餮", zhBpmf:["ㄊ","ㄠ","ㄊ","ㄧ","ㄝˋ"] }}
   ]},
 
-  // ㄊ + ㄧㄠ
   { front:["ㄊ","ㄧ","ㄠ"], tones:[
     { tone:"",  back:{ zh:"挑選", zhBpmf:["ㄊ","ㄧ","ㄠ","ㄒ","ㄩ","ㄢˇ"] }},
     { tone:"ˊ", back:{ zh:"條件", zhBpmf:["ㄊ","ㄧ","ㄠˊ","ㄐ","ㄧ","ㄢˋ"] }},
@@ -324,7 +312,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"跳舞", zhBpmf:["ㄊ","ㄧ","ㄠˋ","ㄨˇ"] }}
   ]},
 
-  // ㄊ + ㄧㄢ 
   { front:["ㄊ","ㄧ","ㄢ"], tones:[
     { tone:"",  back:{ zh:"天氣", zhBpmf:["ㄊ","ㄧ","ㄢ","ㄑ","ㄧˋ"] }},
     { tone:"ˊ", back:{ zh:"田地", zhBpmf:["ㄊ","ㄧ","ㄢˊ","ㄉ","ㄧˋ"] }},
@@ -332,7 +319,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"", zhBpmf:[] }} 
   ]},
 
-  // ㄊ + ㄧㄥ
   { front:["ㄊ","ㄧ","ㄥ"], tones:[
     { tone:"",  back:{ zh:"聽說", zhBpmf:["ㄊ","ㄧ","ㄥ","ㄕ","ㄨ","ㄛ"] }},
     { tone:"ˊ", back:{ zh:"停車", zhBpmf:["ㄊ","ㄧ","ㄥˊ","ㄔ","ㄜ"] }},
@@ -340,7 +326,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"聽任", zhBpmf:["ㄊ","ㄧ","ㄥˋ","ㄖ","ㄣˋ"] }} 
   ]},
 
-  // ㄊ + ㄨㄛ
   { front:["ㄊ","ㄨ","ㄛ"], tones:[
     { tone:"",  back:{ zh:"拖鞋", zhBpmf:["ㄊ","ㄨ","ㄛ","ㄒ","ㄧ","ㄝˊ"] }},
     { tone:"ˊ", back:{ zh:"駝背", zhBpmf:["ㄊ","ㄨ","ㄛˊ","ㄅ","ㄟˋ"] }},
@@ -348,7 +333,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"拓展", zhBpmf:["ㄊ","ㄨ","ㄛˋ","ㄓ","ㄢˇ"] }}
   ]},
 
-  // ㄊ + ㄨㄟ
   { front:["ㄊ","ㄨ","ㄟ"], tones:[
     { tone:"",  back:{ zh:"推開", zhBpmf:["ㄊ","ㄨ","ㄟ","ㄎ","ㄞ"] }},
     { tone:"ˊ", back:{ zh:"頹廢", zhBpmf:["ㄊ","ㄨ","ㄟˊ","ㄈ","ㄟˋ"] }}, 
@@ -356,7 +340,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"退休", zhBpmf:["ㄊ","ㄨ","ㄟˋ","ㄒ","ㄧ","ㄡ"] }}
   ]},
 
-  // ㄊ + ㄨㄢ
   { front:["ㄊ","ㄨ","ㄢ"], tones:[
     { tone:"",  back:{ zh:"湍急", zhBpmf:["ㄊ","ㄨ","ㄢ","ㄐ","ㄧˊ"] }},
     { tone:"ˊ", back:{ zh:"團體", zhBpmf:["ㄊ","ㄨ","ㄢˊ","ㄊ","ㄧˇ"] }},
@@ -364,7 +347,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"彖辭", zhBpmf:["ㄊ","ㄨ","ㄢˋ","ㄘˊ"] }} 
   ]},
 
-  // ㄊ + ㄨㄣ
   { front:["ㄊ","ㄨ","ㄣ"], tones:[
     { tone:"",  back:{ zh:"吞下", zhBpmf:["ㄊ","ㄨ","ㄣ","ㄒ","ㄧ","ㄚˋ"] }},
     { tone:"ˊ", back:{ zh:"囤積", zhBpmf:["ㄊ","ㄨ","ㄣˊ","ㄐ","ㄧ"] }},
@@ -372,7 +354,6 @@ const data = [
     { tone:"ˋ", back:{ zh:"褪色", zhBpmf:["ㄊ","ㄨ","ㄣˋ","ㄙ","ㄜˋ"] }}  
   ]},
 
-  // ㄊ + ㄨㄥ
   { front:["ㄊ","ㄨ","ㄥ"], tones:[
     { tone:"",  back:{ zh:"通過", zhBpmf:["ㄊ","ㄨ","ㄥ","ㄍ","ㄨ","ㄛˋ"] }},
     { tone:"ˊ", back:{ zh:"同學", zhBpmf:["ㄊ","ㄨ","ㄥˊ","ㄒ","ㄩ","ㄝˊ"] }},
@@ -382,7 +363,7 @@ const data = [
 ];
 
 
-
+// ---------------- 生成卡片 ----------------
 const wrapper = document.getElementById("wrapper");
 
 data.forEach(item => {

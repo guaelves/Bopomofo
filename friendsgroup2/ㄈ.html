@@ -176,7 +176,7 @@ h1 {
 </style>
 </head>
 <body>
-<h1>ㄈ 拼音練習</h1>
+<h1>ㄈ拼音練習</h1>
 
 <div class="wrapper" id="wrapper"></div>
 
@@ -225,7 +225,7 @@ window.onload = ()=>{ initAudio(); setupSpeechSynthesis(); };
 
 
 const data = [
-  // ㄈ + ㄨ 
+ 
   { front:["ㄈ","ㄨ"], tones:[
     { tone:"",  back:{ zh:"夫妻", zhBpmf:["ㄈ","ㄨ","ㄑ","ㄧ"] }},
     { tone:"ˊ", back:{ zh:"扶持", zhBpmf:["ㄈ","ㄨˊ","ㄔˊ"] }},
@@ -233,7 +233,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"復習", zhBpmf:["ㄈ","ㄨˋ","ㄒ","ㄧˊ"] }}
   ]},
 
-  // ㄈ + ㄚ
+
   { front:["ㄈ","ㄚ"], tones:[
     { tone:"",  back:{ zh:"發芽", zhBpmf:["ㄈ","ㄚ","ㄧ","ㄚˊ"] }},
     { tone:"ˊ", back:{ zh:"罰款", zhBpmf:["ㄈ","ㄚˊ","ㄎ","ㄨ","ㄢˇ"] }},
@@ -241,7 +241,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"琺瑯", zhBpmf:["ㄈ","ㄚˋ","ㄌ","ㄤˊ"] }}
   ]},
 
-  // ㄈ + ㄛ
+ 
   { front:["ㄈ","ㄛ"], tones:[
     { tone:"",  back:{ zh:"", zhBpmf:[] }}, 
     { tone:"ˊ", back:{ zh:"佛祖", zhBpmf:["ㄈ","ㄛˊ","ㄗ","ㄨˇ"] }},
@@ -249,7 +249,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"", zhBpmf:[] }} 
   ]},
 
-  // ㄈ + ㄟ
+ 
   { front:["ㄈ","ㄟ"], tones:[
     { tone:"",  back:{ zh:"飛機", zhBpmf:["ㄈ","ㄟ","ㄐ","ㄧ"] }},
     { tone:"ˊ", back:{ zh:"肥皂", zhBpmf:["ㄈ","ㄟˊ","ㄗ","ㄠˋ"] }},
@@ -257,7 +257,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"費用", zhBpmf:["ㄈ","ㄟˋ","ㄩ","ㄥˋ"] }}
   ]},
 
-  // ㄈ + ㄡ
+
   { front:["ㄈ","ㄡ"], tones:[
     { tone:"",  back:{ zh:"", zhBpmf:[] }},
     { tone:"ˊ", back:{ zh:"", zhBpmf:[] }},
@@ -265,7 +265,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"", zhBpmf:[] }}
   ]},
 
-  // ㄈ + ㄢ
+ 
   { front:["ㄈ","ㄢ"], tones:[
     { tone:"",  back:{ zh:"翻轉", zhBpmf:["ㄈ","ㄢ","ㄓ","ㄨ","ㄢˇ"] }},
     { tone:"ˊ", back:{ zh:"煩惱", zhBpmf:["ㄈ","ㄢˊ","ㄋ","ㄠˇ"] }},
@@ -273,7 +273,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"範圍", zhBpmf:["ㄈ","ㄢˋ","ㄨ","ㄟˊ"] }}
   ]},
 
-  // ㄈ + ㄣ
+
   { front:["ㄈ","ㄣ"], tones:[
     { tone:"",  back:{ zh:"分開", zhBpmf:["ㄈ","ㄣ","ㄎ","ㄞ"] }},
     { tone:"ˊ", back:{ zh:"焚燒", zhBpmf:["ㄈ","ㄣˊ","ㄕ","ㄠ"] }},
@@ -281,7 +281,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"份量", zhBpmf:["ㄈ","ㄣˋ","ㄌ","ㄧ","ㄤˋ"] }}
   ]},
 
-  // ㄈ + ㄤ
+ 
   { front:["ㄈ","ㄤ"], tones:[
     { tone:"",  back:{ zh:"方向", zhBpmf:["ㄈ","ㄤ","ㄒ","ㄧ","ㄤˋ"] }},
     { tone:"ˊ", back:{ zh:"房子", zhBpmf:["ㄈ","ㄤˊ","˙","ㄗ"] }},
@@ -289,7 +289,7 @@ const data = [
     { tone:"ˋ", back:{ zh:"放假", zhBpmf:["ㄈ","ㄤˋ","ㄐ","ㄧ","ㄚˋ"] }}
   ]},
 
-  // ㄈ + ㄥ
+ 
   { front:["ㄈ","ㄥ"], tones:[
     { tone:"",  back:{ zh:"風景", zhBpmf:["ㄈ","ㄥ","ㄐ","ㄧ","ㄥˇ"] }},
     { tone:"ˊ", back:{ zh:"縫合", zhBpmf:["ㄈ","ㄥˊ","ㄏ","ㄜˊ"] }},
@@ -298,6 +298,8 @@ const data = [
   ]}
 ];
 
+
+// ---------------- 生成卡片 ----------------
 const wrapper = document.getElementById("wrapper");
 
 data.forEach(item => {
