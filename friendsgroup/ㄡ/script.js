@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ✅ ㄡ的好朋友（聲母）
-  const goodFriends = ["ㄅ", "ㄇ", "ㄈ", "ㄉ", "ㄊ", "ㄋ", "ㄌ", "ㄍ", "ㄎ", "ㄏ" , "ㄓ", "ㄔ", "ㄕ", "ㄖ", "ㄗ", "ㄘ", "ㄙ"];
+  const goodFriends = ["ㄆ", "ㄇ", "ㄈ", "ㄉ", "ㄊ", "ㄋ", "ㄌ", "ㄍ", "ㄎ", "ㄏ" , "ㄓ", "ㄔ", "ㄕ", "ㄖ", "ㄗ", "ㄘ", "ㄙ"];
 
   const tiles = document.querySelectorAll('.tile');
   const resultDiv = document.getElementById('result');
@@ -117,3 +117,4 @@ document.addEventListener('DOMContentLoaded', () => {
     resultDiv.innerHTML = '';
   });
 });
+
