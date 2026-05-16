@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>注音學習單生成器</title>
+    <style>
+        body {
+            font-family: 'DFKai-SB', 'BiauKai', '微軟正黑體', sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .control-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 100px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            padding: 8px;
+            width: 80px;
+            font-size: 16px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .canvas-container {
+            text-align: center;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<div class="control-panel">
+    <h2>注音練習單生成器</h2>
+    <p>請輸入要放在大九宮格中間三個位置的注音符號（留空則不顯示）：</p>
+    <div class="input-group">
+        <label for="initial">聲母 (上)：</label>
+        <input type="text" id="initial" maxlength="1" value="ㄌ">
+    </div>
+    <div class="input-group">
+        <label for="medial">介母 (中)：</label>
+        <input type="text" id="medial" maxlength="1" value="ㄧ">
+    </div>
+    <div class="input-group">
+        <label for="final">韻母 (下)：</label>
+        <input type="text" id="final" maxlength="1" value="ㄚ">
+    </div>
+    <button onclick="drawWorksheet()">更新並生成練習單</button>
+</div>
+
+<div class="canvas-container">
+    <canvas id="worksheet" width="800" height="1130"></canvas>
+</div>
+
+<script>
+    function drawWorksheet() {
+        const canvas = document.getElementById('worksheet');
+        const ctx = canvas.getContext('2d');
+        
+        // 清空畫布
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // 1. 繪製標題 "注音學習單"
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 44px DFKai-SB, BiauKai, "微軟正黑體"';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillText('注音學習單', 50, 40);
+        
+        // 獲取使用者輸入的注音
+        const bopomofo = {
+            top: document.getElementById('initial').value.trim(),
+            mid: document.getElementById('medial').value.trim(),
+            bot: document.getElementById('final').value.trim()
+        };
+
+        // 2. 繪製上方兩個大九宮格
+        const largeGridY = 120;
+        const largeGridSize = 330;
+        
+        // 左大九宮格 (帶有使用者輸入的注音)
+        drawJiugonge(ctx, 50, largeGridY, largeGridSize, bopomofo, true);
+        // 右大九宮格 (留白給小朋友練習畫)
+        drawJiugonge(ctx, 420, largeGridY, largeGridSize, {top:'', mid:'', bot:''}, false);
+        
+        // 3. 繪製下方三排小九宮格 (每排4個)
+        const smallGridStartY = 490;
+        const smallGridSize = 160;
+        const gapX = 30;
+        const gapY = 40;
+        
+        for (let row = 0; row < 3; row++) {
+            for (let col = 0; col < 4; col++) {
+                const x = 50 + col * (smallGridSize + gapX);
+                const y = smallGridStartY + row * (smallGridSize + gapY);
+                // 小格一律不填寫字，作為書寫練習
+                drawJiugonge(ctx, x, y, smallGridSize, {top:'', mid:'', bot:''}, false);
+            }
+        }
+    }
+
+    // 繪製單個九宮格的函式
+    function drawJiugonge(ctx, x, y, size, textObj, isLarge) {
+        // 繪製外框
+        ctx.strokeStyle = '#666666';
+        ctx.lineWidth = isLarge ? 3 : 2;
+        ctx.strokeRect(x, y, size, size);
+        
+        // 繪製內部虛線
+        ctx.strokeStyle = '#999999';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([6, 4]); // 虛線樣式
+        
+        const third = size / 3;
+        
+        // 垂直虛線
+        ctx.beginPath();
+        ctx.moveTo(x + third, y); ctx.lineTo(x + third, y + size);
+        ctx.moveTo(x + third * 2, y); ctx.lineTo(x + third * 2, y + size);
+        // 水平虛線
+        ctx.moveTo(x, y + third); ctx.lineTo(x + size, y + third);
+        ctx.moveTo(x, y + third * 2); ctx.lineTo(x + size, y + third * 2);
+        ctx.stroke();
+        ctx.setLineDash([]); // 恢復實線
+        
+        // 填入注音符號 (垂直置中於九宮格的中間三個格子)
+        ctx.fillStyle = '#000000';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        // 根據格子大小動態調整字體
+        const fontSize = third * 0.85; 
+        ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
+        
+        const centerX = x + size / 2;
+        
+        // 上格 (聲母)
+        if (textObj.top) {
+            ctx.fillText(textObj.top, centerX, y + third * 0.5);
+        }
+        // 中格 (介母)
+        if (textObj.mid) {
+            ctx.fillText(textObj.mid, centerX, y + third * 1.5);
+        }
+        // 下格 (韻母)
+        if (textObj.bot) {
+            ctx.fillText(textObj.bot, centerX, y + third * 2.5);
+        }
+    }
+
+    // 初始化繪製
+    window.onload = drawWorksheet;
+</script>
+
+</body>
+</html>
