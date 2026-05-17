@@ -25,7 +25,7 @@
         }
         h2 { margin-top: 0; color: #1a365d; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
         
-        /* 二拼對照表格樣式 (由左至右排列) */
+        /* 橫縱軸交換後的表格樣式 */
         .table-container {
             overflow-x: auto;
             margin-top: 15px;
@@ -39,33 +39,43 @@
         }
         table.bopo-table th, table.bopo-table td {
             border: 1px solid #cbd5e1;
-            padding: 6px;
-            min-width: 60px;
-            height: 45px;
+            padding: 8px 4px;
+            min-width: 55px;
+            height: 75px; /* 提高高度以容納直寫文字 */
         }
         table.bopo-table th {
             background-color: #f8fafc;
             color: #1e293b;
             font-weight: bold;
+            font-size: 16px;
         }
         table.bopo-table th.medial-header {
             background-color: #f1f5f9;
             color: #0f172a;
+            width: 70px;
         }
+        
+        /* 關鍵：利用 CSS writing-mode 實現注音直立式垂直排列 */
         .btn-table-combin {
             width: 100%;
             height: 100%;
-            min-height: 38px;
-            font-size: 16px;
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-family: 'DFKai-SB', 'BiauKai', sans-serif;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
+            
+            /* 直書核心設定 */
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-size: 18px;
+            letter-spacing: 2px;
+            padding: 4px 0;
+            margin: 0 auto;
         }
         .btn-table-combin:hover {
             background-color: #e0f2fe;
@@ -122,18 +132,15 @@
 
 <div class="container">
     <div class="control-panel">
-        <h2>22個二拼結合韻互動學習單 (對照表模式)</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">表格已依據您的圖紙修改為【由左至右（ㄧ➔ㄨ➔ㄩ）】排列，請直接點擊表中的注音組合切換：</p>
+        <h2>22個二拼結合韻互動學習單 (直書對照表)</h2>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">橫縱軸已對調，且對照表內的結合韻已轉為【直立式】排列。點擊表格內注音即可更新下方畫布：</p>
         
         <div class="table-container">
             <table class="bopo-table">
                 <thead>
-                    <tr>
-                        <th style="width: 80px;">韻符 \ 介符</th>
-                        <th class="medial-header">ㄧ</th>
-                        <th class="medial-header">ㄨ</th>
-                        <th class="medial-header">ㄩ</th>
-                    </tr>
+                    <tr id="table-header-row">
+                        <th class="medial-header">介符 \ 韻符</th>
+                        </tr>
                 </thead>
                 <tbody id="table-body">
                     </tbody>
@@ -152,10 +159,12 @@
 </div>
 
 <script>
-    // 依據圖紙完整定義由左至右排列的所有韻母順序
+    // 橫軸 12 韻母定義
     const finalsOrder = ['ㄚ', 'ㄛ', 'ㄜ', 'ㄝ', 'ㄞ', 'ㄟ', 'ㄠ', 'ㄡ', 'ㄢ', 'ㄣ', 'ㄤ', 'ㄥ'];
+    // 縱軸 3 介母定義
+    const medialsOrder = ['ㄧ', 'ㄨ', 'ㄩ'];
 
-    // 22個合法的二拼結合韻組合對照表
+    // 22個合法的二拼結合韻組合資料庫
     const validCombinations = {
         'ㄧ': ['ㄚ', 'ㄛ', 'ㄝ', 'ㄞ', 'ㄠ', 'ㄡ', 'ㄢ', 'ㄣ', 'ㄤ', 'ㄥ'],
         'ㄨ': ['ㄚ', 'ㄛ', 'ㄞ', 'ㄟ', 'ㄢ', 'ㄣ', 'ㄤ', 'ㄥ'],
@@ -164,32 +173,41 @@
 
     let currentBopo = { m: 'ㄧ', f: 'ㄚ' };
 
-    // 動態建置由左至右的對照表格
-    function buildTablePanel() {
+    // 建置交換後的直書表格
+    function buildSwappedTable() {
+        const headerRow = document.getElementById('table-header-row');
         const tbody = document.getElementById('table-body');
         
+        // 1. 生成橫軸表頭 (12個韻符)
         finalsOrder.forEach(final => {
+            const th = document.createElement('th');
+            th.textContent = final;
+            headerRow.appendChild(th);
+        });
+        
+        // 2. 生成縱軸列 (3個介符列)
+        medialsOrder.forEach(medial => {
             const tr = document.createElement('tr');
             
-            // 第一欄：顯示韻母標頭
+            // 每列的第一個欄位：顯示介母標頭
             const tdHeader = document.createElement('td');
             tdHeader.style.fontWeight = 'bold';
-            tdHeader.style.backgroundColor = '#f8fafc';
-            tdHeader.textContent = final;
+            tdHeader.style.backgroundColor = '#f1f5f9';
+            tdHeader.textContent = medial;
             tr.appendChild(tdHeader);
             
-            // 依序檢查並建置 ㄧ、ㄨ、ㄩ 橫向欄位
-            ['ㄧ', 'ㄨ', 'ㄩ'].forEach(medial => {
+            // 橫向依序填入 12 個韻母格
+            finalsOrder.forEach(final => {
                 const td = document.createElement('td');
                 
-                // 檢查該交叉點是否存在合法的二拼組合
+                // 檢查該組合是否存在
                 if (validCombinations[medial].includes(final)) {
                     const btn = document.createElement('button');
                     btn.className = 'btn-table-combin';
                     btn.id = `btn-${medial}-${final}`;
-                    btn.textContent = `${medial}${final}`;
+                    btn.textContent = `${medial}${final}`; // 靠 CSS witting-mode 自動轉為直立式
                     
-                    // 預設將 ㄧㄚ 高亮
+                    // 預設將 ㄧㄚ 設為 active
                     if (medial === 'ㄧ' && final === 'ㄚ') btn.classList.add('active');
                     
                     btn.onclick = function() {
@@ -202,7 +220,7 @@
                     };
                     td.appendChild(btn);
                 } else {
-                    // 若是不存在的組合（如 ㄩㄚ），則留白，與圖紙完全一致
+                    // 不存在的欄位留白處理
                     td.style.backgroundColor = '#fafafa';
                 }
                 tr.appendChild(td);
@@ -219,7 +237,6 @@
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // 1. 標題
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 44px DFKai-SB, BiauKai, "微軟正黑體"';
         ctx.textAlign = 'left';
@@ -228,13 +245,11 @@
         
         const bopomofo = { mid: currentBopo.m, bot: currentBopo.f };
 
-        // 2. 上方兩個大九宮格
         const largeGridY = 120;
         const largeGridSize = 330;
         drawJiugonge(ctx, 50, largeGridY, largeGridSize, bopomofo, '', true, 'black');
         drawJiugonge(ctx, 420, largeGridY, largeGridSize, bopomofo, '', true, 'outline');
         
-        // 3. 下方三排小九宮格
         const smallGridStartY = 490;
         const smallGridSize = 160;
         const gapX = 30;
@@ -259,7 +274,6 @@
             }
         }
 
-        // 4. 造詞練習欄位
         const textY = smallGridStartY + smallGridSize + Math.floor((baseGapY + shiftUpOffset) / 2);
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 24px DFKai-SB, BiauKai, "微軟正黑體"';
@@ -322,13 +336,15 @@
             ctx.restore();
         }
 
-        // 輔助手工向量軌跡：精準刻畫出完美比例的聲調（固定為主文字尺寸的 1/2，絕不變形跑位）
+        const centerX = x + size / 2;
+
+        // 1/2 空間分配
         if (textObj.mid) {
-            drawMainText(textObj.mid, centerX = x + size / 2, y + size * 0.25);
+            drawMainText(textObj.mid, centerX, y + size * 0.25);
         }
         
         if (textObj.bot) {
-            drawMainText(textObj.bot, centerX = x + size / 2, y + size * 0.75);
+            drawMainText(textObj.bot, centerX, y + size * 0.75);
             
             if (tone) {
                 ctx.save();
@@ -339,7 +355,7 @@
                 let fillColor = '#ffffff';
                 if (textMode === 'gray') strokeColor = '#d3d3d3';
 
-                // 聲調尺寸絕對定死：文字大小的精確二分之一
+                // 聲調尺寸：文字大小的精確 1/2
                 const targetToneSize = fontSize * 0.5; 
                 const lineW = isLarge ? 12 : 5.5; 
 
@@ -396,7 +412,7 @@
     }
 
     window.onload = function() {
-        buildTablePanel();
+        buildSwappedTable();
         drawWorksheet();
     };
 </script>
