@@ -105,7 +105,7 @@
 <div class="container">
     <div class="control-panel">
         <h2>22個二拼結合韻互動面板</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">點選下方二拼組合，注音將採取 1/2 上下對半分極限放大，聲調比例已微調縮小並吸附於韻母右上方：</p>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">點選下方二拼組合，聲調大小與位置已優化，完美精準吸附於韻母的右上方位置：</p>
         
         <h3>【ㄧ】的結合韻系列 (10組)</h3>
         <div class="grid-section">
@@ -236,12 +236,11 @@
         ctx.stroke();
         ctx.setLineDash([]);
         
-        // 1. 【極限放大】主注音文字字體大小：提高至 0.55 倍邊長
+        // 主注音文字字體大小 (0.55 倍邊長)
         const fontSize = size * 0.55; 
         
         function drawMainText(text, tx, ty) {
             ctx.save();
-            // 修正錯誤：恢復正確的 Canvas 字體格式定義
             ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -264,10 +263,10 @@
             ctx.restore();
         }
 
-        // 2. 【比例微調】聲調專用字體：設定為 size * 0.43 (比主注音字體略小一些)
+        // 聲調專用字體：調至 size * 0.38 (完美搭配極大化注音的黃金比例)
         function drawToneText(text, tx, ty) {
             ctx.save();
-            const toneSize = size * 0.43;
+            const toneSize = size * 0.38;
             ctx.font = `${isLarge ? 'bold' : 'normal'} ${toneSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
@@ -302,13 +301,13 @@
         if (textObj.bot) {
             drawMainText(textObj.bot, centerX, y + size * 0.75);
             
-            // 3. 【精準吸附】聲調：完美定位於韻母格子的右上方區域
+            // 聲調優化：完美懸掛於韻母右上方、第 6 格的區域
             if (tone) {
-                // 水平位置：貼齊右側垂直分界虛線
-                const toneX = x + (third * 2);
+                // 水平位置：貼齊右側垂直分界虛線再稍微往右移一點點 (third * 0.1) 避免過度擁擠
+                const toneX = x + (third * 2) + (third * 0.1);
                 
-                // 垂直位置：微調至中線橫虛線（y + size * 0.5）略往上一點點，達成吸附韻母右上方效果
-                const toneY = y + (size * 0.46);
+                // 垂直位置：拉高至 y + (size * 0.40)，與極限放大的韻母拉開安全距離，視覺最舒適
+                const toneY = y + (size * 0.40);
                 
                 drawToneText(tone, toneX, toneY);
             }
