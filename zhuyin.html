@@ -192,10 +192,11 @@
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'middle';
                 
-                // 畫筆定在韻母格子的右上方頂點（兩條內部虛線交叉點）
-                // 稍微往右偏移 (third * 0.05) 避免完全黏在虛線上
+                // 水平位置不變（靠著右側虛線再往右推一點點）
                 const toneX = x + (third * 2) + (third * 0.05);
-                const toneY = y + (third * 2); 
+                
+                // 垂直位置下移：在原本的虛線頂點加上 (third * 0.2)，使其更往下移到韻母右上方空檔處
+                const toneY = y + (third * 2) + (third * 0.2); 
                 
                 ctx.fillText(tone, toneX, toneY);
                 ctx.restore();
