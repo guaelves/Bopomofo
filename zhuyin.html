@@ -2,227 +2,223 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>四聲調注音學習單生成器 (支援A4下載)</title>
+    <title>22個二拼結合韻互動式注音學習單生成器</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             font-family: 'DFKai-SB', 'BiauKai', '微軟正黑體', sans-serif;
             margin: 20px;
-            background-color: #f5f5f5;
+            background-color: #f0f4f8;
             color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
         }
         .control-panel {
             background-color: white;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            max-width: 750px;
-            margin: 0 auto 20px auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
         }
-        .panel-row {
+        h2 { margin-top: 0; color: #1a365d; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        h3 { margin: 15px 0 5px 0; color: #2b6cb0; font-size: 16px; }
+        
+        .grid-section {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 15px;
+        }
+        .btn-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 15px;
-            align-items: center;
+            gap: 8px;
         }
-        .input-group {
-            display: flex;
-            align-items: center;
-            gap: 5px;
+        .btn-combin {
+            padding: 8px 14px;
+            font-size: 16px;
+            background-color: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            font-family: 'DFKai-SB', 'BiauKai', sans-serif;
         }
-        label {
+        .btn-combin:hover {
+            background-color: #e0f2fe;
+            border-color: #7dd3fc;
+            color: #0369a1;
+            transform: translateY(-1px);
+        }
+        .btn-combin.active {
+            background-color: #3b82f6;
+            border-color: #2563eb;
+            color: white;
             font-weight: bold;
         }
-        select, input[type="text"] {
-            padding: 8px;
-            font-size: 16px;
-            text-align: center;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        select {
-            min-width: 80px;
-        }
-        input[type="text"] {
-            width: 50px;
-        }
-        .btn-container {
-            margin-top: 15px;
+
+        .action-row {
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
         }
-        button {
-            padding: 10px 20px;
+        .current-status {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0f172a;
+            background: #f1f5f9;
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+        button.main-btn {
+            padding: 12px 24px;
             font-size: 16px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
+            transition: background 0.2s;
         }
-        .btn-update {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .btn-update:hover { background-color: #45a049; }
-        .btn-download {
-            background-color: #008CBA;
-            color: white;
-        }
-        .btn-download:hover { background-color: #007bb6; }
+        .btn-download { background-color: #059669; color: white; }
+        .btn-download:hover { background-color: #047857; }
         
-        .canvas-container {
-            text-align: center;
-            margin-top: 20px;
-        }
+        .canvas-container { text-align: center; margin-top: 20px; }
         canvas {
-            border: 1px solid #ccc;
+            border: 1px solid #cbd5e1;
             background-color: white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             max-width: 100%;
             height: auto;
-        }
-        .quick-tips {
-            font-size: 13px;
-            color: #666;
-            margin-top: 5px;
         }
     </style>
 </head>
 <body>
 
-<div class="control-panel">
-    <h2>四聲調注音學習單生成器</h2>
-    <p>您可以用下拉選單點選快速組合，也可以直接在輸入框中修改自訂字：</p>
-    
-    <div class="panel-row">
-        <div class="input-group">
-            <label for="select-initial">聲母：</label>
-            <select id="select-initial" onchange="syncToInput()">
-                <option value="">(無)</option>
-                <option value="ㄅ">ㄅ</option><option value="ㄆ">ㄆ</option><option value="ㄇ">ㄇ</option><option value="ㄈ">ㄈ</option>
-                <option value="ㄉ">ㄉ</option><option value="ㄊ">ㄊ</option><option value="ㄋ">ㄋ</option><option value="ㄌ" selected>ㄌ</option>
-                <option value="ㄍ">ㄍ</option><option value="ㄎ">ㄎ</option><option value="ㄏ">ㄏ</option>
-                <option value="ㄐ">ㄐ</option><option value="ㄑ">ㄑ</option><option value="ㄒ">ㄒ</option>
-                <option value="ㄓ">ㄓ</option><option value="ㄔ">ㄔ</option><option value="ㄕ">ㄕ</option><option value="ㄖ">ㄖ</option>
-                <option value="ㄗ">ㄗ</option><option value="ㄘ">ㄘ</option><option value="ㄙ">ㄙ</option>
-            </select>
-            <input type="text" id="initial" maxlength="1" value="ㄌ">
+<div class="container">
+    <div class="control-panel">
+        <h2>22個二拼結合韻互動面板</h2>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">請直接點選下方對照圖中的任意結合韻組合，練習單會自動重新平均分配上下位置：</p>
+        
+        <h3>【ㄧ】的結合韻系列 (10組)</h3>
+        <div class="grid-section">
+            <div class="btn-group" id="group-i"></div>
         </div>
 
-        <div class="input-group">
-            <label for="select-medial">介母：</label>
-            <select id="select-medial" onchange="syncToInput()">
-                <option value="">(無)</option>
-                <option value="ㄧ" selected>ㄧ</option>
-                <option value="ㄨ">ㄨ</option>
-                <option value="ㄩ">ㄩ</option>
-            </select>
-            <input type="text" id="medial" maxlength="1" value="ㄧ">
+        <h3>【ㄨ】的結合韻系列 (8組)</h3>
+        <div class="grid-section">
+            <div class="btn-group" id="group-u"></div>
         </div>
 
-        <div class="input-group">
-            <label for="select-final">韻母：</label>
-            <select id="select-final" onchange="syncToInput()">
-                <option value="">(無)</option>
-                <option value="ㄚ" selected>ㄚ</option><option value="ㄛ">ㄛ</option><option value="ㄜ">ㄜ</option><option value="ㄝ">ㄝ</option>
-                <option value="ㄞ">ㄞ</option><option value="ㄟ">ㄟ</option><option value="ㄠ">ㄠ</option><option value="ㄡ">ㄡ</option>
-                <option value="ㄢ">ㄢ</option><option value="ㄣ">ㄣ</option><option value="ㄤ">ㄤ</option><option value="ㄥ">ㄥ</option>
-                <option value="ㄦ">ㄦ</option>
-            </select>
-            <input type="text" id="final" maxlength="1" value="ㄚ">
+        <h3>【ㄩ】的結合韻系列 (4組)</h3>
+        <div class="grid-section">
+            <div class="btn-group" id="group-yu"></div>
+        </div>
+
+        <div class="action-row">
+            <div class="current-status" id="current-text">目前選取：ㄧ + ㄚ</div>
+            <button class="main-btn btn-download" onclick="downloadPDF()">下載當前組合 A4 PDF</button>
         </div>
     </div>
 
-    <div class="btn-container">
-        <button class="btn-update" onclick="drawWorksheet()">更新練習單預覽</button>
-        <button class="btn-download" onclick="downloadPDF()">下載標準 A4 練習單 PDF</button>
+    <div class="canvas-container">
+        <canvas id="worksheet" width="800" height="1130"></canvas>
     </div>
-    <div class="quick-tips">提示：下載功能會自動將下方內容完美縮放至標準 A4 尺寸（210mm × 297mm）並導出高品質 PDF。</div>
-</div>
-
-<div class="canvas-container" id="print-area">
-    <canvas id="worksheet" width="800" height="1130"></canvas>
 </div>
 
 <script>
-    function syncToInput() {
-        document.getElementById('initial').value = document.getElementById('select-initial').value;
-        document.getElementById('medial').value = document.getElementById('select-medial').value;
-        document.getElementById('final').value = document.getElementById('select-final').value;
-        drawWorksheet();
+    // 依據您提供的二拼結合韻對照圖，精準輸入全部 22 個正確組合
+    const seriesI = ['ㄧㄚ', 'ㄧㄛ', 'ㄧㄝ', 'ㄧㄞ', 'ㄧㄠ', 'ㄧㄡ', 'ㄧㄢ', 'ㄧㄣ', 'ㄧㄤ', 'ㄧㄥ'];
+    const seriesU = ['ㄨㄚ', 'ㄨㄛ', 'ㄨㄞ', 'ㄨㄟ', 'ㄨㄢ', 'ㄨㄣ', 'ㄨㄤ', 'ㄨㄥ'];
+    const seriesYu = ['ㄩㄝ', 'ㄩㄢ', 'ㄩㄣ', 'ㄩㄥ'];
+
+    // 關鍵修改：預設初始選取狀態為 ㄧㄚ
+    let currentBopo = { m: 'ㄧ', f: 'ㄚ' };
+
+    function buildPanel() {
+        renderGroup('group-i', seriesI, 'ㄧ');
+        renderGroup('group-u', seriesU, 'ㄨ');
+        renderGroup('group-yu', seriesYu, 'ㄩ');
+    }
+
+    function renderGroup(targetId, list, medial) {
+        const container = document.getElementById(targetId);
+        list.forEach(combin => {
+            const final = combin.replace(medial, ''); // 抓出後面的韻母
+            const btn = document.createElement('button');
+            btn.className = 'btn-combin';
+            btn.textContent = combin;
+            
+            // 預設高亮選取 ㄧㄚ
+            if (medial === 'ㄧ' && final === 'ㄚ') btn.classList.add('active');
+            
+            btn.onclick = function() {
+                document.querySelectorAll('.btn-combin').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                currentBopo = { m: medial, f: final };
+                document.getElementById('current-text').textContent = `目前選取：${medial} + ${final}`;
+                drawWorksheet();
+            };
+            container.appendChild(btn);
+        });
     }
 
     function drawWorksheet() {
         const canvas = document.getElementById('worksheet');
         const ctx = canvas.getContext('2d');
         
-        // 清空畫布
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // 1. 繪製標題 "注音學習單"
+        // 1. 標題
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 44px DFKai-SB, BiauKai, "微軟正黑體"';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'top';
         ctx.fillText('注音學習單', 50, 40);
         
-        // 獲取使用者選取或輸入的注音
-        const bopomofo = {
-            top: document.getElementById('initial').value.trim(),
-            mid: document.getElementById('medial').value.trim(),
-            bot: document.getElementById('final').value.trim()
-        };
+        const bopomofo = { mid: currentBopo.m, bot: currentBopo.f };
 
-        // 2. 繪製上方兩個大九宮格
+        // 2. 上方兩個大九宮格
         const largeGridY = 120;
         const largeGridSize = 330;
-        
-        // 左大九宮格 (原始標準黑色注音範本)
         drawJiugonge(ctx, 50, largeGridY, largeGridSize, bopomofo, '', true, 'black');
-        
-        // 右大九宮格 (完美的黑邊空心字，中間完全挖空覆蓋無雜線，適合著色)
         drawJiugonge(ctx, 420, largeGridY, largeGridSize, bopomofo, '', true, 'outline');
         
-        // 3. 繪製下方三排小九宮格 (上移第二、三列縮小間距)
-        const smallGridStartY = 490; // 第一排起始 Y
+        // 3. 下方三排小九宮格
+        const smallGridStartY = 490;
         const smallGridSize = 160;
         const gapX = 30;
-        const baseGapY = 30; // 基本行距
-        const shiftUpOffset = 25; // 向上緊縮的偏移量
+        const baseGapY = 30;
+        const shiftUpOffset = 25;
         
-        // 聲調配置：第一格無、第二格二聲、第三格三聲、第四格四聲
         const tones = ['', 'ˊ', 'ˇ', 'ˋ'];
         
         for (let row = 0; row < 3; row++) {
             let y = smallGridStartY;
-            
-            if (row === 0) {
-                y = smallGridStartY;
-            } else if (row === 1) {
-                // 將原本過寬的留白高度微調上移
-                y = smallGridStartY + smallGridSize + baseGapY + shiftUpOffset;
-            } else if (row === 2) {
-                // 第三排跟進上移
-                y = smallGridStartY + (smallGridSize + baseGapY) * 2 + shiftUpOffset;
-            }
+            if (row === 0) y = smallGridStartY;
+            else if (row === 1) y = smallGridStartY + smallGridSize + baseGapY + shiftUpOffset;
+            else if (row === 2) y = smallGridStartY + (smallGridSize + baseGapY) * 2 + shiftUpOffset;
 
             for (let col = 0; col < 4; col++) {
                 const x = 50 + col * (smallGridSize + gapX);
-                
                 if (row === 0) {
-                    // 第一排：自動帶入組合與聲調，改為「淡灰色」供描寫
                     drawJiugonge(ctx, x, y, smallGridSize, bopomofo, tones[col], false, 'gray');
                 } else {
-                    // 第二、三排：一律留白作為空白書寫與造詞練習
-                    drawJiugonge(ctx, x, y, smallGridSize, {top:'', mid:'', bot:''}, '', false, 'black');
+                    drawJiugonge(ctx, x, y, smallGridSize, {mid:'', bot:''}, '', false, 'black');
                 }
             }
         }
 
-        // 4. 精準定位在第一排與第二排的中間繪製「造詞練習」
+        // 4. 造詞練習常駐欄位
         const textY = smallGridStartY + smallGridSize + Math.floor((baseGapY + shiftUpOffset) / 2);
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 24px DFKai-SB, BiauKai, "微軟正黑體"';
@@ -231,43 +227,35 @@
         ctx.fillText('造詞練習', 50, textY);
     }
 
-    // 繪製單個九宮格的函式
+    // 繪製單個九宮格的函式 (重構為平均分配上下兩段坐標)
     function drawJiugonge(ctx, x, y, size, textObj, tone, isLarge, textMode) {
-        // 繪製外框
         ctx.strokeStyle = '#666666';
         ctx.lineWidth = isLarge ? 3 : 2;
         ctx.strokeRect(x, y, size, size);
         
-        // 繪製內部虛線
         ctx.strokeStyle = '#999999';
         ctx.lineWidth = 1.5;
         ctx.setLineDash([6, 4]);
-        
         const third = size / 3;
         
-        // 垂直內部虛線
+        // 繪製內部九宮格虛線
         ctx.beginPath();
         ctx.moveTo(x + third, y); ctx.lineTo(x + third, y + size);
         ctx.moveTo(x + third * 2, y); ctx.lineTo(x + third * 2, y + size);
-        // 水平內部虛線
         ctx.moveTo(x, y + third); ctx.lineTo(x + size, y + third);
         ctx.moveTo(x, y + third * 2); ctx.lineTo(x + size, y + third * 2);
         ctx.stroke();
         ctx.setLineDash([]); // 恢復實線
         
-        // 配置文字基本設定
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        
         const fontSize = third * 0.85; 
         ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
-        
         const centerX = x + size / 2;
         
-        // 核心空心字與填色邏輯
+        // 核心文字繪製閉包
         function drawText(text, tx, ty, isTone, toneAlignX, toneAlignY) {
             ctx.save();
-            
             if (isTone) {
                 ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 2}px DFKai-SB, BiauKai, "微軟正黑體"`;
                 ctx.textAlign = 'left';
@@ -282,64 +270,57 @@
             } else if (textMode === 'outline') {
                 ctx.lineJoin = 'round';
                 ctx.lineCap = 'round';
-
                 ctx.strokeStyle = '#000000';
                 ctx.lineWidth = isLarge ? 14 : 7; 
                 ctx.strokeText(text, tx, ty);
-
                 ctx.fillStyle = '#ffffff';
                 ctx.fillText(text, tx, ty);
             } else {
                 ctx.fillStyle = '#000000';
                 ctx.fillText(text, tx, ty);
             }
-            
             ctx.restore();
         }
 
-        // 1. 聲母 (上格)
-        if (textObj.top) {
-            drawText(textObj.top, centerX, y + third * 0.5, false);
-        }
-        // 2. 介母 (中格)
+        // 【黃金修正】二拼平均分配上下格的位置：
+        // 為了將字體完美和諧地放置，原本三拼的 Y 是置中於 0.5、1.5、2.5 排。
+        // 現在改為二拼後：
+        // 上半部字（介母）擺放於 Y = 0.75 處（即第 1 排與第 2 排的分界線上方）。
+        // 下半部字（韻母）擺放於 Y = 2.25 處（即第 2 排與第 3 排的分界線下方）。
+        
+        // 1. 介母 (擺在中間縱列的偏上方)
         if (textObj.mid) {
-            drawText(textObj.mid, centerX, y + third * 1.5, false);
+            drawText(textObj.mid, centerX, y + third * 0.75, false);
         }
         
-        // 3. 韻母 (下格) 與 聲調
+        // 2. 韻母 (擺在中間縱列的偏下方) 與 聲調
         if (textObj.bot) {
-            drawText(textObj.bot, centerX, y + third * 2.5, false);
+            drawText(textObj.bot, centerX, y + third * 2.25, false);
             
+            // 如果有聲調，依舊精準維持在韻母（下格）的右上方
             if (tone) {
+                // 水平位置：貼齊中間縱欄的右側分界虛線
                 const toneX = x + (third * 2);
-                const toneY = y + (third * 2) + (third * 0.45); 
+                // 垂直位置：因為韻母上移到了 2.25 處，聲調的基準位置也完美同步上移，落在虛線交界處附近
+                const toneY = y + (third * 2) + (third * 0.2); 
                 drawText(tone, 0, 0, true, toneX, toneY);
             }
         }
     }
 
-    // 下載標準 A4 大小 PDF 的函式
     function downloadPDF() {
         const { jsPDF } = window.jspdf;
         const canvas = document.getElementById('worksheet');
-        
         const pdf = new jsPDF('p', 'mm', 'a4');
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
-        
-        const pdfWidth = 210;
-        const pdfHeight = 297;
-        
-        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-        
-        const t = document.getElementById('initial').value || '';
-        const m = document.getElementById('medial').value || '';
-        const f = document.getElementById('final').value || '';
-        const fileName = `注音練習單_${t}${m}${f}.pdf`;
-        
-        pdf.save(fileName);
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+        pdf.save(`二拼結合韻練習單_${currentBopo.m}${currentBopo.f}.pdf`);
     }
 
-    window.onload = drawWorksheet;
+    window.onload = function() {
+        buildPanel();
+        drawWorksheet();
+    };
 </script>
 
 </body>
