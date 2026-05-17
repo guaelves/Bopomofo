@@ -186,10 +186,12 @@
         // 右大九宮格 (完美的黑邊空心字，中間完全挖空覆蓋無雜線，適合著色)
         drawJiugonge(ctx, 420, largeGridY, largeGridSize, bopomofo, '', true, 'outline');
         
-        // 3. 繪製下方三排小九宮格 (調整行距並插入文字)
-        const smallGridStartY = 490; // 第一行起始 Y
+        // 3. 繪製下方三排小九宮格 (上移第二、三列縮小間距)
+        const smallGridStartY = 490; // 第一排起始 Y
         const smallGridSize = 160;
         const gapX = 30;
+        const baseGapY = 30; // 基本行距
+        const shiftUpOffset = 25; // 向上緊縮的偏移量
         
         // 聲調配置：第一格無、第二格二聲、第三格三聲、第四格四聲
         const tones = ['', 'ˊ', 'ˇ', 'ˋ'];
@@ -198,14 +200,13 @@
             let y = smallGridStartY;
             
             if (row === 0) {
-                // 第一排位置保持不變
                 y = smallGridStartY;
             } else if (row === 1) {
-                // 第二排整體往下移，拉開空間 (增加 55 像素)
-                y = smallGridStartY + smallGridSize + 40 + 55;
+                // 將原本過寬的留白高度微調上移
+                y = smallGridStartY + smallGridSize + baseGapY + shiftUpOffset;
             } else if (row === 2) {
-                // 第三排順應第二排的位置緊跟在後
-                y = smallGridStartY + (smallGridSize + 40) * 2 + 55;
+                // 第三排跟進上移
+                y = smallGridStartY + (smallGridSize + baseGapY) * 2 + shiftUpOffset;
             }
 
             for (let col = 0; col < 4; col++) {
@@ -221,8 +222,8 @@
             }
         }
 
-        // 4. 在拉開的空隙正中間繪製「造詞練習」文字
-        const textY = smallGridStartY + smallGridSize + 32; // 精準計算第一行底部與第二行頂部的中央
+        // 4. 精準定位在第一排與第二排的中間繪製「造詞練習」
+        const textY = smallGridStartY + smallGridSize + Math.floor((baseGapY + shiftUpOffset) / 2);
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 24px DFKai-SB, BiauKai, "微軟正黑體"';
         ctx.textAlign = 'left';
@@ -267,7 +268,6 @@
         function drawText(text, tx, ty, isTone, toneAlignX, toneAlignY) {
             ctx.save();
             
-            // 如果是聲調，套用指定的大尺寸與靠左定位設定
             if (isTone) {
                 ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 2}px DFKai-SB, BiauKai, "微軟正黑體"`;
                 ctx.textAlign = 'left';
@@ -277,24 +277,19 @@
             }
 
             if (textMode === 'gray') {
-                // 1. 淡灰色模式 (供描寫)
                 ctx.fillStyle = '#d3d3d3';
                 ctx.fillText(text, tx, ty);
             } else if (textMode === 'outline') {
-                // 2. 完美的黑色外框空心字 (內部細線完全用純白填滿抹平)
                 ctx.lineJoin = 'round';
                 ctx.lineCap = 'round';
 
-                // 先用粗黑線繪製極粗外框
                 ctx.strokeStyle = '#000000';
                 ctx.lineWidth = isLarge ? 14 : 7; 
                 ctx.strokeText(text, tx, ty);
 
-                // 立刻用純白色滿填文字本身
                 ctx.fillStyle = '#ffffff';
                 ctx.fillText(text, tx, ty);
             } else {
-                // 3. 標準黑色模式
                 ctx.fillStyle = '#000000';
                 ctx.fillText(text, tx, ty);
             }
@@ -315,7 +310,6 @@
         if (textObj.bot) {
             drawText(textObj.bot, centerX, y + third * 2.5, false);
             
-            // 如果有聲調，精準定位在韻母格正右方、對齊韻母格正中央高度
             if (tone) {
                 const toneX = x + (third * 2);
                 const toneY = y + (third * 2) + (third * 0.45); 
