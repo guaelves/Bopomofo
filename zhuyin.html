@@ -135,7 +135,7 @@
         }
     }
 
-    // 繪製單個九宮格的函式 (新增 tone 參數)
+    // 繪製單個九宮格的函式
     function drawJiugonge(ctx, x, y, size, textObj, tone, isLarge) {
         // 繪製外框
         ctx.strokeStyle = '#666666';
@@ -169,29 +169,30 @@
         
         const centerX = x + size / 2;
         
-        // 1. 繪製 聲母 (上)
+        // 1. 繪製 聲母 (最上排中間格)
         if (textObj.top) {
             ctx.fillText(textObj.top, centerX, y + third * 0.5);
         }
-        // 2. 繪製 介母 (中)
+        // 2. 繪製 介母 (第二排中間格)
         if (textObj.mid) {
             ctx.fillText(textObj.mid, centerX, y + third * 1.5);
         }
         
-        // 3. 繪製 韻母 (下) 與 聲調 (右上方)
+        // 3. 繪製 韻母 (第三排中間格)
         if (textObj.bot) {
             ctx.fillText(textObj.bot, centerX, y + third * 2.5);
             
-            // 如果有聲調，將其繪製在韻母格子(右下格)的右上方
+            // 如果有聲調，精準定位在第三排中間格（韻母格）的右上方
             if (tone) {
                 ctx.save();
-                // 稍微縮小一點點聲調符號，看起來更自然
-                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 0.8}px DFKai-SB, BiauKai, "微軟正黑體"`;
+                // 放大聲調字體，使其清晰明顯
+                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 0.95}px DFKai-SB, BiauKai, "微軟正黑體"`;
                 
-                // 計算定位點：韻母格子的右上方位置
-                // centerX 是中間格中心，往右加一些偏移量塞到右邊格子的範圍
-                const toneX = centerX + (third * 0.65);
-                const toneY = (y + third * 2.5) - (third * 0.35);
+                // 定位邏輯：
+                // 韻母格的右上角坐標為：X = (x + third * 2), Y = (y + third * 2)
+                // 我們以此為基準，稍微往左下微調，讓聲調完美落在韻母的右上方角落內
+                const toneX = (x + third * 2) - (third * 0.2);
+                const toneY = (y + third * 2) + (third * 0.25);
                 
                 ctx.fillText(tone, toneX, toneY);
                 ctx.restore();
