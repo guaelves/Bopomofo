@@ -169,29 +169,29 @@
         
         const centerX = x + size / 2;
         
-        // 1. 繪製 聲母 (上)
+        // 1. 繪製 聲母 (上格)
         if (textObj.top) {
             ctx.fillText(textObj.top, centerX, y + third * 0.5);
         }
-        // 2. 繪製 介母 (中)
+        // 2. 繪製 介母 (中格)
         if (textObj.mid) {
             ctx.fillText(textObj.mid, centerX, y + third * 1.5);
         }
         
-        // 3. 繪製 韻母 (下) 與 聲調
+        // 3. 繪製 韻母 (下格) 與 聲調
         if (textObj.bot) {
             ctx.fillText(textObj.bot, centerX, y + third * 2.5);
             
-            // 如果有聲調，精準定位在「第 6 格的左下角」
+            // 如果有聲調，精準定位在第三個注音符號（韻母）格子的右上方頂點！
             if (tone) {
                 ctx.save();
                 // 聲調尺寸固定為大尺寸 fontSize * 2
                 ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 2}px DFKai-SB, BiauKai, "微軟正黑體"`;
                 
-                // 水平 X 軸：剛好在右側垂直虛線上（x + third * 2）
+                // 水平 X 軸：剛好在韻母格子（下排中間格）的右側虛線上（x + third * 2）
                 const toneX = x + (third * 2);
                 
-                // 垂直 Y 軸：剛好在下方的水平虛線上（y + third * 2）
+                // 垂直 Y 軸：剛好在韻母格子（下排中間格）的上方虛線上（y + third * 2）
                 const toneY = y + (third * 2);
                 
                 ctx.fillText(tone, toneX, toneY);
