@@ -182,17 +182,16 @@
         if (textObj.bot) {
             ctx.fillText(textObj.bot, centerX, y + third * 2.5);
             
-            // 如果有聲調，精準定位在第六格的左下方角落（即第二、三排虛線與右側虛線的交界點線）
+            // 如果有聲調，精準定位在「韻母（最下排中間格）」的右上方位置！
             if (tone) {
                 ctx.save();
-                // 聲調尺寸固定為 fontSize * 2
+                // 聲調尺寸放大為符合要求的 fontSize * 2
                 ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 2}px DFKai-SB, BiauKai, "微軟正黑體"`;
                 
-                // 水平 X 軸：定位在右側垂直虛線上（x + third * 2）
-                // 垂直 Y 軸：定位在下方的水平虛線上（y + third * 2）
-                // 這兩條線的黃金交界點，就是第六格（右中格）的左下角！
-                const toneX = x + (third * 2);
-                const toneY = y + (third * 2);
+                // 水平位置：在韻母格子的右側區域
+                const toneX = centerX + (third * 0.82);
+                // 垂直位置：在韻母格子的上方區域（對齊虛線附近，保持在韻母格的右上角範圍內）
+                const toneY = (y + third * 2.5) - (third * 0.5);
                 
                 ctx.fillText(tone, toneX, toneY);
                 ctx.restore();
