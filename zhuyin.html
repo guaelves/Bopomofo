@@ -108,7 +108,7 @@
         // 左大九宮格 (原始黑色注音範本)
         drawJiugonge(ctx, 50, largeGridY, largeGridSize, bopomofo, '', true, 'black');
         
-        // 右大九宮格 (改成自動帶入，並使用鏤空線條樣式方便塗色)
+        // 右大九宮格 (帶有厚度、完美的雙線黑邊鏤空注音，適合著色)
         drawJiugonge(ctx, 420, largeGridY, largeGridSize, bopomofo, '', true, 'outline');
         
         // 3. 繪製下方三排小九宮格 (每排4個)
@@ -136,8 +136,7 @@
         }
     }
 
-    // 繪製單個九宮格的函式 (新增 textMode 參數控制字體顏色與樣式)
-    // textMode 可選: 'black'(黑色) | 'gray'(淡灰色描寫) | 'outline'(黑色鏤空塗色)
+    // 繪製單個九宮格的函式
     function drawJiugonge(ctx, x, y, size, textObj, tone, isLarge, textMode) {
         // 繪製外框
         ctx.strokeStyle = '#666666';
@@ -170,52 +169,64 @@
         
         const centerX = x + size / 2;
         
-        // 封裝繪製文字樣式的輔助函式
-        function drawText(text, tx, ty) {
+        // 核心修正：處理雙線鏤空字與一般字的繪製邏輯
+        function drawText(text, tx, ty, isTone, toneAlignX, toneAlignY) {
+            ctx.save();
+            
+            // 如果是聲調，特別套用您之前指定的超大與靠左定位設定
+            if (isTone) {
+                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 2}px DFKai-SB, BiauKai, "微軟正黑體"`;
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                tx = toneAlignX;
+                ty = toneAlignY;
+            }
+
             if (textMode === 'gray') {
-                ctx.fillStyle = '#d3d3d3'; // 淡灰色，適合描寫
+                // 1. 淡灰色模式 (供學生描寫)
+                ctx.fillStyle = '#d3d3d3';
                 ctx.fillText(text, tx, ty);
             } else if (textMode === 'outline') {
-                ctx.strokeStyle = '#000000'; // 黑色邊框
-                ctx.lineWidth = isLarge ? 3 : 2; // 依格子大小調整鏤空線粗細
+                // 2. 雙線黑邊鏤空模式 (如您照片所示)
+                ctx.lineJoin = 'round'; // 使轉角圓潤
+                ctx.lineCap = 'round';
+
+                // 步驟 A: 先用黑筆刷出一層超胖的實心底色線條 (這會成為外邊框)
+                ctx.strokeStyle = '#222222';
+                ctx.lineWidth = isLarge ? 12 : 6; // 大格子用粗黑邊，小格子用細黑邊
+                ctx.strokeText(text, tx, ty);
+
+                // 步驟 B: 再用白筆在正中央刷出一層稍細的實心線條，把黑底挖空，形成中空通道
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = isLarge ? 8 : 4;  // 留下的白色塗色空間厚度
                 ctx.strokeText(text, tx, ty);
             } else {
-                ctx.fillStyle = '#000000'; // 預設標準黑色
+                // 3. 標準黑色模式
+                ctx.fillStyle = '#000000';
                 ctx.fillText(text, tx, ty);
             }
+            
+            ctx.restore();
         }
 
         // 1. 繪製 聲母 (上格)
         if (textObj.top) {
-            drawText(textObj.top, centerX, y + third * 0.5);
+            drawText(textObj.top, centerX, y + third * 0.5, false);
         }
         // 2. 繪製 介母 (中格)
         if (textObj.mid) {
-            drawText(textObj.mid, centerX, y + third * 1.5);
+            drawText(textObj.mid, centerX, y + third * 1.5, false);
         }
         
         // 3. 繪製 韻母 (下格) 與 聲調
         if (textObj.bot) {
-            drawText(textObj.bot, centerX, y + third * 2.5);
+            drawText(textObj.bot, centerX, y + third * 2.5, false);
             
-            // 如果有聲調，精準定位在韻母（第三格）的右側
+            // 如果有聲調，依照之前調整完美的定位點進行繪製
             if (tone) {
-                ctx.save();
-                // 聲調尺寸固定為大尺寸 fontSize * 2
-                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 2}px DFKai-SB, BiauKai, "微軟正黑體"`;
-                
-                // 變更對齊方式：靠左、垂直居中
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'middle';
-                
-                // 水平位置：貼齊垂直虛線線段
                 const toneX = x + (third * 2);
-                // 垂直位置維持在韻母格正中央高度
                 const toneY = y + (third * 2) + (third * 0.45); 
-                
-                // 使用封裝好的樣式函式繪製聲調
-                drawText(tone, toneX, toneY);
-                ctx.restore();
+                drawText(tone, 0, 0, true, toneX, toneY);
             }
         }
     }
