@@ -105,7 +105,7 @@
 <div class="container">
     <div class="control-panel">
         <h2>22個二拼結合韻互動面板</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">主注音文字已調至極限特大，聲調比例已微調縮小並精準吸附於韻母右上方：</p>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">點選下方二拼組合，注音將採取 1/2 上下對半分極限放大，聲調比例已微調縮小並吸附於韻母右上方：</p>
         
         <h3>【ㄧ】的結合韻系列 (10組)</h3>
         <div class="grid-section">
@@ -236,12 +236,13 @@
         ctx.stroke();
         ctx.setLineDash([]);
         
-        // 1. 【極限放大】主注音文字字體大小，提高至 0.55 倍邊長，填滿 1/2 空間
+        // 1. 【極限放大】主注音文字字體大小：提高至 0.55 倍邊長
         const fontSize = size * 0.55; 
         
         function drawMainText(text, tx, ty) {
             ctx.save();
-            ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSizepx} DFKai-SB, BiauKai, "微軟正黑體"`.replace('fontSizepx', fontSize + 'px');
+            // 修正錯誤：恢復正確的 Canvas 字體格式定義
+            ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             
@@ -252,7 +253,7 @@
                 ctx.lineJoin = 'round';
                 ctx.lineCap = 'round';
                 ctx.strokeStyle = '#000000';
-                ctx.lineWidth = isLarge ? 18 : 8; // 配合字體放大，黑邊同步微調加粗
+                ctx.lineWidth = isLarge ? 18 : 8; 
                 ctx.strokeText(text, tx, ty);
                 ctx.fillStyle = '#ffffff';
                 ctx.fillText(text, tx, ty);
@@ -263,7 +264,7 @@
             ctx.restore();
         }
 
-        // 2. 【比例微調】聲調專用渲染函式：字體設定為 size * 0.43 (比主注音字體略小一些)
+        // 2. 【比例微調】聲調專用字體：設定為 size * 0.43 (比主注音字體略小一些)
         function drawToneText(text, tx, ty) {
             ctx.save();
             const toneSize = size * 0.43;
@@ -292,12 +293,12 @@
         const centerX = x + size / 2;
 
         // 1/2 空間分配
-        // 介母 (正坐於上半部 1/2 中央)
+        // 介母 (上半部中央)
         if (textObj.mid) {
             drawMainText(textObj.mid, centerX, y + size * 0.25);
         }
         
-        // 韻母 (正坐於下半部 1/2 中央)
+        // 韻母 (下半部中央)
         if (textObj.bot) {
             drawMainText(textObj.bot, centerX, y + size * 0.75);
             
@@ -306,7 +307,7 @@
                 // 水平位置：貼齊右側垂直分界虛線
                 const toneX = x + (third * 2);
                 
-                // 垂直位置：因為韻母字體極限放大，將聲調微調至中線橫虛線（y + size * 0.5）略往上一點點的位置，達到完美吸附效果
+                // 垂直位置：微調至中線橫虛線（y + size * 0.5）略往上一點點，達成吸附韻母右上方效果
                 const toneY = y + (size * 0.46);
                 
                 drawToneText(tone, toneX, toneY);
