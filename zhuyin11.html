@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>22個二拼結合韻互動式注音學習單生成器</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'DFKai-SB', 'BiauKai', '微軟正黑體', sans-serif;
+            margin: 20px;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        .container {
+            max-width: 1050px;
+            margin: 0 auto;
+        }
+        .control-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        h2 { margin-top: 0; color: #1a365d; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        
+        /* 二拼對照表格樣式 (由左至右排列) */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        table.bopo-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            background-color: white;
+        }
+        table.bopo-table th, table.bopo-table td {
+            border: 1px solid #cbd5e1;
+            padding: 6px;
+            min-width: 60px;
+            height: 45px;
+        }
+        table.bopo-table th {
+            background-color: #f8fafc;
+            color: #1e293b;
+            font-weight: bold;
+        }
+        table.bopo-table th.medial-header {
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+        .btn-table-combin {
+            width: 100%;
+            height: 100%;
+            min-height: 38px;
+            font-size: 16px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'DFKai-SB', 'BiauKai', sans-serif;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-table-combin:hover {
+            background-color: #e0f2fe;
+            border-color: #7dd3fc;
+            color: #0369a1;
+        }
+        .btn-table-combin.active {
+            background-color: #3b82f6;
+            border-color: #2563eb;
+            color: white;
+            font-weight: bold;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .current-status {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0f172a;
+            background: #f1f5f9;
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+        button.main-btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn-download { background-color: #059669; color: white; }
+        .btn-download:hover { background-color: #047857; }
+        
+        .canvas-container { text-align: center; margin-top: 20px; }
+        canvas {
+            border: 1px solid #cbd5e1;
+            background-color: white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="control-panel">
+        <h2>22個二拼結合韻互動學習單 (對照表模式)</h2>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">表格已依據您的圖紙修改為【由左至右（ㄧ➔ㄨ➔ㄩ）】排列，請直接點擊表中的注音組合切換：</p>
+        
+        <div class="table-container">
+            <table class="bopo-table">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">韻符 \ 介符</th>
+                        <th class="medial-header">ㄧ</th>
+                        <th class="medial-header">ㄨ</th>
+                        <th class="medial-header">ㄩ</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="action-row">
+            <div class="current-status" id="current-text">目前選取：ㄧ + ㄚ</div>
+            <button class="main-btn btn-download" onclick="downloadPDF()">下載當前組合 A4 PDF</button>
+        </div>
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="worksheet" width="800" height="1130"></canvas>
+    </div>
+</div>
+
+<script>
+    // 依據圖紙完整定義由左至右排列的所有韻母順序
+    const finalsOrder = ['ㄚ', 'ㄛ', 'ㄜ', 'ㄝ', 'ㄞ', 'ㄟ', 'ㄠ', 'ㄡ', 'ㄢ', 'ㄣ', 'ㄤ', 'ㄥ'];
+
+    // 22個合法的二拼結合韻組合對照表
+    const validCombinations = {
+        'ㄧ': ['ㄚ', 'ㄛ', 'ㄝ', 'ㄞ', 'ㄠ', 'ㄡ', 'ㄢ', 'ㄣ', 'ㄤ', 'ㄥ'],
+        'ㄨ': ['ㄚ', 'ㄛ', 'ㄞ', 'ㄟ', 'ㄢ', 'ㄣ', 'ㄤ', 'ㄥ'],
+        'ㄩ': ['ㄝ', 'ㄢ', 'ㄣ', 'ㄥ']
+    };
+
+    let currentBopo = { m: 'ㄧ', f: 'ㄚ' };
+
+    // 動態建置由左至右的對照表格
+    function buildTablePanel() {
+        const tbody = document.getElementById('table-body');
+        
+        finalsOrder.forEach(final => {
+            const tr = document.createElement('tr');
+            
+            // 第一欄：顯示韻母標頭
+            const tdHeader = document.createElement('td');
+            tdHeader.style.fontWeight = 'bold';
+            tdHeader.style.backgroundColor = '#f8fafc';
+            tdHeader.textContent = final;
+            tr.appendChild(tdHeader);
+            
+            // 依序檢查並建置 ㄧ、ㄨ、ㄩ 橫向欄位
+            ['ㄧ', 'ㄨ', 'ㄩ'].forEach(medial => {
+                const td = document.createElement('td');
+                
+                // 檢查該交叉點是否存在合法的二拼組合
+                if (validCombinations[medial].includes(final)) {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-table-combin';
+                    btn.id = `btn-${medial}-${final}`;
+                    btn.textContent = `${medial}${final}`;
+                    
+                    // 預設將 ㄧㄚ 高亮
+                    if (medial === 'ㄧ' && final === 'ㄚ') btn.classList.add('active');
+                    
+                    btn.onclick = function() {
+                        document.querySelectorAll('.btn-table-combin').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        
+                        currentBopo = { m: medial, f: final };
+                        document.getElementById('current-text').textContent = `目前選取：${medial} + ${final}`;
+                        drawWorksheet();
+                    };
+                    td.appendChild(btn);
+                } else {
+                    // 若是不存在的組合（如 ㄩㄚ），則留白，與圖紙完全一致
+                    td.style.backgroundColor = '#fafafa';
+                }
+                tr.appendChild(td);
+            });
+            
+            tbody.appendChild(tr);
+        });
+    }
+
+    function drawWorksheet() {
+        const canvas = document.getElementById('worksheet');
+        const ctx = canvas.getContext('2d');
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // 1. 標題
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 44px DFKai-SB, BiauKai, "微軟正黑體"';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillText('注音學習單', 50, 40);
+        
+        const bopomofo = { mid: currentBopo.m, bot: currentBopo.f };
+
+        // 2. 上方兩個大九宮格
+        const largeGridY = 120;
+        const largeGridSize = 330;
+        drawJiugonge(ctx, 50, largeGridY, largeGridSize, bopomofo, '', true, 'black');
+        drawJiugonge(ctx, 420, largeGridY, largeGridSize, bopomofo, '', true, 'outline');
+        
+        // 3. 下方三排小九宮格
+        const smallGridStartY = 490;
+        const smallGridSize = 160;
+        const gapX = 30;
+        const baseGapY = 30;
+        const shiftUpOffset = 25;
+        
+        const tones = ['', 'ˊ', 'ˇ', 'ˋ'];
+        
+        for (let row = 0; row < 3; row++) {
+            let y = smallGridStartY;
+            if (row === 0) y = smallGridStartY;
+            else if (row === 1) y = smallGridStartY + smallGridSize + baseGapY + shiftUpOffset;
+            else if (row === 2) y = smallGridStartY + (smallGridSize + baseGapY) * 2 + shiftUpOffset;
+
+            for (let col = 0; col < 4; col++) {
+                const x = 50 + col * (smallGridSize + gapX);
+                if (row === 0) {
+                    drawJiugonge(ctx, x, y, smallGridSize, bopomofo, tones[col], false, 'gray');
+                } else {
+                    drawJiugonge(ctx, x, y, smallGridSize, {mid:'', bot:''}, '', false, 'black');
+                }
+            }
+        }
+
+        // 4. 造詞練習欄位
+        const textY = smallGridStartY + smallGridSize + Math.floor((baseGapY + shiftUpOffset) / 2);
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 24px DFKai-SB, BiauKai, "微軟正黑體"';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('造詞練習', 50, textY);
+
+        // 5. 常駐右下角版權宣告文字
+        ctx.save();
+        ctx.fillStyle = '#666666'; 
+        ctx.font = 'normal 14px "微軟正黑體", Arial, sans-serif'; 
+        ctx.textAlign = 'right'; 
+        ctx.textBaseline = 'bottom'; 
+        ctx.fillText('guaelves. All rights reserved.', canvas.width - 50, canvas.height - 40);
+        ctx.restore();
+    }
+
+    function drawJiugonge(ctx, x, y, size, textObj, tone, isLarge, textMode) {
+        ctx.strokeStyle = '#666666';
+        ctx.lineWidth = isLarge ? 3 : 2;
+        ctx.strokeRect(x, y, size, size);
+        
+        ctx.strokeStyle = '#999999';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([6, 4]);
+        const third = size / 3;
+        
+        ctx.beginPath();
+        ctx.moveTo(x + third, y); ctx.lineTo(x + third, y + size);
+        ctx.moveTo(x + third * 2, y); ctx.lineTo(x + third * 2, y + size);
+        ctx.moveTo(x, y + third); ctx.lineTo(x + size, y + third);
+        ctx.moveTo(x, y + third * 2); ctx.lineTo(x + size, y + third * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        // 主文字：特大飽滿版面比例 (0.55 倍邊長)
+        const fontSize = size * 0.55; 
+        
+        function drawMainText(text, tx, ty) {
+            ctx.save();
+            ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            if (textMode === 'gray') {
+                ctx.fillStyle = '#d3d3d3';
+                ctx.fillText(text, tx, ty);
+            } else if (textMode === 'outline') {
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = isLarge ? 18 : 8; 
+                ctx.strokeText(text, tx, ty);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(text, tx, ty);
+            } else {
+                ctx.fillStyle = '#000000';
+                ctx.fillText(text, tx, ty);
+            }
+            ctx.restore();
+        }
+
+        // 輔助手工向量軌跡：精準刻畫出完美比例的聲調（固定為主文字尺寸的 1/2，絕不變形跑位）
+        if (textObj.mid) {
+            drawMainText(textObj.mid, centerX = x + size / 2, y + size * 0.25);
+        }
+        
+        if (textObj.bot) {
+            drawMainText(textObj.bot, centerX = x + size / 2, y + size * 0.75);
+            
+            if (tone) {
+                ctx.save();
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                let strokeColor = '#000000';
+                let fillColor = '#ffffff';
+                if (textMode === 'gray') strokeColor = '#d3d3d3';
+
+                // 聲調尺寸絕對定死：文字大小的精確二分之一
+                const targetToneSize = fontSize * 0.5; 
+                const lineW = isLarge ? 12 : 5.5; 
+
+                // 第 6 小格視覺中心定位區域
+                const startX = x + (third * 2) + (third * 0.2);
+                const startY = y + (third) + (third * 0.25);
+                const w = targetToneSize * 0.65; 
+                const h = targetToneSize * 0.65; 
+
+                ctx.beginPath();
+                if (tone === 'ˊ') {
+                    ctx.moveTo(startX, startY + h);
+                    ctx.lineTo(startX + w, startY);
+                    applyToneStroke(strokeColor, fillColor, lineW);
+                } 
+                else if (tone === 'ˇ') {
+                    ctx.moveTo(startX, startY + h * 0.2);
+                    ctx.lineTo(startX + w * 0.4, startY + h * 0.9);
+                    ctx.lineTo(startX + w, startY + h * 0.1);
+                    applyToneStroke(strokeColor, fillColor, lineW);
+                } 
+                else if (tone === 'ˋ') {
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(startX + w, startY + h);
+                    applyToneStroke(strokeColor, fillColor, lineW);
+                }
+                ctx.restore();
+            }
+        }
+
+        function applyToneStroke(sColor, fColor, sWidth) {
+            if (textMode === 'outline') {
+                ctx.strokeStyle = sColor;
+                ctx.lineWidth = sWidth + 6; 
+                ctx.stroke();
+                ctx.strokeStyle = fColor;
+                ctx.lineWidth = sWidth;     
+                ctx.stroke();
+            } else {
+                ctx.strokeStyle = sColor;
+                ctx.lineWidth = sWidth;     
+                ctx.stroke();
+            }
+        }
+    }
+
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const canvas = document.getElementById('worksheet');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+        pdf.save(`二拼結合韻練習單_${currentBopo.m}${currentBopo.f}.pdf`);
+    }
+
+    window.onload = function() {
+        buildTablePanel();
+        drawWorksheet();
+    };
+</script>
+
+</body>
+</html>
