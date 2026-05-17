@@ -58,7 +58,7 @@
             min-width: 100px;
         }
         
-        /* ① 修正：將左側縱軸首欄的結合韻標頭，也全部調整為直立式垂直排列 */
+        /* 左側縱軸首欄結合韻標頭直立式排列 */
         .vertical-header-text {
             writing-mode: vertical-rl;
             text-orientation: upright;
@@ -171,7 +171,7 @@
 </div>
 
 <script>
-    const initialsOrder = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'];
+    const initialsOrder = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','慢','ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='慢'?'橫':s).map(s => s==='橫'?'ㄏ':s);
     
     const combinationsData = [
         // ㄧ 系列
@@ -190,7 +190,7 @@
         { m: 'ㄨ', f: 'ㄞ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄗ','ㄘ','ㄙ'] },
         { m: 'ㄨ', f: 'ㄟ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'] },
         { m: 'ㄨ', f: 'ㄢ', s: ['ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='開'?'ㄕ':s) },
-        { m: 'ㄨ', f: 'ㄣ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='開'?'ㄕ':s) },
+        { m: 'ㄨ', f: 'ㄣ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='開'?'裝':s).map(s => s==='裝'?'ㄕ':s) },
         { m: 'ㄨ', f: 'ㄤ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ'] },
         { m: 'ㄨ', f: 'ㄥ', s: ['ㄅ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄙ'] },
         // ㄩ 系列
@@ -215,7 +215,6 @@
         combinationsData.forEach(rowItem => {
             const tr = document.createElement('tr');
             
-            // ① 修正：將縱軸最左邊首欄的結合韻文字加上直書標籤包覆，使其直立排列
             const tdHeader = document.createElement('td');
             tdHeader.style.backgroundColor = '#f1f5f9';
             const spanText = document.createElement('span');
@@ -240,7 +239,7 @@
                         btn.classList.add('active');
                         
                         currentBopo = { t: initial, m: rowItem.m, f: rowItem.f };
-                        document.getElementById('current-text').textContent = `目前選取：${initial} + ${rowItem.m} + ${rowItem.f}`;
+                        document.getElementById('current-text').textContent = `目前選取：${initial} + ${rowItem.m} + ${finalRow = rowItem.f}`;
                         drawWorksheet();
                     };
                     td.appendChild(btn);
@@ -380,8 +379,8 @@
 
                 const startX = x + (third * 2) + (third * 0.2);
                 
-                // ② 修正：將原來的垂直高度 startY 朝上方拉提移動（大格子拉高 5 像素，小格子拉高 3 像素），使其精準漂亮地高掛在韻母格子右上方。
-                const startY = y + (third * 2) + (third * 0.15) - (isLarge ? 5 : 3); 
+                // 【核心修正】將手工聲調高度進一步調高（大九宮格上拉 15 像素，小九宮格上拉 7 像素），使其完美高掛在角落。
+                const startY = y + (third * 2) + (third * 0.15) - (isLarge ? 15 : 7); 
                 
                 const w = targetToneSize * 0.65; 
                 const h = targetToneSize * 0.65; 
