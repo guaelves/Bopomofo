@@ -76,7 +76,6 @@
             text-align: center;
             margin-top: 20px;
         }
-        /* 嚴格限制 Canvas 的顯示尺寸符合網頁預覽，同時保持內部高解析度供下載 */
         canvas {
             border: 1px solid #ccc;
             background-color: white;
@@ -148,12 +147,11 @@
 </div>
 
 <script>
-    // 下拉選單與自訂輸入框雙向同步
     function syncToInput() {
         document.getElementById('initial').value = document.getElementById('select-initial').value;
         document.getElementById('medial').value = document.getElementById('select-medial').value;
         document.getElementById('final').value = document.getElementById('select-final').value;
-        drawWorksheet(); // 點選時自動更新畫面
+        drawWorksheet();
     }
 
     function drawWorksheet() {
@@ -188,29 +186,48 @@
         // 右大九宮格 (完美的黑邊空心字，中間完全挖空覆蓋無雜線，適合著色)
         drawJiugonge(ctx, 420, largeGridY, largeGridSize, bopomofo, '', true, 'outline');
         
-        // 3. 繪製下方三排小九宮格 (每排4個)
-        const smallGridStartY = 490;
+        // 3. 繪製下方三排小九宮格 (調整行距並插入文字)
+        const smallGridStartY = 490; // 第一行起始 Y
         const smallGridSize = 160;
         const gapX = 30;
-        const gapY = 40;
         
         // 聲調配置：第一格無、第二格二聲、第三格三聲、第四格四聲
         const tones = ['', 'ˊ', 'ˇ', 'ˋ'];
         
         for (let row = 0; row < 3; row++) {
+            let y = smallGridStartY;
+            
+            if (row === 0) {
+                // 第一排位置保持不變
+                y = smallGridStartY;
+            } else if (row === 1) {
+                // 第二排整體往下移，拉開空間 (增加 55 像素)
+                y = smallGridStartY + smallGridSize + 40 + 55;
+            } else if (row === 2) {
+                // 第三排順應第二排的位置緊跟在後
+                y = smallGridStartY + (smallGridSize + 40) * 2 + 55;
+            }
+
             for (let col = 0; col < 4; col++) {
                 const x = 50 + col * (smallGridSize + gapX);
-                const y = smallGridStartY + row * (smallGridSize + gapY);
                 
                 if (row === 0) {
                     // 第一排：自動帶入組合與聲調，改為「淡灰色」供描寫
                     drawJiugonge(ctx, x, y, smallGridSize, bopomofo, tones[col], false, 'gray');
                 } else {
-                    // 第二、三排：一律留白作為空白書寫練習
+                    // 第二、三排：一律留白作為空白書寫與造詞練習
                     drawJiugonge(ctx, x, y, smallGridSize, {top:'', mid:'', bot:''}, '', false, 'black');
                 }
             }
         }
+
+        // 4. 在拉開的空隙正中間繪製「造詞練習」文字
+        const textY = smallGridStartY + smallGridSize + 32; // 精準計算第一行底部與第二行頂部的中央
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 24px DFKai-SB, BiauKai, "微軟正黑體"';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('造詞練習', 50, textY);
     }
 
     // 繪製單個九宮格的函式
@@ -250,7 +267,7 @@
         function drawText(text, tx, ty, isTone, toneAlignX, toneAlignY) {
             ctx.save();
             
-            // 如果是聲調，套用指定的大尺寸與緊貼右方分界線定位
+            // 如果是聲調，套用指定的大尺寸與靠左定位設定
             if (isTone) {
                 ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 2}px DFKai-SB, BiauKai, "微軟正黑體"`;
                 ctx.textAlign = 'left';
@@ -264,7 +281,7 @@
                 ctx.fillStyle = '#d3d3d3';
                 ctx.fillText(text, tx, ty);
             } else if (textMode === 'outline') {
-                // 2. 完美的黑色外框空心字 (內部交叉線、骨架線完全用純白填滿抹平)
+                // 2. 完美的黑色外框空心字 (內部細線完全用純白填滿抹平)
                 ctx.lineJoin = 'round';
                 ctx.lineCap = 'round';
 
@@ -273,7 +290,7 @@
                 ctx.lineWidth = isLarge ? 14 : 7; 
                 ctx.strokeText(text, tx, ty);
 
-                // 立刻用純白色滿填文字本身，將所有交界內部細線完全覆蓋掉
+                // 立刻用純白色滿填文字本身
                 ctx.fillStyle = '#ffffff';
                 ctx.fillText(text, tx, ty);
             } else {
@@ -312,20 +329,14 @@
         const { jsPDF } = window.jspdf;
         const canvas = document.getElementById('worksheet');
         
-        // 建立一個標準 A4 縱向 (Portrait) 的 PDF 物件，單位使用公釐 (mm)
-        // A4 的標準尺寸為 210mm x 297mm
         const pdf = new jsPDF('p', 'mm', 'a4');
-        
-        // 將 Canvas 轉換成高品質的 JPEG 資料基地台
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
         
-        // 完美將 Canvas 的寬高等比例對齊填滿 A4 尺寸
         const pdfWidth = 210;
         const pdfHeight = 297;
         
         pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
         
-        // 獲取目前選取的注音作為檔名，方便管理
         const t = document.getElementById('initial').value || '';
         const m = document.getElementById('medial').value || '';
         const f = document.getElementById('final').value || '';
@@ -334,7 +345,6 @@
         pdf.save(fileName);
     }
 
-    // 網頁載入時自動繪製初始化範例
     window.onload = drawWorksheet;
 </script>
 
