@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>161個三拼結合韻互動式注音學習單生成器</title>
+    <title>161個三拼結合韻注音學習單</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -144,8 +144,8 @@
 
 <div class="container">
     <div class="control-panel">
-        <h2>161個三拼結合韻互動學習單 (直書對照表)</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">橫軸為 21 個聲符，縱軸首欄與按鈕拼音皆為【直立式】排列，點擊即可更換下方拼音組合：</p>
+        <h2>161個三拼結合韻學習單 (直書對照表)</h2>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">對照表結構與發音完全依照圖紙重新校準，請點擊下方組合：</p>
         
         <div class="table-container">
             <table class="bopo-table">
@@ -171,13 +171,15 @@
 </div>
 
 <script>
-    const initialsOrder = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'];
+    const initialsOrder = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','橫','ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='橫'?'ㄏ':s);
     
+    // 【終極校對資料庫】完全依據全表照片修正，確保 ㄧㄛ 與 ㄧㄞ 保持完全留白
     const combinationsData = [
         // ㄧ 系列
         { m: 'ㄧ', f: 'ㄝ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
         { m: 'ㄧ', f: 'ㄚ', s: ['ㄌ','ㄐ','ㄑ','ㄒ'] },
-        { m: 'ㄧ', f: 'ㄛ', s: ['ㄅ','ㄆ','ㄇ'] },
+        { m: 'ㄧ', f: 'ㄛ', s: [] }, // 校正：與照片一致，橫向全留白
+        { m: 'ㄧ', f: 'ㄞ', s: [] }, // 校正：與照片一致，橫向全留白
         { m: 'ㄧ', f: 'ㄠ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
         { m: 'ㄧ', f: 'ㄡ', s: ['ㄇ','ㄉ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
         { m: 'ㄧ', f: 'ㄢ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
@@ -187,12 +189,12 @@
         // ㄨ 系列
         { m: 'ㄨ', f: 'ㄚ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ'] },
         { m: 'ㄨ', f: 'ㄛ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄖ','ㄗ','ㄘ','ㄙ'] },
-        { m: 'ㄨ', f: 'ㄞ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開'].map(s => s==='開'?'ㄕ':s) },
+        { m: 'ㄨ', f: 'ㄞ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄗ','ㄘ','ㄙ'] },
         { m: 'ㄨ', f: 'ㄟ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'] },
-        { m: 'ㄨ', f: 'ㄢ', s: ['ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='開'?'ㄕ':s) },
-        { m: 'ㄨ', f: 'ㄣ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='開'?'裝':s).map(s => s==='裝'?'ㄕ':s) },
-        { m: 'ㄨ', f: 'ㄤ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ'] },
-        { m: 'ㄨ', f: 'ㄥ', s: ['ㄅ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄙ'] },
+        { m: 'ㄨ', f: 'ㄢ', s: ['ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'] }, // 校正：完整包含 ㄕ
+        { m: 'ㄨ', f: 'ㄣ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'] }, // 校正：完整包含 ㄕ
+        { m: 'ㄨ', f: 'ㄤ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開'].map(s => s==='開'?'ㄕ':s) },
+        { m: 'ㄨ', f: 'ㄥ', s: ['ㄅ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開','ㄖ','ㄗ','ㄙ'].map(s => s==='開'?'ㄕ':s) },
         // ㄩ 系列
         { m: 'ㄩ', f: 'ㄝ', s: ['ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
         { m: 'ㄩ', f: 'ㄢ', s: ['ㄐ','ㄑ','ㄒ'] },
@@ -357,6 +359,33 @@
             ctx.restore();
         }
 
+        // 【黃金優化】恢復為最正統的原生字體渲染法，並透過十字點與底部對齊完美鎖死聲調！
+        function drawToneText(text, tx, ty) {
+            ctx.save();
+            const toneSize = fontSize * 0.5; // 指令：聲調固定為主文字大小的 1/2
+            ctx.font = `${isLarge ? 'bold' : 'normal'} ${toneSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
+            
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'bottom';
+            
+            if (textMode === 'gray') {
+                ctx.fillStyle = '#d3d3d3';
+                ctx.fillText(text, tx, ty);
+            } else if (textMode === 'outline') {
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = isLarge ? 11 : 4.5; 
+                ctx.strokeText(text, tx, ty);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(text, tx, ty);
+            } else {
+                ctx.fillStyle = '#000000';
+                ctx.fillText(text, tx, ty);
+            }
+            ctx.restore();
+        }
+
         const centerX = x + size / 2;
 
         if (textObj.top) drawMainText(textObj.top, centerX, y + third * 0.5);
@@ -365,59 +394,15 @@
         if (textObj.bot) {
             drawMainText(textObj.bot, centerX, y + third * 2.5);
             
+            // 【聲調完美上移鎖定】將起筆原點與中線、第二垂直線交叉點完全對齊
+            // 由此點往右上發展，在畫面上看起來就會是完美、大方的高高掛在第 6 小格區域！
             if (tone) {
-                ctx.save();
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-
-                let strokeColor = '#000000';
-                let fillColor = '#ffffff';
-                if (textMode === 'gray') strokeColor = '#d3d3d3';
-
-                const targetToneSize = fontSize * 0.5; 
-                const lineW = isLarge ? 12 : 5.5; 
-
-                const startX = x + (third * 2) + (third * 0.2);
+                const crossX = x + (third * 2);
                 
-                // 【核心修正】垂直高度再次拉高（大九宮格往上提 35 像素，小九宮格往上提 17 像素），徹底與韻母拉開安全距離。
-                const startY = y + (third * 2) + (third * 0.15) - (isLarge ? 35 : 17); 
+                // 為了讓它「高掛」得更精準，將 Y 軸基礎交叉點朝上提升大格 16 像素，小格 8 像素，視覺上最美觀
+                const crossY = y + (third * 2) - (isLarge ? 16 : 8);
                 
-                const w = targetToneSize * 0.65; 
-                const h = targetToneSize * 0.65; 
-
-                ctx.beginPath();
-                if (tone === 'ˊ') {
-                    ctx.moveTo(startX, startY + h);
-                    ctx.lineTo(startX + w, startY);
-                    applyToneStroke(strokeColor, fillColor, lineW);
-                } 
-                else if (tone === 'ˇ') {
-                    ctx.moveTo(startX, startY + h * 0.2);
-                    ctx.lineTo(startX + w * 0.4, startY + h * 0.9);
-                    ctx.lineTo(startX + w, startY + h * 0.1);
-                    applyToneStroke(strokeColor, fillColor, lineW);
-                } 
-                else if (tone === 'ˋ') {
-                    ctx.moveTo(startX, startY);
-                    ctx.lineTo(startX + w, startY + h);
-                    applyToneStroke(strokeColor, fillColor, lineW);
-                }
-                ctx.restore();
-            }
-        }
-
-        function applyToneStroke(sColor, fColor, sWidth) {
-            if (textMode === 'outline') {
-                ctx.strokeStyle = sColor;
-                ctx.lineWidth = sWidth + 6; 
-                ctx.stroke();
-                ctx.strokeStyle = fColor;
-                ctx.lineWidth = sWidth;     
-                ctx.stroke();
-            } else {
-                ctx.strokeStyle = sColor;
-                ctx.lineWidth = sWidth;     
-                ctx.stroke();
+                drawToneText(tone, crossX, crossY);
             }
         }
     }
