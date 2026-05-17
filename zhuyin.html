@@ -105,7 +105,7 @@
 <div class="container">
     <div class="control-panel">
         <h2>22個二拼結合韻互動面板</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">請直接點選下方對照圖中的任意結合韻組合，練習單會自動重新平均分配上下位置：</p>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">請直接點選下方對照圖中的任意結合韻組合，注音符號將會以 1/2 比例上下對半平均分配並放大：</p>
         
         <h3>【ㄧ】的結合韻系列 (10組)</h3>
         <div class="grid-section">
@@ -134,12 +134,10 @@
 </div>
 
 <script>
-    // 依據您提供的二拼結合韻對照圖，精準輸入全部 22 個正確組合
     const seriesI = ['ㄧㄚ', 'ㄧㄛ', 'ㄧㄝ', 'ㄧㄞ', 'ㄧㄠ', 'ㄧㄡ', 'ㄧㄢ', 'ㄧㄣ', 'ㄧㄤ', 'ㄧㄥ'];
     const seriesU = ['ㄨㄚ', 'ㄨㄛ', 'ㄨㄞ', 'ㄨㄟ', 'ㄨㄢ', 'ㄨㄣ', 'ㄨㄤ', 'ㄨㄥ'];
     const seriesYu = ['ㄩㄝ', 'ㄩㄢ', 'ㄩㄣ', 'ㄩㄥ'];
 
-    // 關鍵修改：預設初始選取狀態為 ㄧㄚ
     let currentBopo = { m: 'ㄧ', f: 'ㄚ' };
 
     function buildPanel() {
@@ -151,12 +149,11 @@
     function renderGroup(targetId, list, medial) {
         const container = document.getElementById(targetId);
         list.forEach(combin => {
-            const final = combin.replace(medial, ''); // 抓出後面的韻母
+            const final = combin.replace(medial, '');
             const btn = document.createElement('button');
             btn.className = 'btn-combin';
             btn.textContent = combin;
             
-            // 預設高亮選取 ㄧㄚ
             if (medial === 'ㄧ' && final === 'ㄚ') btn.classList.add('active');
             
             btn.onclick = function() {
@@ -218,7 +215,7 @@
             }
         }
 
-        // 4. 造詞練習常駐欄位
+        // 4. 造詞練習欄位
         const textY = smallGridStartY + smallGridSize + Math.floor((baseGapY + shiftUpOffset) / 2);
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 24px DFKai-SB, BiauKai, "微軟正黑體"';
@@ -227,7 +224,7 @@
         ctx.fillText('造詞練習', 50, textY);
     }
 
-    // 繪製單個九宮格的函式 (重構為平均分配上下兩段坐標)
+    // 繪製單個九宮格的函式 (徹底改為 1/2 上下平均分配與特大字體)
     function drawJiugonge(ctx, x, y, size, textObj, tone, isLarge, textMode) {
         ctx.strokeStyle = '#666666';
         ctx.lineWidth = isLarge ? 3 : 2;
@@ -238,26 +235,27 @@
         ctx.setLineDash([6, 4]);
         const third = size / 3;
         
-        // 繪製內部九宮格虛線
         ctx.beginPath();
         ctx.moveTo(x + third, y); ctx.lineTo(x + third, y + size);
         ctx.moveTo(x + third * 2, y); ctx.lineTo(x + third * 2, y + size);
         ctx.moveTo(x, y + third); ctx.lineTo(x + size, y + third);
         ctx.moveTo(x, y + third * 2); ctx.lineTo(x + size, y + third * 2);
         ctx.stroke();
-        ctx.setLineDash([]); // 恢復實線
+        ctx.setLineDash([]);
         
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        const fontSize = third * 0.85; 
+        
+        // 【核心修正】因為空間改為上下 1/2 對半分，字體可以直接放大到佔滿半個格子的超大尺寸
+        const fontSize = size * 0.42; 
         ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
         const centerX = x + size / 2;
         
-        // 核心文字繪製閉包
         function drawText(text, tx, ty, isTone, toneAlignX, toneAlignY) {
             ctx.save();
             if (isTone) {
-                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 2}px DFKai-SB, BiauKai, "微軟正黑體"`;
+                // 聲調字體大小與主注音等稱，並套用靠左對齊
+                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 0.9}px DFKai-SB, BiauKai, "微軟正黑體"`;
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'middle';
                 tx = toneAlignX;
@@ -271,7 +269,7 @@
                 ctx.lineJoin = 'round';
                 ctx.lineCap = 'round';
                 ctx.strokeStyle = '#000000';
-                ctx.lineWidth = isLarge ? 14 : 7; 
+                ctx.lineWidth = isLarge ? 16 : 7; 
                 ctx.strokeText(text, tx, ty);
                 ctx.fillStyle = '#ffffff';
                 ctx.fillText(text, tx, ty);
@@ -282,27 +280,25 @@
             ctx.restore();
         }
 
-        // 【黃金修正】二拼平均分配上下格的位置：
-        // 為了將字體完美和諧地放置，原本三拼的 Y 是置中於 0.5、1.5、2.5 排。
-        // 現在改為二拼後：
-        // 上半部字（介母）擺放於 Y = 0.75 處（即第 1 排與第 2 排的分界線上方）。
-        // 下半部字（韻母）擺放於 Y = 2.25 處（即第 2 排與第 3 排的分界線下方）。
+        // 【黃金分配】將九宮格高度直接除以 2 (對半平分)
+        // 上半部的中心點在 size * 0.25 處 (介母)
+        // 下半部的中心點在 size * 0.75 處 (韻母)
         
-        // 1. 介母 (擺在中間縱列的偏上方)
+        // 1. 介母 (正坐於上半部 1/2 的中央)
         if (textObj.mid) {
-            drawText(textObj.mid, centerX, y + third * 0.75, false);
+            drawText(textObj.mid, centerX, y + size * 0.25, false);
         }
         
-        // 2. 韻母 (擺在中間縱列的偏下方) 與 聲調
+        // 2. 韻母 (正坐於下半部 1/2 的中央) 與 聲調
         if (textObj.bot) {
-            drawText(textObj.bot, centerX, y + third * 2.25, false);
+            drawText(textObj.bot, centerX, y + size * 0.75, false);
             
-            // 如果有聲調，依舊精準維持在韻母（下格）的右上方
+            // 聲調位置精準對齊下半部韻母的右上方位置！
             if (tone) {
                 // 水平位置：貼齊中間縱欄的右側分界虛線
                 const toneX = x + (third * 2);
-                // 垂直位置：因為韻母上移到了 2.25 處，聲調的基準位置也完美同步上移，落在虛線交界處附近
-                const toneY = y + (third * 2) + (third * 0.2); 
+                // 垂直位置：定在下半部的中上方空檔（即九宮格從上數來的第二橫條虛線位置附近）
+                const toneY = y + (size * 0.55); 
                 drawText(tone, 0, 0, true, toneX, toneY);
             }
         }
