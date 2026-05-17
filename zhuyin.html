@@ -105,10 +105,11 @@
         const largeGridY = 120;
         const largeGridSize = 330;
         
-        // 左大九宮格 (帶有使用者輸入的原始注音，無聲調)
-        drawJiugonge(ctx, 50, largeGridY, largeGridSize, bopomofo, '', true);
-        // 右大九宮格 (留白給小朋友練習畫)
-        drawJiugonge(ctx, 420, largeGridY, largeGridSize, {top:'', mid:'', bot:''}, '', false);
+        // 左大九宮格 (原始黑色注音範本)
+        drawJiugonge(ctx, 50, largeGridY, largeGridSize, bopomofo, '', true, 'black');
+        
+        // 右大九宮格 (改成自動帶入，並使用鏤空線條樣式方便塗色)
+        drawJiugonge(ctx, 420, largeGridY, largeGridSize, bopomofo, '', true, 'outline');
         
         // 3. 繪製下方三排小九宮格 (每排4個)
         const smallGridStartY = 490;
@@ -125,18 +126,19 @@
                 const y = smallGridStartY + row * (smallGridSize + gapY);
                 
                 if (row === 0) {
-                    // 第一排：自動帶入輸入的注音，並依序配上四個聲調
-                    drawJiugonge(ctx, x, y, smallGridSize, bopomofo, tones[col], false);
+                    // 第一排：自動帶入輸入的注音與聲調，改為「淡灰色」供描寫
+                    drawJiugonge(ctx, x, y, smallGridSize, bopomofo, tones[col], false, 'gray');
                 } else {
-                    // 第二、三排：一律留白作為書寫練習
-                    drawJiugonge(ctx, x, y, smallGridSize, {top:'', mid:'', bot:''}, '', false);
+                    // 第二、三排：一律留白作為空白書寫練習
+                    drawJiugonge(ctx, x, y, smallGridSize, {top:'', mid:'', bot:''}, '', false, 'black');
                 }
             }
         }
     }
 
-    // 繪製單個九宮格的函式
-    function drawJiugonge(ctx, x, y, size, textObj, tone, isLarge) {
+    // 繪製單個九宮格的函式 (新增 textMode 參數控制字體顏色與樣式)
+    // textMode 可選: 'black'(黑色) | 'gray'(淡灰色描寫) | 'outline'(黑色鏤空塗色)
+    function drawJiugonge(ctx, x, y, size, textObj, tone, isLarge, textMode) {
         // 繪製外框
         ctx.strokeStyle = '#666666';
         ctx.lineWidth = isLarge ? 3 : 2;
@@ -159,8 +161,7 @@
         ctx.stroke();
         ctx.setLineDash([]); // 恢復實線
         
-        // 填入注音符號 (主注音維持水平置中、垂直置中)
-        ctx.fillStyle = '#000000';
+        // 配置文字基本設定
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
@@ -169,18 +170,33 @@
         
         const centerX = x + size / 2;
         
+        // 封裝繪製文字樣式的輔助函式
+        function drawText(text, tx, ty) {
+            if (textMode === 'gray') {
+                ctx.fillStyle = '#d3d3d3'; // 淡灰色，適合描寫
+                ctx.fillText(text, tx, ty);
+            } else if (textMode === 'outline') {
+                ctx.strokeStyle = '#000000'; // 黑色邊框
+                ctx.lineWidth = isLarge ? 3 : 2; // 依格子大小調整鏤空線粗細
+                ctx.strokeText(text, tx, ty);
+            } else {
+                ctx.fillStyle = '#000000'; // 預設標準黑色
+                ctx.fillText(text, tx, ty);
+            }
+        }
+
         // 1. 繪製 聲母 (上格)
         if (textObj.top) {
-            ctx.fillText(textObj.top, centerX, y + third * 0.5);
+            drawText(textObj.top, centerX, y + third * 0.5);
         }
         // 2. 繪製 介母 (中格)
         if (textObj.mid) {
-            ctx.fillText(textObj.mid, centerX, y + third * 1.5);
+            drawText(textObj.mid, centerX, y + third * 1.5);
         }
         
         // 3. 繪製 韻母 (下格) 與 聲調
         if (textObj.bot) {
-            ctx.fillText(textObj.bot, centerX, y + third * 2.5);
+            drawText(textObj.bot, centerX, y + third * 2.5);
             
             // 如果有聲調，精準定位在韻母（第三格）的右側
             if (tone) {
@@ -192,13 +208,13 @@
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'middle';
                 
-                // 水平位置：由原本的 + (third * 0.05) 往左修正 0.05，剛好直接貼齊垂直虛線線段
+                // 水平位置：貼齊垂直虛線線段
                 const toneX = x + (third * 2);
-                
                 // 垂直位置維持在韻母格正中央高度
                 const toneY = y + (third * 2) + (third * 0.45); 
                 
-                ctx.fillText(tone, toneX, toneY);
+                // 使用封裝好的樣式函式繪製聲調
+                drawText(tone, toneX, toneY);
                 ctx.restore();
             }
         }
