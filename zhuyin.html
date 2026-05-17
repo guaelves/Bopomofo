@@ -159,7 +159,7 @@
         ctx.stroke();
         ctx.setLineDash([]); // 恢復實線
         
-        // 填入注音符號
+        // 填入注音符號 (主注音維持水平置中、垂直置中)
         ctx.fillStyle = '#000000';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -182,19 +182,22 @@
         if (textObj.bot) {
             ctx.fillText(textObj.bot, centerX, y + third * 2.5);
             
-            // 如果有聲調，精準定位在第三個注音符號（韻母）格子的右上方頂點！
+            // 如果有聲調，精準定位在第六小格的左下方（即第三個注音ㄚ的右上方分界十字點）
             if (tone) {
                 ctx.save();
                 // 聲調尺寸固定為大尺寸 fontSize * 2
                 ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 2}px DFKai-SB, BiauKai, "微軟正黑體"`;
                 
-                // 水平 X 軸：剛好在韻母格子（下排中間格）的右側虛線上（x + third * 2）
-                const toneX = x + (third * 2);
+                // 關鍵修正：將對齊方式改為「靠左」與「底部對齊」
+                // 這樣一來，畫筆定位在十字交叉點時，大字體的聲調符號就會完美往右、往上發展
+                // 正好落在第六小格的左下角區域，也就是韻母格子的右上方！
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'bottom';
                 
-                // 垂直 Y 軸：剛好在韻母格子（下排中間格）的上方虛線上（y + third * 2）
-                const toneY = y + (third * 2);
+                const crossX = x + (third * 2); // 垂直虛線線段（中欄與右欄交界）
+                const crossY = y + (third * 2); // 水平虛線線段（中排與下排交界）
                 
-                ctx.fillText(tone, toneX, toneY);
+                ctx.fillText(tone, crossX, crossY);
                 ctx.restore();
             }
         }
