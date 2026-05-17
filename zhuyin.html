@@ -105,7 +105,7 @@
 <div class="container">
     <div class="control-panel">
         <h2>22個二拼結合韻互動面板</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">請直接點選下方對照圖中的任意結合韻組合，注音符號將會以 1/2 比例上下對半平均分配並放大：</p>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">請直接點選下方對照圖中的任意結合韻組合，注音與聲調將會同步以特大尺寸生成：</p>
         
         <h3>【ㄧ】的結合韻系列 (10組)</h3>
         <div class="grid-section">
@@ -224,7 +224,7 @@
         ctx.fillText('造詞練習', 50, textY);
     }
 
-    // 繪製單個九宮格的函式 (徹底改為 1/2 上下平均分配與特大字體)
+    // 繪製單個九宮格的函式
     function drawJiugonge(ctx, x, y, size, textObj, tone, isLarge, textMode) {
         ctx.strokeStyle = '#666666';
         ctx.lineWidth = isLarge ? 3 : 2;
@@ -246,7 +246,7 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
-        // 【核心修正】因為空間改為上下 1/2 對半分，字體可以直接放大到佔滿半個格子的超大尺寸
+        // 主注音字體尺寸設定為空間 1/2 對半分的特大尺寸
         const fontSize = size * 0.42; 
         ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
         const centerX = x + size / 2;
@@ -254,8 +254,8 @@
         function drawText(text, tx, ty, isTone, toneAlignX, toneAlignY) {
             ctx.save();
             if (isTone) {
-                // 聲調字體大小與主注音等稱，並套用靠左對齊
-                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 0.9}px DFKai-SB, BiauKai, "微軟正黑體"`;
+                // 核心修改：聲調同步顯著放大（乘上 1.0 的超醒目 fontSize），字體與注音完美匹配
+                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 1.0}px DFKai-SB, BiauKai, "微軟正黑體"`;
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'middle';
                 tx = toneAlignX;
@@ -280,10 +280,7 @@
             ctx.restore();
         }
 
-        // 【黃金分配】將九宮格高度直接除以 2 (對半平分)
-        // 上半部的中心點在 size * 0.25 處 (介母)
-        // 下半部的中心點在 size * 0.75 處 (韻母)
-        
+        // 1/2 對半平均分配：
         // 1. 介母 (正坐於上半部 1/2 的中央)
         if (textObj.mid) {
             drawText(textObj.mid, centerX, y + size * 0.25, false);
@@ -293,12 +290,12 @@
         if (textObj.bot) {
             drawText(textObj.bot, centerX, y + size * 0.75, false);
             
-            // 聲調位置精準對齊下半部韻母的右上方位置！
+            // 聲調位置精準調整，貼齊放大後的韻母右上方
             if (tone) {
                 // 水平位置：貼齊中間縱欄的右側分界虛線
                 const toneX = x + (third * 2);
-                // 垂直位置：定在下半部的中上方空檔（即九宮格從上數來的第二橫條虛線位置附近）
-                const toneY = y + (size * 0.55); 
+                // 垂直位置微調：配合特大的聲調，上移至下半部格子的偏上方，既清晰又完美不重疊
+                const toneY = y + (size * 0.53); 
                 drawText(tone, 0, 0, true, toneX, toneY);
             }
         }
