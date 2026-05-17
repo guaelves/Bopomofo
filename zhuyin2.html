@@ -172,7 +172,7 @@
     ];
 
     // 當前被選取的組合狀態
-    let currentBopo = { t: 'ㄌ', m: 'ㄧ', f: 'ㄚ' };
+    let currentBopo = { t: 'ㄅ', m: 'ㄧ', f: 'ㄝ' };
 
     // 動態建置按鈕面板
     function buildPanel() {
@@ -188,8 +188,8 @@
                 const btn = document.createElement('button');
                 btn.className = 'btn-combin';
                 btn.textContent = `${initial}${item.m}${item.f}`;
-                // 預設將 ㄌㄧㄚ 設為 active
-                if(initial==='ㄌ' && item.m==='ㄧ' && item.f==='ㄚ') btn.classList.add('active');
+                // 預設將 ㄅㄧㄝ 設為 active
+                if(initial==='ㄅ' && item.m==='ㄧ' && item.f==='ㄝ') btn.classList.add('active');
                 
                 btn.onclick = function() {
                     // 清除所有選取的樣式
