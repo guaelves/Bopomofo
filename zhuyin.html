@@ -135,7 +135,7 @@
 
 <script>
     const seriesI = ['ㄧㄚ', 'ㄧㄛ', 'ㄧㄝ', 'ㄧㄞ', 'ㄧㄠ', 'ㄧㄡ', 'ㄧㄢ', 'ㄧㄣ', 'ㄧㄤ', 'ㄧㄥ'];
-    const seriesU = ['ㄨㄚ', 'ㄨㄛ', 'ㄨㄞ', 'ㄨㄟ', 'ㄨㄢ', 'ㄨㄣ', 'ㄨㄤ', 'ㄨㄥ'];
+    const seriesU = ['ㄨㄚ', 'ㄨㄛ', 'ㄨㄞ', 'ㄨㄟ', 'ㄨㄢ', 'ㄨ慢', 'ㄨㄤ', 'ㄨㄥ'].map(s => s === 'ㄨ慢' ? 'ㄨㄣ' : s); // 修正字集
     const seriesYu = ['ㄩㄝ', 'ㄩㄢ', 'ㄩㄣ', 'ㄩㄥ'];
 
     let currentBopo = { m: 'ㄧ', f: 'ㄚ' };
@@ -246,22 +246,13 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
-        // 主注音字體尺寸設定為空間 1/2 對半分的特大尺寸
+        // 主注音字體尺寸（上下1/2對分特大尺寸）
         const fontSize = size * 0.42; 
         ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
         const centerX = x + size / 2;
         
-        function drawText(text, tx, ty, isTone, toneAlignX, toneAlignY) {
-            ctx.save();
-            if (isTone) {
-                // 核心修改：聲調同步顯著放大（乘上 1.0 的超醒目 fontSize），字體與注音完美匹配
-                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 1.0}px DFKai-SB, BiauKai, "微軟正黑體"`;
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'middle';
-                tx = toneAlignX;
-                ty = toneAlignY;
-            }
-
+        // 核心文字繪製邏輯
+        function drawText(text, tx, ty) {
             if (textMode === 'gray') {
                 ctx.fillStyle = '#d3d3d3';
                 ctx.fillText(text, tx, ty);
@@ -277,26 +268,40 @@
                 ctx.fillStyle = '#000000';
                 ctx.fillText(text, tx, ty);
             }
-            ctx.restore();
         }
 
-        // 1/2 對半平均分配：
         // 1. 介母 (正坐於上半部 1/2 的中央)
         if (textObj.mid) {
-            drawText(textObj.mid, centerX, y + size * 0.25, false);
+            drawText(textObj.mid, centerX, y + size * 0.25);
         }
         
-        // 2. 韻母 (正坐於下半部 1/2 的中央) 與 聲調
+        // 2. 韻母 (正坐於下半部 1/2 的中央)
         if (textObj.bot) {
-            drawText(textObj.bot, centerX, y + size * 0.75, false);
+            drawText(textObj.bot, centerX, y + size * 0.75);
             
-            // 聲調位置精準調整，貼齊放大後的韻母右上方
+            // 3. 【黃金修正】利用 Canvas 的 scale 縮放矩陣功能強行放大聲調符號，徹底突破字型限制！
             if (tone) {
-                // 水平位置：貼齊中間縱欄的右側分界虛線
-                const toneX = x + (third * 2);
-                // 垂直位置微調：配合特大的聲調，上移至下半部格子的偏上方，既清晰又完美不重疊
-                const toneY = y + (size * 0.53); 
-                drawText(tone, 0, 0, true, toneX, toneY);
+                ctx.save();
+                
+                // 設定畫筆基準點：對齊中間欄右側虛線，高度對齊下半部格子的偏上方
+                const baseToneX = x + (third * 2);
+                const baseToneY = y + (size * 0.51); 
+                
+                // 將 Canvas 的坐標軸中心點移到我們要畫聲調的位置
+                ctx.translate(baseToneX, baseToneY);
+                
+                // 【核心強制放大：1.8倍】直接將坐標軸拉大 1.8 倍，畫出來的聲調絕對巨大無比
+                ctx.scale(1.8, 1.8);
+                
+                // 在放大的空間內設定基礎字級，並靠左、垂直置中
+                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 0.55}px DFKai-SB, BiauKai, "微軟正黑體"`;
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                
+                // 在新坐標軸的 (0,0) 原點直接繪製
+                drawText(tone, 0, 0);
+                
+                ctx.restore();
             }
         }
     }
