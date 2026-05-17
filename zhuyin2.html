@@ -26,7 +26,6 @@
         h2 { margin-top: 0; color: #1a365d; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
         h3 { margin: 15px 0 5px 0; color: #2b6cb0; font-size: 16px; }
         
-        /* 161個結合韻點選面板樣式 */
         .grid-section {
             background: #f8fafc;
             padding: 12px;
@@ -124,7 +123,7 @@
         </div>
 
         <div class="action-row">
-            <div class="current-status" id="current-text">目前選取：ㄌ + ㄧ + ㄚ</div>
+            <div class="current-status" id="current-text">目前選取：ㄅ + ㄧ + ㄝ</div>
             <button class="main-btn btn-download" onclick="downloadPDF()">下載當前組合 A4 PDF</button>
         </div>
     </div>
@@ -135,10 +134,9 @@
 </div>
 
 <script>
-    // 依據您提供的「三拼音對照表」照片，完整輸入全部 161 個正確的聲韻母組合
     const initialList = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'];
     
-    // 1. ㄧ的結合韻資料庫 (54組)
+    // ㄧ的結合韻資料庫 (54組)
     const dataI = [
         {m:'ㄧ', f:'ㄝ', s:['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ']},
         {m:'ㄧ', f:'ㄚ', s:['ㄌ','ㄐ','ㄑ','ㄒ']},
@@ -151,7 +149,7 @@
         {m:'ㄧ', f:'ㄥ', s:['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ']}
     ];
 
-    // 2. ㄨ的結合韻資料庫 (79組)
+    // ㄨ的結合韻資料庫 (79組)
     const dataU = [
         {m:'ㄨ', f:'ㄚ', s:['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ']},
         {m:'ㄨ', f:'ㄛ', s:['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄖ','ㄗ','ㄘ','ㄙ']},
@@ -163,7 +161,7 @@
         {m:'ㄨ', f:'ㄥ', s:['ㄅ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄙ']}
     ];
 
-    // 3. ㄩ的結合韻資料庫 (28組)
+    // ㄩ的結合韻資料庫 (28組)
     const dataYu = [
         {m:'ㄩ', f:'ㄝ', s:['ㄋ','ㄌ','ㄐ','ㄑ','ㄒ']},
         {m:'ㄩ', f:'ㄢ', s:['ㄐ','ㄑ','ㄒ']},
@@ -171,10 +169,9 @@
         {m:'ㄩ', f:'ㄥ', s:['ㄐ','ㄑ','ㄒ']}
     ];
 
-    // 當前被選取的組合狀態
+    // 關鍵修改：預設初始組合修改為 ㄅㄧㄝ
     let currentBopo = { t: 'ㄅ', m: 'ㄧ', f: 'ㄝ' };
 
-    // 動態建置按鈕面板
     function buildPanel() {
         renderGroup('group-i', dataI);
         renderGroup('group-u', dataU);
@@ -188,15 +185,14 @@
                 const btn = document.createElement('button');
                 btn.className = 'btn-combin';
                 btn.textContent = `${initial}${item.m}${item.f}`;
-                // 預設將 ㄅㄧㄝ 設為 active
+                
+                // 關鍵修改：預設高亮選取 ㄅㄧㄝ 的按鈕
                 if(initial==='ㄅ' && item.m==='ㄧ' && item.f==='ㄝ') btn.classList.add('active');
                 
                 btn.onclick = function() {
-                    // 清除所有選取的樣式
                     document.querySelectorAll('.btn-combin').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     
-                    // 變更當前注音狀態並繪製
                     currentBopo = { t: initial, m: item.m, f: item.f };
                     document.getElementById('current-text').textContent = `目前選取：${initial} + ${item.m} + ${item.f}`;
                     drawWorksheet();
@@ -213,7 +209,6 @@
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // 1. 標題
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 44px DFKai-SB, BiauKai, "微軟正黑體"';
         ctx.textAlign = 'left';
@@ -222,13 +217,11 @@
         
         const bopomofo = { top: currentBopo.t, mid: currentBopo.m, bot: currentBopo.f };
 
-        // 2. 上方兩個大九宮格
         const largeGridY = 120;
         const largeGridSize = 330;
         drawJiugonge(ctx, 50, largeGridY, largeGridSize, bopomofo, '', true, 'black');
         drawJiugonge(ctx, 420, largeGridY, largeGridSize, bopomofo, '', true, 'outline');
         
-        // 3. 下方三排小九宮格
         const smallGridStartY = 490;
         const smallGridSize = 160;
         const gapX = 30;
@@ -253,7 +246,6 @@
             }
         }
 
-        // 4. 造詞練習常駐字樣
         const textY = smallGridStartY + smallGridSize + Math.floor((baseGapY + shiftUpOffset) / 2);
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 24px DFKai-SB, BiauKai, "微軟正黑體"';
