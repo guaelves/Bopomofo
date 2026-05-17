@@ -108,7 +108,7 @@
         // 左大九宮格 (原始黑色注音範本)
         drawJiugonge(ctx, 50, largeGridY, largeGridSize, bopomofo, '', true, 'black');
         
-        // 右大九宮格 (帶有厚度、完美的雙線黑邊鏤空注音，適合著色)
+        // 右大九宮格 (完美乾淨的黑邊空心字，中間完全挖空無雜線)
         drawJiugonge(ctx, 420, largeGridY, largeGridSize, bopomofo, '', true, 'outline');
         
         // 3. 繪製下方三排小九宮格 (每排4個)
@@ -169,11 +169,11 @@
         
         const centerX = x + size / 2;
         
-        // 核心修正：處理雙線鏤空字與一般字的繪製邏輯
+        // 核心修正：完美覆蓋內部雜線的空心字邏輯
         function drawText(text, tx, ty, isTone, toneAlignX, toneAlignY) {
             ctx.save();
             
-            // 如果是聲調，特別套用您之前指定的超大與靠左定位設定
+            // 如果是聲調，特別套用指定的大尺寸與靠左定位
             if (isTone) {
                 ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 2}px DFKai-SB, BiauKai, "微軟正黑體"`;
                 ctx.textAlign = 'left';
@@ -183,23 +183,22 @@
             }
 
             if (textMode === 'gray') {
-                // 1. 淡灰色模式 (供學生描寫)
+                // 1. 淡灰色模式
                 ctx.fillStyle = '#d3d3d3';
                 ctx.fillText(text, tx, ty);
             } else if (textMode === 'outline') {
-                // 2. 雙線黑邊鏤空模式 (如您照片所示)
-                ctx.lineJoin = 'round'; // 使轉角圓潤
+                // 2. 完美的黑色外框空心字 (內部雜線完全消除)
+                ctx.lineJoin = 'round';
                 ctx.lineCap = 'round';
 
-                // 步驟 A: 先用黑筆刷出一層超胖的實心底色線條 (這會成為外邊框)
-                ctx.strokeStyle = '#222222';
-                ctx.lineWidth = isLarge ? 12 : 6; // 大格子用粗黑邊，小格子用細黑邊
+                // 第一步：先用粗黑線描出極粗的外邊框
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = isLarge ? 14 : 7; 
                 ctx.strokeText(text, tx, ty);
 
-                // 步驟 B: 再用白筆在正中央刷出一層稍細的實心線條，把黑底挖空，形成中空通道
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = isLarge ? 8 : 4;  // 留下的白色塗色空間厚度
-                ctx.strokeText(text, tx, ty);
+                // 第二步：立刻用純白色覆蓋整個文字內部。這會把剛剛 strokeText 產生的所有內部重疊細線、筆畫交叉線全部抹平、蓋成純白！
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(text, tx, ty);
             } else {
                 // 3. 標準黑色模式
                 ctx.fillStyle = '#000000';
@@ -222,7 +221,7 @@
         if (textObj.bot) {
             drawText(textObj.bot, centerX, y + third * 2.5, false);
             
-            // 如果有聲調，依照之前調整完美的定位點進行繪製
+            // 如果有聲調，依照完美的定點進行繪製
             if (tone) {
                 const toneX = x + (third * 2);
                 const toneY = y + (third * 2) + (third * 0.45); 
