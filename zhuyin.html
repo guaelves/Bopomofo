@@ -185,12 +185,12 @@
             // 如果有聲調，將其繪製在韻母格子的右上方位置
             if (tone) {
                 ctx.save();
-                // 再次放大聲調字體（乘上 1.35），達到超級醒目的效果
-                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 1.35}px DFKai-SB, BiauKai, "微軟正黑體"`;
+                // 大幅放大聲調字體（乘上 1.85），加強醒目度
+                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 1.85}px DFKai-SB, BiauKai, "微軟正黑體"`;
                 
-                // 配合放大的字體微調定位，確保完美立足於韻母格子右上方，且不重疊
-                const toneX = centerX + (third * 0.75);
-                const toneY = (y + third * 2.5) - (third * 0.35);
+                // 配合特大字體微調定位，使其完美安置在韻母格子的右上方，不會有壓迫感
+                const toneX = centerX + (third * 0.78);
+                const toneY = (y + third * 2.5) - (third * 0.45);
                 
                 ctx.fillText(tone, toneX, toneY);
                 ctx.restore();
