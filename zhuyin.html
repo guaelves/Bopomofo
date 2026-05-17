@@ -178,19 +178,22 @@
             ctx.fillText(textObj.mid, centerX, y + third * 1.5);
         }
         
-        // 3. 繪製 韻母 (下) 與 聲調 (右上方)
+        // 3. 繪製 韻母 (下) 與 聲調
         if (textObj.bot) {
             ctx.fillText(textObj.bot, centerX, y + third * 2.5);
             
-            // 如果有聲調，將其繪製在韻母格子的右上方位置
+            // 如果有聲調，將其繪製在介母與韻母中間的右側位置
             if (tone) {
                 ctx.save();
-                // 大幅放大聲調字體（乘上 1.85），加強醒目度
-                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 1.85}px DFKai-SB, BiauKai, "微軟正黑體"`;
+                // 聲調尺寸調整為 fontSize * 2
+                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 2}px DFKai-SB, BiauKai, "微軟正黑體"`;
                 
-                // 配合特大字體微調定位，使其完美安置在韻母格子的右上方，不會有壓迫感
+                // 水平 X 軸位置保持在右側不變
                 const toneX = centerX + (third * 0.78);
-                const toneY = (y + third * 2.5) - (third * 0.45);
+                
+                // 垂直 Y 軸位置下移：y + third * 2 正好是中格（介母）與下格（韻母）的水平分界虛線
+                // 這裡將其設定在分界線附近（稍微上下微調使視覺置中）
+                const toneY = y + (third * 2);
                 
                 ctx.fillText(tone, toneX, toneY);
                 ctx.restore();
