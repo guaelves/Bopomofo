@@ -2,7 +2,9 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>四聲調注音學習單生成器</title>
+    <title>四聲調注音學習單生成器 (支援A4下載)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             font-family: 'DFKai-SB', 'BiauKai', '微軟正黑體', sans-serif;
@@ -15,42 +17,77 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            max-width: 600px;
+            max-width: 750px;
             margin: 0 auto 20px auto;
         }
-        .input-group {
+        .panel-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
             margin-bottom: 15px;
+            align-items: center;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         label {
-            display: inline-block;
-            width: 100px;
             font-weight: bold;
         }
-        input[type="text"] {
+        select, input[type="text"] {
             padding: 8px;
-            width: 80px;
             font-size: 16px;
             text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        select {
+            min-width: 80px;
+        }
+        input[type="text"] {
+            width: 50px;
+        }
+        .btn-container {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
         }
         button {
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-weight: bold;
         }
-        button:hover {
-            background-color: #45a049;
+        .btn-update {
+            background-color: #4CAF50;
+            color: white;
         }
+        .btn-update:hover { background-color: #45a049; }
+        .btn-download {
+            background-color: #008CBA;
+            color: white;
+        }
+        .btn-download:hover { background-color: #007bb6; }
+        
         .canvas-container {
             text-align: center;
+            margin-top: 20px;
         }
+        /* 嚴格限制 Canvas 的顯示尺寸符合網頁預覽，同時保持內部高解析度供下載 */
         canvas {
             border: 1px solid #ccc;
             background-color: white;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 100%;
+            height: auto;
+        }
+        .quick-tips {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -58,27 +95,67 @@
 
 <div class="control-panel">
     <h2>四聲調注音學習單生成器</h2>
-    <p>請輸入注音符號（第一排四個小格子會自動產生 一、二、三、四聲）：</p>
-    <div class="input-group">
-        <label for="initial">聲母 (上)：</label>
-        <input type="text" id="initial" maxlength="1" value="ㄌ">
+    <p>您可以用下拉選單點選快速組合，也可以直接在輸入框中修改自訂字：</p>
+    
+    <div class="panel-row">
+        <div class="input-group">
+            <label for="select-initial">聲母：</label>
+            <select id="select-initial" onchange="syncToInput()">
+                <option value="">(無)</option>
+                <option value="ㄅ">ㄅ</option><option value="ㄆ">ㄆ</option><option value="ㄇ">ㄇ</option><option value="ㄈ">ㄈ</option>
+                <option value="ㄉ">ㄉ</option><option value="ㄊ">ㄊ</option><option value="ㄋ">ㄋ</option><option value="ㄌ" selected>ㄌ</option>
+                <option value="ㄍ">ㄍ</option><option value="ㄎ">ㄎ</option><option value="ㄏ">ㄏ</option>
+                <option value="ㄐ">ㄐ</option><option value="ㄑ">ㄑ</option><option value="ㄒ">ㄒ</option>
+                <option value="ㄓ">ㄓ</option><option value="ㄔ">ㄔ</option><option value="ㄕ">ㄕ</option><option value="ㄖ">ㄖ</option>
+                <option value="ㄗ">ㄗ</option><option value="ㄘ">ㄘ</option><option value="ㄙ">ㄙ</option>
+            </select>
+            <input type="text" id="initial" maxlength="1" value="ㄌ">
+        </div>
+
+        <div class="input-group">
+            <label for="select-medial">介母：</label>
+            <select id="select-medial" onchange="syncToInput()">
+                <option value="">(無)</option>
+                <option value="ㄧ" selected>ㄧ</option>
+                <option value="ㄨ">ㄨ</option>
+                <option value="ㄩ">ㄩ</option>
+            </select>
+            <input type="text" id="medial" maxlength="1" value="ㄧ">
+        </div>
+
+        <div class="input-group">
+            <label for="select-final">韻母：</label>
+            <select id="select-final" onchange="syncToInput()">
+                <option value="">(無)</option>
+                <option value="ㄚ" selected>ㄚ</option><option value="ㄛ">ㄛ</option><option value="ㄜ">ㄜ</option><option value="ㄝ">ㄝ</option>
+                <option value="ㄞ">ㄞ</option><option value="ㄟ">ㄟ</option><option value="ㄠ">ㄠ</option><option value="ㄡ">ㄡ</option>
+                <option value="ㄢ">ㄢ</option><option value="ㄣ">ㄣ</option><option value="ㄤ">ㄤ</option><option value="ㄥ">ㄥ</option>
+                <option value="ㄦ">ㄦ</option>
+            </select>
+            <input type="text" id="final" maxlength="1" value="ㄚ">
+        </div>
     </div>
-    <div class="input-group">
-        <label for="medial">介母 (中)：</label>
-        <input type="text" id="medial" maxlength="1" value="ㄧ">
+
+    <div class="btn-container">
+        <button class="btn-update" onclick="drawWorksheet()">更新練習單預覽</button>
+        <button class="btn-download" onclick="downloadPDF()">下載標準 A4 練習單 PDF</button>
     </div>
-    <div class="input-group">
-        <label for="final">韻母 (下)：</label>
-        <input type="text" id="final" maxlength="1" value="ㄚ">
-    </div>
-    <button onclick="drawWorksheet()">更新並生成練習單</button>
+    <div class="quick-tips">提示：下載功能會自動將下方內容完美縮放至標準 A4 尺寸（210mm × 297mm）並導出高品質 PDF。</div>
 </div>
 
-<div class="canvas-container">
+<div class="canvas-container" id="print-area">
     <canvas id="worksheet" width="800" height="1130"></canvas>
 </div>
 
 <script>
+    // 下拉選單與自訂輸入框雙向同步
+    function syncToInput() {
+        document.getElementById('initial').value = document.getElementById('select-initial').value;
+        document.getElementById('medial').value = document.getElementById('select-medial').value;
+        document.getElementById('final').value = document.getElementById('select-final').value;
+        drawWorksheet(); // 點選時自動更新畫面
+    }
+
     function drawWorksheet() {
         const canvas = document.getElementById('worksheet');
         const ctx = canvas.getContext('2d');
@@ -94,7 +171,7 @@
         ctx.textBaseline = 'top';
         ctx.fillText('注音學習單', 50, 40);
         
-        // 獲取使用者輸入的注音
+        // 獲取使用者選取或輸入的注音
         const bopomofo = {
             top: document.getElementById('initial').value.trim(),
             mid: document.getElementById('medial').value.trim(),
@@ -105,10 +182,10 @@
         const largeGridY = 120;
         const largeGridSize = 330;
         
-        // 左大九宮格 (原始黑色注音範本)
+        // 左大九宮格 (原始標準黑色注音範本)
         drawJiugonge(ctx, 50, largeGridY, largeGridSize, bopomofo, '', true, 'black');
         
-        // 右大九宮格 (完美乾淨的黑邊空心字，中間完全挖空無雜線)
+        // 右大九宮格 (完美的黑邊空心字，中間完全挖空覆蓋無雜線，適合著色)
         drawJiugonge(ctx, 420, largeGridY, largeGridSize, bopomofo, '', true, 'outline');
         
         // 3. 繪製下方三排小九宮格 (每排4個)
@@ -117,7 +194,7 @@
         const gapX = 30;
         const gapY = 40;
         
-        // 聲調陣列：第一格無、第二格二聲、第三格三聲、第四格四聲
+        // 聲調配置：第一格無、第二格二聲、第三格三聲、第四格四聲
         const tones = ['', 'ˊ', 'ˇ', 'ˋ'];
         
         for (let row = 0; row < 3; row++) {
@@ -126,7 +203,7 @@
                 const y = smallGridStartY + row * (smallGridSize + gapY);
                 
                 if (row === 0) {
-                    // 第一排：自動帶入輸入的注音與聲調，改為「淡灰色」供描寫
+                    // 第一排：自動帶入組合與聲調，改為「淡灰色」供描寫
                     drawJiugonge(ctx, x, y, smallGridSize, bopomofo, tones[col], false, 'gray');
                 } else {
                     // 第二、三排：一律留白作為空白書寫練習
@@ -150,11 +227,11 @@
         
         const third = size / 3;
         
-        // 垂直虛線
+        // 垂直內部虛線
         ctx.beginPath();
         ctx.moveTo(x + third, y); ctx.lineTo(x + third, y + size);
         ctx.moveTo(x + third * 2, y); ctx.lineTo(x + third * 2, y + size);
-        // 水平虛線
+        // 水平內部虛線
         ctx.moveTo(x, y + third); ctx.lineTo(x + size, y + third);
         ctx.moveTo(x, y + third * 2); ctx.lineTo(x + size, y + third * 2);
         ctx.stroke();
@@ -169,11 +246,11 @@
         
         const centerX = x + size / 2;
         
-        // 核心修正：完美覆蓋內部雜線的空心字邏輯
+        // 核心空心字與填色邏輯
         function drawText(text, tx, ty, isTone, toneAlignX, toneAlignY) {
             ctx.save();
             
-            // 如果是聲調，特別套用指定的大尺寸與靠左定位
+            // 如果是聲調，套用指定的大尺寸與緊貼右方分界線定位
             if (isTone) {
                 ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 2}px DFKai-SB, BiauKai, "微軟正黑體"`;
                 ctx.textAlign = 'left';
@@ -183,20 +260,20 @@
             }
 
             if (textMode === 'gray') {
-                // 1. 淡灰色模式
+                // 1. 淡灰色模式 (供描寫)
                 ctx.fillStyle = '#d3d3d3';
                 ctx.fillText(text, tx, ty);
             } else if (textMode === 'outline') {
-                // 2. 完美的黑色外框空心字 (內部雜線完全消除)
+                // 2. 完美的黑色外框空心字 (內部交叉線、骨架線完全用純白填滿抹平)
                 ctx.lineJoin = 'round';
                 ctx.lineCap = 'round';
 
-                // 第一步：先用粗黑線描出極粗的外邊框
+                // 先用粗黑線繪製極粗外框
                 ctx.strokeStyle = '#000000';
                 ctx.lineWidth = isLarge ? 14 : 7; 
                 ctx.strokeText(text, tx, ty);
 
-                // 第二步：立刻用純白色覆蓋整個文字內部。這會把剛剛 strokeText 產生的所有內部重疊細線、筆畫交叉線全部抹平、蓋成純白！
+                // 立刻用純白色滿填文字本身，將所有交界內部細線完全覆蓋掉
                 ctx.fillStyle = '#ffffff';
                 ctx.fillText(text, tx, ty);
             } else {
@@ -208,20 +285,20 @@
             ctx.restore();
         }
 
-        // 1. 繪製 聲母 (上格)
+        // 1. 聲母 (上格)
         if (textObj.top) {
             drawText(textObj.top, centerX, y + third * 0.5, false);
         }
-        // 2. 繪製 介母 (中格)
+        // 2. 介母 (中格)
         if (textObj.mid) {
             drawText(textObj.mid, centerX, y + third * 1.5, false);
         }
         
-        // 3. 繪製 韻母 (下格) 與 聲調
+        // 3. 韻母 (下格) 與 聲調
         if (textObj.bot) {
             drawText(textObj.bot, centerX, y + third * 2.5, false);
             
-            // 如果有聲調，依照完美的定點進行繪製
+            // 如果有聲調，精準定位在韻母格正右方、對齊韻母格正中央高度
             if (tone) {
                 const toneX = x + (third * 2);
                 const toneY = y + (third * 2) + (third * 0.45); 
@@ -230,7 +307,34 @@
         }
     }
 
-    // 初始化繪製
+    // 下載標準 A4 大小 PDF 的函式
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const canvas = document.getElementById('worksheet');
+        
+        // 建立一個標準 A4 縱向 (Portrait) 的 PDF 物件，單位使用公釐 (mm)
+        // A4 的標準尺寸為 210mm x 297mm
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        // 將 Canvas 轉換成高品質的 JPEG 資料基地台
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        
+        // 完美將 Canvas 的寬高等比例對齊填滿 A4 尺寸
+        const pdfWidth = 210;
+        const pdfHeight = 297;
+        
+        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        
+        // 獲取目前選取的注音作為檔名，方便管理
+        const t = document.getElementById('initial').value || '';
+        const m = document.getElementById('medial').value || '';
+        const f = document.getElementById('final').value || '';
+        const fileName = `注音練習單_${t}${m}${f}.pdf`;
+        
+        pdf.save(fileName);
+    }
+
+    // 網頁載入時自動繪製初始化範例
     window.onload = drawWorksheet;
 </script>
 
