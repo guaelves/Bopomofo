@@ -105,7 +105,7 @@
 <div class="container">
     <div class="control-panel">
         <h2>22個二拼結合韻互動面板</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">請直接點選下方對照圖中的任意結合韻組合，注音與聲調將會同步以特大尺寸生成：</p>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">請點選下方組合，注音將採取 1/2 上下對半分，聲調也會同步變特大並精準置於韻母右上方：</p>
         
         <h3>【ㄧ】的結合韻系列 (10組)</h3>
         <div class="grid-section">
@@ -135,7 +135,7 @@
 
 <script>
     const seriesI = ['ㄧㄚ', 'ㄧㄛ', 'ㄧㄝ', 'ㄧㄞ', 'ㄧㄠ', 'ㄧㄡ', 'ㄧㄢ', 'ㄧㄣ', 'ㄧㄤ', 'ㄧㄥ'];
-    const seriesU = ['ㄨㄚ', 'ㄨㄛ', 'ㄨㄞ', 'ㄨㄟ', 'ㄨㄢ', 'ㄨ慢', 'ㄨㄤ', 'ㄨㄥ'].map(s => s === 'ㄨ慢' ? 'ㄨㄣ' : s); // 修正字集
+    const seriesU = ['ㄨㄚ', 'ㄨㄛ', 'ㄨㄞ', 'ㄨㄟ', 'ㄨㄢ', 'ㄨㄣ', 'ㄨㄤ', 'ㄨㄥ'];
     const seriesYu = ['ㄩㄝ', 'ㄩㄢ', 'ㄩㄣ', 'ㄩㄥ'];
 
     let currentBopo = { m: 'ㄧ', f: 'ㄚ' };
@@ -153,13 +153,11 @@
             const btn = document.createElement('button');
             btn.className = 'btn-combin';
             btn.textContent = combin;
-            
             if (medial === 'ㄧ' && final === 'ㄚ') btn.classList.add('active');
             
             btn.onclick = function() {
                 document.querySelectorAll('.btn-combin').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
                 currentBopo = { m: medial, f: final };
                 document.getElementById('current-text').textContent = `目前選取：${medial} + ${final}`;
                 drawWorksheet();
@@ -175,7 +173,6 @@
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // 1. 標題
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 44px DFKai-SB, BiauKai, "微軟正黑體"';
         ctx.textAlign = 'left';
@@ -184,13 +181,11 @@
         
         const bopomofo = { mid: currentBopo.m, bot: currentBopo.f };
 
-        // 2. 上方兩個大九宮格
         const largeGridY = 120;
         const largeGridSize = 330;
         drawJiugonge(ctx, 50, largeGridY, largeGridSize, bopomofo, '', true, 'black');
         drawJiugonge(ctx, 420, largeGridY, largeGridSize, bopomofo, '', true, 'outline');
         
-        // 3. 下方三排小九宮格
         const smallGridStartY = 490;
         const smallGridSize = 160;
         const gapX = 30;
@@ -215,7 +210,6 @@
             }
         }
 
-        // 4. 造詞練習欄位
         const textY = smallGridStartY + smallGridSize + Math.floor((baseGapY + shiftUpOffset) / 2);
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 24px DFKai-SB, BiauKai, "微軟正黑體"';
@@ -224,7 +218,6 @@
         ctx.fillText('造詞練習', 50, textY);
     }
 
-    // 繪製單個九宮格的函式
     function drawJiugonge(ctx, x, y, size, textObj, tone, isLarge, textMode) {
         ctx.strokeStyle = '#666666';
         ctx.lineWidth = isLarge ? 3 : 2;
@@ -243,16 +236,16 @@
         ctx.stroke();
         ctx.setLineDash([]);
         
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
+        // 1/2版面特大注音字體尺寸 (主注音符號)
+        const fontSize = size * 0.45; 
         
-        // 主注音字體尺寸（上下1/2對分特大尺寸）
-        const fontSize = size * 0.42; 
-        ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
-        const centerX = x + size / 2;
-        
-        // 核心文字繪製邏輯
-        function drawText(text, tx, ty) {
+        // 渲染主注音文字的核心函式
+        function drawMainText(text, tx, ty) {
+            ctx.save();
+            ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
             if (textMode === 'gray') {
                 ctx.fillStyle = '#d3d3d3';
                 ctx.fillText(text, tx, ty);
@@ -268,40 +261,58 @@
                 ctx.fillStyle = '#000000';
                 ctx.fillText(text, tx, ty);
             }
+            ctx.restore();
         }
 
-        // 1. 介母 (正坐於上半部 1/2 的中央)
+        // 渲染巨大聲調專用的函式 (強制設定為靠左、獨立特大字級，並精準定位於第 6 格中心)
+        function drawToneText(text, tx, ty) {
+            ctx.save();
+            // 將聲調的字型大小設定到極限大的「size * 0.45」
+            ctx.font = `${isLarge ? 'bold' : 'normal'} ${size * 0.45}px DFKai-SB, BiauKai, "微軟正黑體"`;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            
+            if (textMode === 'gray') {
+                ctx.fillStyle = '#d3d3d3';
+                ctx.fillText(text, tx, ty);
+            } else if (textMode === 'outline') {
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = isLarge ? 14 : 6; 
+                ctx.strokeText(text, tx, ty);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(text, tx, ty);
+            } else {
+                ctx.fillStyle = '#000000';
+                ctx.fillText(text, tx, ty);
+            }
+            ctx.restore();
+        }
+
+        const centerX = x + size / 2;
+
+        // 【½ 對半分黃金坐標】
+        // 1. 介母：正坐於上半部 ½ 空間的中央 (y + size * 0.25)
         if (textObj.mid) {
-            drawText(textObj.mid, centerX, y + size * 0.25);
+            drawMainText(textObj.mid, centerX, y + size * 0.25);
         }
         
-        // 2. 韻母 (正坐於下半部 1/2 的中央)
+        // 2. 韻母：正坐於下半部 ½ 空間的中央 (y + size * 0.75)
         if (textObj.bot) {
-            drawText(textObj.bot, centerX, y + size * 0.75);
+            drawMainText(textObj.bot, centerX, y + size * 0.75);
             
-            // 3. 【黃金修正】利用 Canvas 的 scale 縮放矩陣功能強行放大聲調符號，徹底突破字型限制！
+            // 3. 【全新鎖定邏輯】聲調：直接強制鎖定在九宮格的「第 6 格（右中格）的正中央」！
+            // 這樣子它絕對會呈現為特大號符號，並且完美、精準地待在韻母格子的右上方區域！
             if (tone) {
-                ctx.save();
+                // 第 6 格的水平中心：就是右邊那一欄的中央位置 (x + third * 2.5)
+                // 微調：往左移回一點點 (third * 0.15)，使其視覺上與左邊的韻母貼得更完美、不超出外框
+                const toneX = x + (third * 2.5) - (third * 0.15);
                 
-                // 設定畫筆基準點：對齊中間欄右側虛線，高度對齊下半部格子的偏上方
-                const baseToneX = x + (third * 2);
-                const baseToneY = y + (size * 0.51); 
+                // 第 6 格的垂直中心：就是中間那一橫排的中央位置 (y + third * 1.5)
+                const toneY = y + (third * 1.5);
                 
-                // 將 Canvas 的坐標軸中心點移到我們要畫聲調的位置
-                ctx.translate(baseToneX, baseToneY);
-                
-                // 【核心強制放大：1.8倍】直接將坐標軸拉大 1.8 倍，畫出來的聲調絕對巨大無比
-                ctx.scale(1.8, 1.8);
-                
-                // 在放大的空間內設定基礎字級，並靠左、垂直置中
-                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 0.55}px DFKai-SB, BiauKai, "微軟正黑體"`;
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'middle';
-                
-                // 在新坐標軸的 (0,0) 原點直接繪製
-                drawText(tone, 0, 0);
-                
-                ctx.restore();
+                drawToneText(tone, toneX, toneY);
             }
         }
     }
