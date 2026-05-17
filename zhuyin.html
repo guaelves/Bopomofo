@@ -105,7 +105,7 @@
 <div class="container">
     <div class="control-panel">
         <h2>22個二拼結合韻互動面板</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">主注音已極限放大，聲調比例已稍微縮小，並極其精準地貼合於韻母格子的右上方：</p>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">點選下方二拼組合，文字採用 1/2 特大平分，聲調比例縮小並精準歸位於韻母右上方：</p>
         
         <h3>【ㄧ】的結合韻系列 (10組)</h3>
         <div class="grid-section">
@@ -140,6 +140,7 @@
 
     let currentBopo = { m: 'ㄧ', f: 'ㄚ' };
 
+    // 建立面板
     function buildPanel() {
         renderGroup('group-i', seriesI, 'ㄧ');
         renderGroup('group-u', seriesU, 'ㄨ');
@@ -166,6 +167,7 @@
         });
     }
 
+    // 主繪製流程
     function drawWorksheet() {
         const canvas = document.getElementById('worksheet');
         const ctx = canvas.getContext('2d');
@@ -218,11 +220,14 @@
         ctx.fillText('造詞練習', 50, textY);
     }
 
+    // 繪製單個九宮格
     function drawJiugonge(ctx, x, y, size, textObj, tone, isLarge, textMode) {
+        // 外框
         ctx.strokeStyle = '#666666';
         ctx.lineWidth = isLarge ? 3 : 2;
         ctx.strokeRect(x, y, size, size);
         
+        // 內部九宮格虛線
         ctx.strokeStyle = '#999999';
         ctx.lineWidth = 1.5;
         ctx.setLineDash([6, 4]);
@@ -236,8 +241,8 @@
         ctx.stroke();
         ctx.setLineDash([]);
         
-        // 主文字：放至極限大 (0.55倍邊長)
-        const fontSize = size * 0.55; 
+        // 1. 主文字：極限特大 (佔邊長 0.55)
+        const fontSize = size * 0.55;
         
         function drawMainText(text, tx, ty) {
             ctx.save();
@@ -263,15 +268,16 @@
             ctx.restore();
         }
 
-        // 聲調文字：比例微調縮小至 0.38 倍
+        // 2. 聲調專用字體與定位：完美依偎在韻母右上方 (第 6 格邊緣)
         function drawToneText(text, tx, ty) {
             ctx.save();
-            const toneSize = size * 0.38;
+            // 聲調尺寸調整：設定為比主注音字體小一號 (大格110px，小格52px)，比例極度和諧
+            const toneSize = isLarge ? 110 : 52;
             ctx.font = `${isLarge ? 'bold' : 'normal'} ${toneSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
             
-            // 關鍵對齊變更：靠左、底部對齊！
+            // 靠左、垂直居中對齊
             ctx.textAlign = 'left';
-            ctx.textBaseline = 'bottom';
+            ctx.textBaseline = 'middle';
             
             if (textMode === 'gray') {
                 ctx.fillStyle = '#d3d3d3';
@@ -293,20 +299,23 @@
 
         const centerX = x + size / 2;
 
-        // 1/2 對平分佈
+        // ½ 對半空間分配
+        // 介母 (上半部 1/2 中央)
         if (textObj.mid) {
             drawMainText(textObj.mid, centerX, y + size * 0.25);
         }
         
+        // 韻母 (下半部 1/2 中央)
         if (textObj.bot) {
             drawMainText(textObj.bot, centerX, y + size * 0.75);
             
-            // 聲調精準定位：鎖死在「第二垂直虛線 (x + third * 2)」與「第二水平虛線 (y + third * 2)」的十字分界交叉點！
-            // 配合靠左（left）和底部對齊（bottom），符號本體會完美展現在第 6 格的區域，精準吸附於韻母的右上方！
+            // 【終極校對定位點】
+            // 水平：完美切在第二垂直虛線上 (x + third * 2) 往右稍微移進 4~10 像素
+            // 垂直：完美切在九宮格中線橫虛線 (y + size * 0.5) 往上拉提，視覺上完美吸附於韻母右上方！
             if (tone) {
-                const crossX = x + (third * 2);
-                const crossY = y + (third * 2);
-                drawToneText(tone, crossX, crossY);
+                const toneX = x + (third * 2) + (isLarge ? 10 : 4);
+                const toneY = y + (size * 0.5) - (isLarge ? 15 : 7);
+                drawToneText(tone, toneX, toneY);
             }
         }
     }
