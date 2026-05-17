@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>161個三拼結合韻注音學習單生成器</title>
+    <title>161個三拼結合韻注音學習單</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -13,7 +13,7 @@
             color: #333;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         .control-panel {
@@ -24,42 +24,82 @@
             margin-bottom: 20px;
         }
         h2 { margin-top: 0; color: #1a365d; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
-        h3 { margin: 15px 0 5px 0; color: #2b6cb0; font-size: 16px; }
         
-        .grid-section {
-            background: #f8fafc;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
+        /* 三拼直書表格樣式 */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
             margin-bottom: 15px;
-        }
-        .btn-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        .btn-combin {
-            padding: 6px 10px;
-            font-size: 15px;
-            background-color: white;
+            border-radius: 8px;
             border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            letter-spacing: 1px;
-            font-family: 'DFKai-SB', 'BiauKai', sans-serif;
         }
-        .btn-combin:hover {
+        table.bopo-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            background-color: white;
+        }
+        table.bopo-table th, table.bopo-table td {
+            border: 1px solid #cbd5e1;
+            padding: 8px 3px;
+            min-width: 46px;
+            height: 95px; 
+        }
+        table.bopo-table th {
+            background-color: #f8fafc;
+            color: #1e293b;
+            font-weight: bold;
+            font-size: 15px;
+            height: 40px;
+        }
+        table.bopo-table th.medial-header {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            min-width: 100px;
+        }
+        
+        /* 左側縱軸首欄結合韻標頭直立式排列 */
+        .vertical-header-text {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-size: 15px;
+            letter-spacing: 1px;
+            margin: 0 auto;
+            display: inline-block;
+        }
+        
+        /* 結合韻按鈕直立式排列設定 */
+        .btn-table-combin {
+            width: 100%;
+            height: 100%;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'DFKai-SB', 'BiauKai', sans-serif;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-size: 16px;
+            letter-spacing: 2px;
+            padding: 4px 0;
+            margin: 0 auto;
+        }
+        .btn-table-combin:hover {
             background-color: #e0f2fe;
             border-color: #7dd3fc;
             color: #0369a1;
-            transform: translateY(-1px);
         }
-        .btn-combin.active {
+        .btn-table-combin.active {
             background-color: #3b82f6;
             border-color: #2563eb;
             color: white;
             font-weight: bold;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .action-row {
@@ -104,22 +144,19 @@
 
 <div class="container">
     <div class="control-panel">
-        <h2>161個三拼結合韻學習單</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">請直接點選下方對照表中的任意結合韻組合，下方練習單將即時連動生成：</p>
+        <h2>161個三拼結合韻學習單 (直書對照表)</h2>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">橫軸為 21 個聲符，縱軸首欄與按鈕拼音皆為【直立式】排列，點擊即可更換下方拼音組合：</p>
         
-        <h3>【ㄧ】的結合韻系列 (54組)</h3>
-        <div class="grid-section">
-            <div class="btn-group" id="group-i"></div>
-        </div>
-
-        <h3>【ㄨ】的結合韻系列 (79組)</h3>
-        <div class="grid-section">
-            <div class="btn-group" id="group-u"></div>
-        </div>
-
-        <h3>【ㄩ】的結合韻系列 (28組)</h3>
-        <div class="grid-section">
-            <div class="btn-group" id="group-yu"></div>
+        <div class="table-container">
+            <table class="bopo-table">
+                <thead>
+                    <tr id="table-header-row">
+                        <th class="medial-header">結合韻 \ 聲符</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
         </div>
 
         <div class="action-row">
@@ -134,71 +171,85 @@
 </div>
 
 <script>
-    const initialList = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'];
+    const initialsOrder = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'];
     
-    // ㄧ的結合韻資料庫 (54組)
-    const dataI = [
-        {m:'ㄧ', f:'ㄝ', s:['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ']},
-        {m:'ㄧ', f:'ㄚ', s:['ㄌ','ㄐ','ㄑ','ㄒ']},
-        {m:'ㄧ', f:'ㄛ', s:['ㄅ','ㄆ','ㄇ']},
-        {m:'ㄧ', f:'ㄠ', s:['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ']},
-        {m:'ㄧ', f:'ㄡ', s:['ㄇ','ㄉ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ']},
-        {m:'ㄧ', f:'ㄢ', s:['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ']},
-        {m:'ㄧ', f:'ㄣ', s:['ㄅ','ㄆ','ㄇ','ㄉ','ㄋ','ㄌ']},
-        {m:'ㄧ', f:'ㄤ', s:['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ']},
-        {m:'ㄧ', f:'ㄥ', s:['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ']}
+    const combinationsData = [
+        // ㄧ 系列
+        { m: 'ㄧ', f: 'ㄝ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
+        { m: 'ㄧ', f: 'ㄚ', s: ['ㄌ','ㄐ','ㄑ','ㄒ'] },
+        { m: 'ㄧ', f: 'ㄛ', s: ['ㄅ','ㄆ','ㄇ'] },
+        { m: 'ㄧ', f: 'ㄠ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
+        { m: 'ㄧ', f: 'ㄡ', s: ['ㄇ','ㄉ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
+        { m: 'ㄧ', f: 'ㄢ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
+        { m: 'ㄧ', f: 'ㄣ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄋ','ㄌ'] },
+        { m: 'ㄧ', f: 'ㄤ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
+        { m: 'ㄧ', f: 'ㄥ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ'] },
+        // ㄨ 系列
+        { m: 'ㄨ', f: 'ㄚ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ'] },
+        { m: 'ㄨ', f: 'ㄛ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄖ','ㄗ','ㄘ','ㄙ'] },
+        { m: 'ㄨ', f: 'ㄞ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開'].map(s => s==='開'?'ㄕ':s) },
+        { m: 'ㄨ', f: 'ㄟ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'] },
+        { m: 'ㄨ', f: 'ㄢ', s: ['ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='開'?'ㄕ':s) },
+        { m: 'ㄨ', f: 'ㄣ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='開'?'裝':s).map(s => s==='裝'?'ㄕ':s) },
+        { m: 'ㄨ', f: 'ㄤ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ'] },
+        { m: 'ㄨ', f: 'ㄥ', s: ['ㄅ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄙ'] },
+        // ㄩ 系列
+        { m: 'ㄩ', f: 'ㄝ', s: ['ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
+        { m: 'ㄩ', f: 'ㄢ', s: ['ㄐ','ㄑ','ㄒ'] },
+        { m: 'ㄩ', f: 'ㄣ', s: ['ㄐ','ㄑ','ㄒ'] },
+        { m: 'ㄩ', f: 'ㄥ', s: ['ㄐ','ㄑ','ㄒ'] }
     ];
 
-    // ㄨ的結合韻資料庫 (79組)
-    const dataU = [
-        {m:'ㄨ', f:'ㄚ', s:['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ']},
-        {m:'ㄨ', f:'ㄛ', s:['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄖ','ㄗ','ㄘ','ㄙ']},
-        {m:'ㄨ', f:'ㄞ', s:['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄗ','ㄘ','ㄙ']},
-        {m:'ㄨ', f:'ㄟ', s:['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ']},
-        {m:'ㄨ', f:'ㄢ', s:['ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ']},
-        {m:'ㄨ', f:'ㄣ', s:['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ']},
-        {m:'ㄨ', f:'ㄤ', s:['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ']},
-        {m:'ㄨ', f:'ㄥ', s:['ㄅ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄙ']}
-    ];
-
-    // ㄩ的結合韻資料庫 (28組)
-    const dataYu = [
-        {m:'ㄩ', f:'ㄝ', s:['ㄋ','ㄌ','ㄐ','ㄑ','ㄒ']},
-        {m:'ㄩ', f:'ㄢ', s:['ㄐ','ㄑ','ㄒ']},
-        {m:'ㄩ', f:'ㄣ', s:['ㄐ','ㄑ','ㄒ']},
-        {m:'ㄩ', f:'ㄥ', s:['ㄐ','ㄑ','ㄒ']}
-    ];
-
-    // 關鍵修改：預設初始組合修改為 ㄅㄧㄝ
     let currentBopo = { t: 'ㄅ', m: 'ㄧ', f: 'ㄝ' };
 
-    function buildPanel() {
-        renderGroup('group-i', dataI);
-        renderGroup('group-u', dataU);
-        renderGroup('group-yu', dataYu);
-    }
-
-    function renderGroup(targetId, dataArray) {
-        const container = document.getElementById(targetId);
-        dataArray.forEach(item => {
-            item.s.forEach(initial => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-combin';
-                btn.textContent = `${initial}${item.m}${item.f}`;
+    function buildThreeBopoTable() {
+        const headerRow = document.getElementById('table-header-row');
+        const tbody = document.getElementById('table-body');
+        
+        initialsOrder.forEach(initial => {
+            const th = document.createElement('th');
+            th.textContent = initial;
+            headerRow.appendChild(th);
+        });
+        
+        combinationsData.forEach(rowItem => {
+            const tr = document.createElement('tr');
+            
+            const tdHeader = document.createElement('td');
+            tdHeader.style.backgroundColor = '#f1f5f9';
+            const spanText = document.createElement('span');
+            spanText.className = 'vertical-header-text';
+            spanText.textContent = `${rowItem.m}${rowItem.f}`;
+            tdHeader.appendChild(spanText);
+            tr.appendChild(tdHeader);
+            
+            initialsOrder.forEach(initial => {
+                const td = document.createElement('td');
                 
-                // 關鍵修改：預設高亮選取 ㄅㄧㄝ 的按鈕
-                if(initial==='ㄅ' && item.m==='ㄧ' && item.f==='ㄝ') btn.classList.add('active');
-                
-                btn.onclick = function() {
-                    document.querySelectorAll('.btn-combin').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
+                if (rowItem.s.includes(initial)) {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-table-combin';
+                    btn.id = `btn-${initial}-${rowItem.m}-${rowItem.f}`;
+                    btn.textContent = `${initial}${rowItem.m}${rowItem.f}`;
                     
-                    currentBopo = { t: initial, m: item.m, f: item.f };
-                    document.getElementById('current-text').textContent = `目前選取：${initial} + ${item.m} + ${item.f}`;
-                    drawWorksheet();
-                };
-                container.appendChild(btn);
+                    if (initial === 'ㄅ' && rowItem.m === 'ㄧ' && rowItem.f === 'ㄝ') btn.classList.add('active');
+                    
+                    btn.onclick = function() {
+                        document.querySelectorAll('.btn-table-combin').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        
+                        currentBopo = { t: initial, m: rowItem.m, f: rowItem.f };
+                        document.getElementById('current-text').textContent = `目前選取：${initial} + ${rowItem.m} + ${rowItem.f}`;
+                        drawWorksheet();
+                    };
+                    td.appendChild(btn);
+                } else {
+                    td.style.backgroundColor = '#fafafa';
+                }
+                tr.appendChild(td);
             });
+            
+            tbody.appendChild(tr);
         });
     }
 
@@ -251,7 +302,15 @@
         ctx.font = 'bold 24px DFKai-SB, BiauKai, "微軟正黑體"';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
-        ctx.fillText('造詞練習', 50, textY);
+        ctx.fillText('練習', 50, textY);
+
+        ctx.save();
+        ctx.fillStyle = '#666666'; 
+        ctx.font = 'normal 14px "微軟正黑體", Arial, sans-serif'; 
+        ctx.textAlign = 'right'; 
+        ctx.textBaseline = 'bottom'; 
+        ctx.fillText('guaelves. All rights reserved.', canvas.width - 50, canvas.height - 40);
+        ctx.restore();
     }
 
     function drawJiugonge(ctx, x, y, size, textObj, tone, isLarge, textMode) {
@@ -272,22 +331,14 @@
         ctx.stroke();
         ctx.setLineDash([]);
         
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
         const fontSize = third * 0.85; 
-        ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
-        const centerX = x + size / 2;
         
-        function drawText(text, tx, ty, isTone, toneAlignX, toneAlignY) {
+        function drawMainText(text, tx, ty) {
             ctx.save();
-            if (isTone) {
-                ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 2}px DFKai-SB, BiauKai, "微軟正黑體"`;
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'middle';
-                tx = toneAlignX;
-                ty = toneAlignY;
-            }
-
+            ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
             if (textMode === 'gray') {
                 ctx.fillStyle = '#d3d3d3';
                 ctx.fillText(text, tx, ty);
@@ -306,14 +357,67 @@
             ctx.restore();
         }
 
-        if (textObj.top) drawText(textObj.top, centerX, y + third * 0.5, false);
-        if (textObj.mid) drawText(textObj.mid, centerX, y + third * 1.5, false);
+        const centerX = x + size / 2;
+
+        if (textObj.top) drawMainText(textObj.top, centerX, y + third * 0.5);
+        if (textObj.mid) drawMainText(textObj.mid, centerX, y + third * 1.5);
+        
         if (textObj.bot) {
-            drawText(textObj.bot, centerX, y + third * 2.5, false);
+            drawMainText(textObj.bot, centerX, y + third * 2.5);
+            
             if (tone) {
-                const toneX = x + (third * 2);
-                const toneY = y + (third * 2) + (third * 0.45); 
-                drawText(tone, 0, 0, true, toneX, toneY);
+                ctx.save();
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                let strokeColor = '#000000';
+                let fillColor = '#ffffff';
+                if (textMode === 'gray') strokeColor = '#d3d3d3';
+
+                const targetToneSize = fontSize * 0.5; 
+                const lineW = isLarge ? 12 : 5.5; 
+
+                const startX = x + (third * 2) + (third * 0.2);
+                
+                // 【核心修正】垂直高度再次拉高（大九宮格往上提 35 像素，小九宮格往上提 17 像素），徹底與韻母拉開安全距離。
+                const startY = y + (third * 2) + (third * 0.15) - (isLarge ? 35 : 17); 
+                
+                const w = targetToneSize * 0.65; 
+                const h = targetToneSize * 0.65; 
+
+                ctx.beginPath();
+                if (tone === 'ˊ') {
+                    ctx.moveTo(startX, startY + h);
+                    ctx.lineTo(startX + w, startY);
+                    applyToneStroke(strokeColor, fillColor, lineW);
+                } 
+                else if (tone === 'ˇ') {
+                    ctx.moveTo(startX, startY + h * 0.2);
+                    ctx.lineTo(startX + w * 0.4, startY + h * 0.9);
+                    ctx.lineTo(startX + w, startY + h * 0.1);
+                    applyToneStroke(strokeColor, fillColor, lineW);
+                } 
+                else if (tone === 'ˋ') {
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(startX + w, startY + h);
+                    applyToneStroke(strokeColor, fillColor, lineW);
+                }
+                ctx.restore();
+            }
+        }
+
+        function applyToneStroke(sColor, fColor, sWidth) {
+            if (textMode === 'outline') {
+                ctx.strokeStyle = sColor;
+                ctx.lineWidth = sWidth + 6; 
+                ctx.stroke();
+                ctx.strokeStyle = fColor;
+                ctx.lineWidth = sWidth;     
+                ctx.stroke();
+            } else {
+                ctx.strokeStyle = sColor;
+                ctx.lineWidth = sWidth;     
+                ctx.stroke();
             }
         }
     }
@@ -324,18 +428,14 @@
         const pdf = new jsPDF('p', 'mm', 'a4');
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
         pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-        pdf.save(`注音結合韻練習單_${currentBopo.t}${currentBopo.m}${currentBopo.f}.pdf`);
+        pdf.save(`三拼結合韻練習單_${currentBopo.t}${currentBopo.m}${currentBopo.f}.pdf`);
     }
 
     window.onload = function() {
-        buildPanel();
+        buildThreeBopoTable();
         drawWorksheet();
     };
 </script>
 
-  <footer>
-    @2025 guaelves. All rights reserved.
-  </footer>
-    
 </body>
 </html>
