@@ -105,7 +105,7 @@
 <div class="container">
     <div class="control-panel">
         <h2>22個二拼結合韻互動面板</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">主文字字體尺寸已調回極限特大，聲調大小固定為主文字的 1/2 並完美吸附於韻母右上方：</p>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">主文字大小已恢復特大。聲調改由向量軌跡精準繪製，尺寸固定為文字的 1/2 且絕不跑位：</p>
         
         <h3>【ㄧ】的結合韻系列 (10組)</h3>
         <div class="grid-section">
@@ -219,12 +219,10 @@
     }
 
     function drawJiugonge(ctx, x, y, size, textObj, tone, isLarge, textMode) {
-        // 外框
         ctx.strokeStyle = '#666666';
         ctx.lineWidth = isLarge ? 3 : 2;
         ctx.strokeRect(x, y, size, size);
         
-        // 內部虛線
         ctx.strokeStyle = '#999999';
         ctx.lineWidth = 1.5;
         ctx.setLineDash([6, 4]);
@@ -238,12 +236,12 @@
         ctx.stroke();
         ctx.setLineDash([]);
         
-        // 1. 回歸上一個程式：主注音文字字體大小維持極限特大 (0.55 倍邊長)
+        // 主注音尺寸：維持極限特大 (0.55 倍邊長)
         const fontSize = size * 0.55; 
         
         function drawMainText(text, tx, ty) {
             ctx.save();
-            ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
+            ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正soft體"`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             
@@ -265,54 +263,79 @@
             ctx.restore();
         }
 
-        // 2. 【核心修改】聲調字體硬性限制為原字體大小的 1/2 (即 fontSize * 0.5)
-        function drawToneText(text, tx, ty) {
-            ctx.save();
-            const toneSize = fontSize * 0.5; 
-            ctx.font = `${isLarge ? 'bold' : 'normal'} ${toneSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
-            
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'middle';
-            
-            if (textMode === 'gray') {
-                ctx.fillStyle = '#d3d3d3';
-                ctx.fillText(text, tx, ty);
-            } else if (textMode === 'outline') {
-                ctx.lineJoin = 'round';
-                ctx.lineCap = 'round';
-                ctx.strokeStyle = '#000000';
-                ctx.lineWidth = isLarge ? 12 : 5; 
-                ctx.strokeText(text, tx, ty);
-                ctx.fillStyle = '#ffffff';
-                ctx.fillText(text, tx, ty);
-            } else {
-                ctx.fillStyle = '#000000';
-                ctx.fillText(text, tx, ty);
-            }
-            ctx.restore();
-        }
-
         const centerX = x + size / 2;
 
-        // ½ 對半平分佈
-        // 介母 (上半部中央)
+        // 1/2 空間分配
         if (textObj.mid) {
             drawMainText(textObj.mid, centerX, y + size * 0.25);
         }
         
-        // 韻母 (下半部中央)
         if (textObj.bot) {
             drawMainText(textObj.bot, centerX, y + size * 0.75);
             
-            // 3. 聲調定位：精準吸附於極限特大韻母的右上方
+            // 3. 【全新向量重構】既然聲調放不大，我們直接用 Canvas 畫筆精準畫出它！
+            // 尺寸硬性限制：主文字的 1/2，也就是 fontSize * 0.5。
+            // 位置：精準定點於第 6 小格內（韻母格子的右上方）。
             if (tone) {
-                // 水平位置：貼齊右側垂直分界虛線 (x + third * 2)，並依據大小格留出精緻空隙
-                const toneX = x + (third * 2) + (isLarge ? 10 : 4);
-                
-                // 垂直位置：因為聲調大小縮小為 1/2，重新拉提至中線橫虛線 (y + size * 0.5) 略往上一點點的位置，視覺黃金比例最完美
-                const toneY = y + (size * 0.44);
-                
-                drawToneText(tone, toneX, toneY);
+                ctx.save();
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                // 設定不同模式下聲調的線條顏色與粗細
+                let strokeColor = '#000000';
+                let fillColor = '#ffffff';
+                if (textMode === 'gray') strokeColor = '#d3d3d3';
+
+                // 計算主文字 1/2 的完美物理長度 (大格約 90px，小格約 44px)
+                const targetToneSize = fontSize * 0.5; 
+                const lineW = isLarge ? 12 : 5.5; // 筆畫粗細
+
+                // 定義第 6 格內最舒適安全的聲調繪製外框區域
+                // 讓聲調完美居中於九宮格第 6 小格 (即右中格) 的視覺黃金角落
+                const startX = x + (third * 2) + (third * 0.2);
+                const startY = y + (third) + (third * 0.25);
+                const w = targetToneSize * 0.65; // 限制寬度
+                const h = targetToneSize * 0.65; // 限制高度
+
+                // 開始畫筆向量路徑
+                ctx.beginPath();
+                if (tone === 'ˊ') {
+                    // 二聲：從左下往右上揚
+                    ctx.moveTo(startX, startY + h);
+                    ctx.lineTo(startX + w, startY);
+                    applyToneStroke(strokeColor, fillColor, lineW);
+                } 
+                else if (tone === 'ˇ') {
+                    // 三聲：先下後上
+                    ctx.moveTo(startX, startY + h * 0.2);
+                    ctx.lineTo(startX + w * 0.4, startY + h * 0.9);
+                    ctx.lineTo(startX + w, startY + h * 0.1);
+                    applyToneStroke(strokeColor, fillColor, lineW);
+                } 
+                else if (tone === 'ˋ') {
+                    // 四聲：從左上往右下劈
+                    ctx.moveTo(startX, startY);
+                    ctx.lineTo(startX + w, startY + h);
+                    applyToneStroke(strokeColor, fillColor, lineW);
+                }
+
+                ctx.restore();
+            }
+        }
+
+        // 輔助函式：確保右上角的鏤空大字能同步繪製中空黑邊的聲調
+        function applyToneStroke(sColor, fColor, sWidth) {
+            if (textMode === 'outline') {
+                ctx.strokeStyle = sColor;
+                ctx.lineWidth = sWidth + 6; // 外圈粗黑邊
+                ctx.stroke();
+                ctx.strokeStyle = fColor;
+                ctx.lineWidth = sWidth;     // 內圈抹白挖空
+                ctx.stroke();
+            } else {
+                ctx.strokeStyle = sColor;
+                ctx.lineWidth = sWidth;     // 一般實心黑字或灰字
+                ctx.stroke();
             }
         }
     }
