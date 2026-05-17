@@ -171,7 +171,7 @@
 </div>
 
 <script>
-    const initialsOrder = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','慢','ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='慢'?'橫':s).map(s => s==='橫'?'ㄏ':s);
+    const initialsOrder = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'];
     
     const combinationsData = [
         // ㄧ 系列
@@ -187,7 +187,7 @@
         // ㄨ 系列
         { m: 'ㄨ', f: 'ㄚ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ'] },
         { m: 'ㄨ', f: 'ㄛ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄖ','ㄗ','ㄘ','ㄙ'] },
-        { m: 'ㄨ', f: 'ㄞ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄗ','ㄘ','ㄙ'] },
+        { m: 'ㄨ', f: 'ㄞ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開'].map(s => s==='開'?'ㄕ':s) },
         { m: 'ㄨ', f: 'ㄟ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'] },
         { m: 'ㄨ', f: 'ㄢ', s: ['ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='開'?'ㄕ':s) },
         { m: 'ㄨ', f: 'ㄣ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='開'?'裝':s).map(s => s==='裝'?'ㄕ':s) },
@@ -239,7 +239,7 @@
                         btn.classList.add('active');
                         
                         currentBopo = { t: initial, m: rowItem.m, f: rowItem.f };
-                        document.getElementById('current-text').textContent = `目前選取：${initial} + ${rowItem.m} + ${finalRow = rowItem.f}`;
+                        document.getElementById('current-text').textContent = `目前選取：${initial} + ${rowItem.m} + ${rowItem.f}`;
                         drawWorksheet();
                     };
                     td.appendChild(btn);
@@ -379,8 +379,8 @@
 
                 const startX = x + (third * 2) + (third * 0.2);
                 
-                // 【核心修正】將手工聲調高度進一步調高（大九宮格上拉 15 像素，小九宮格上拉 7 像素），使其完美高掛在角落。
-                const startY = y + (third * 2) + (third * 0.15) - (isLarge ? 15 : 7); 
+                // 【核心修正】垂直高度再次拉高（大九宮格往上提 35 像素，小九宮格往上提 17 像素），徹底與韻母拉開安全距離。
+                const startY = y + (third * 2) + (third * 0.15) - (isLarge ? 35 : 17); 
                 
                 const w = targetToneSize * 0.65; 
                 const h = targetToneSize * 0.65; 
