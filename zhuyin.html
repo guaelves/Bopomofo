@@ -182,7 +182,7 @@
         if (textObj.bot) {
             ctx.fillText(textObj.bot, centerX, y + third * 2.5);
             
-            // 如果有聲調，精準定位在韻母（第三格）的右上方
+            // 如果有聲調，精準定位在韻母（第三格）的右側、對齊韻母格正中央高度
             if (tone) {
                 ctx.save();
                 // 聲調尺寸固定為大尺寸 fontSize * 2
@@ -192,11 +192,12 @@
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'middle';
                 
-                // 水平位置不變（靠著右側虛線再往右推一點點）
+                // 水平位置：緊靠右側垂直虛線、稍往右推一點點
                 const toneX = x + (third * 2) + (third * 0.05);
                 
-                // 垂直位置下移：在原本的虛線頂點加上 (third * 0.2)，使其更往下移到韻母右上方空檔處
-                const toneY = y + (third * 2) + (third * 0.2); 
+                // 垂直位置再次下移：(y + third * 2) 是第二、三排的分界線
+                // 再加上 (third * 0.45) 就能剛好落入韻母格（第三排中間格）的右側高度，完美對齊
+                const toneY = y + (third * 2) + (third * 0.45); 
                 
                 ctx.fillText(tone, toneX, toneY);
                 ctx.restore();
