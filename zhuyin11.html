@@ -25,7 +25,7 @@
         }
         h2 { margin-top: 0; color: #1a365d; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
         
-        /* 161個三拼對對調直書表格樣式 */
+        /* 三拼直書表格樣式 */
         .table-container {
             overflow-x: auto;
             margin-top: 15px;
@@ -43,7 +43,7 @@
             border: 1px solid #cbd5e1;
             padding: 8px 3px;
             min-width: 46px;
-            height: 95px; /* 容納三個注音直書的高度 */
+            height: 95px; 
         }
         table.bopo-table th {
             background-color: #f8fafc;
@@ -58,7 +58,17 @@
             min-width: 100px;
         }
         
-        /* 結合韻直立式垂直排列設定 */
+        /* ① 修正：將左側縱軸首欄的結合韻標頭，也全部調整為直立式垂直排列 */
+        .vertical-header-text {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-size: 15px;
+            letter-spacing: 1px;
+            margin: 0 auto;
+            display: inline-block;
+        }
+        
+        /* 結合韻按鈕直立式排列設定 */
         .btn-table-combin {
             width: 100%;
             height: 100%;
@@ -135,17 +145,17 @@
 <div class="container">
     <div class="control-panel">
         <h2>161個三拼結合韻互動學習單 (直書對照表)</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">橫軸為 21 個聲符，縱軸為結合韻。按鈕內的拼音已調整為【直立式】，點擊即可更換下方拼音組合：</p>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">橫軸為 21 個聲符，縱軸首欄與按鈕拼音皆為【直立式】排列，點擊即可更換下方拼音組合：</p>
         
         <div class="table-container">
             <table class="bopo-table">
                 <thead>
                     <tr id="table-header-row">
                         <th class="medial-header">結合韻 \ 聲符</th>
-                        </tr>
+                    </tr>
                 </thead>
                 <tbody id="table-body">
-                    </tbody>
+                </tbody>
             </table>
         </div>
 
@@ -161,10 +171,8 @@
 </div>
 
 <script>
-    // 橫軸：21 個標準聲母
-    const initialsOrder = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','慢','ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='慢'?'ㄏ':s);
+    const initialsOrder = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'];
     
-    // 縱軸結合韻結構清單，用來依序生成每一列（與您紙本圖表的拼音資料 100% 相同，共 161 組）
     const combinationsData = [
         // ㄧ 系列
         { m: 'ㄧ', f: 'ㄝ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
@@ -177,14 +185,14 @@
         { m: 'ㄧ', f: 'ㄤ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
         { m: 'ㄧ', f: 'ㄥ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ'] },
         // ㄨ 系列
-        { m: 'ㄨ', f: 'ㄚ', s: ['ㄍ','ㄎ','建立','ㄓ','ㄔ','ㄕ','ㄖ'].map(s => s==='建立'?'ㄏ':s) },
-        { m: 'ㄨ', f: 'ㄛ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','建立','ㄓ','ㄔ','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='建立'?'ㄏ':s) },
-        { m: 'ㄨ', f: 'ㄞ', s: ['ㄍ','ㄎ','建立','ㄓ','ㄔ','ㄕ','ㄗ','ㄘ','ㄙ'].map(s => s==='建立'?'ㄏ':s) },
-        { m: 'ㄨ', f: 'ㄟ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','建立','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='建立'?'ㄏ':s) },
-        { m: 'ㄨ', f: 'ㄢ', s: ['ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','建立','ㄓ','ㄔ','裝','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='建立'?'ㄏ':s).map(s => s==='裝'?'ㄕ':s) },
-        { m: 'ㄨ', f: 'ㄣ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄋ','ㄌ','ㄍ','ㄎ','建立','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='建立'?'ㄏ':s) },
-        { m: 'ㄨ', f: 'ㄤ', s: ['ㄍ','ㄎ','建立','ㄓ','ㄔ','ㄕ','ㄖ'].map(s => s==='建立'?'ㄏ':s) },
-        { m: 'ㄨ', f: 'ㄥ', s: ['ㄅ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','建立','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄙ'].map(s => s==='建立'?'ㄏ':s) },
+        { m: 'ㄨ', f: 'ㄚ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ'] },
+        { m: 'ㄨ', f: 'ㄛ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄖ','ㄗ','ㄘ','ㄙ'] },
+        { m: 'ㄨ', f: 'ㄞ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄗ','ㄘ','ㄙ'] },
+        { m: 'ㄨ', f: 'ㄟ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'] },
+        { m: 'ㄨ', f: 'ㄢ', s: ['ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='開'?'ㄕ':s) },
+        { m: 'ㄨ', f: 'ㄣ', s: ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','開','ㄖ','ㄗ','ㄘ','ㄙ'].map(s => s==='開'?'ㄕ':s) },
+        { m: 'ㄨ', f: 'ㄤ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ'] },
+        { m: 'ㄨ', f: 'ㄥ', s: ['ㄅ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄙ'] },
         // ㄩ 系列
         { m: 'ㄩ', f: 'ㄝ', s: ['ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
         { m: 'ㄩ', f: 'ㄢ', s: ['ㄐ','ㄑ','ㄒ'] },
@@ -194,31 +202,28 @@
 
     let currentBopo = { t: 'ㄅ', m: 'ㄧ', f: 'ㄝ' };
 
-    // 建置三拼橫縱軸交換對照表
     function buildThreeBopoTable() {
         const headerRow = document.getElementById('table-header-row');
         const tbody = document.getElementById('table-body');
         
-        // 1. 生成橫軸表頭（21個聲母）
         initialsOrder.forEach(initial => {
             const th = document.createElement('th');
             th.textContent = initial;
             headerRow.appendChild(th);
         });
         
-        // 2. 生成每一排縱軸列（結合韻列）
         combinationsData.forEach(rowItem => {
             const tr = document.createElement('tr');
             
-            // 每列首欄：顯示該列的結合韻雙拼標頭（例如 ㄧㄝ）
+            // ① 修正：將縱軸最左邊首欄的結合韻文字加上直書標籤包覆，使其直立排列
             const tdHeader = document.createElement('td');
-            tdHeader.style.fontWeight = 'bold';
             tdHeader.style.backgroundColor = '#f1f5f9';
-            tdHeader.style.fontSize = '15px';
-            tdHeader.textContent = `${rowItem.m}${rowItem.f}`;
+            const spanText = document.createElement('span');
+            spanText.className = 'vertical-header-text';
+            spanText.textContent = `${rowItem.m}${rowItem.f}`;
+            tdHeader.appendChild(spanText);
             tr.appendChild(tdHeader);
             
-            // 橫向檢查 21 個聲母欄位
             initialsOrder.forEach(initial => {
                 const td = document.createElement('td');
                 
@@ -226,9 +231,8 @@
                     const btn = document.createElement('button');
                     btn.className = 'btn-table-combin';
                     btn.id = `btn-${initial}-${rowItem.m}-${rowItem.f}`;
-                    btn.textContent = `${initial}${rowItem.m}${rowItem.f}`; // 直書排列
+                    btn.textContent = `${initial}${rowItem.m}${rowItem.f}`;
                     
-                    // 預設將 ㄅㄧㄝ 高亮
                     if (initial === 'ㄅ' && rowItem.m === 'ㄧ' && rowItem.f === 'ㄝ') btn.classList.add('active');
                     
                     btn.onclick = function() {
@@ -257,7 +261,6 @@
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // 1. 標題
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 44px DFKai-SB, BiauKai, "微軟正黑體"';
         ctx.textAlign = 'left';
@@ -266,13 +269,11 @@
         
         const bopomofo = { top: currentBopo.t, mid: currentBopo.m, bot: currentBopo.f };
 
-        // 2. 上方兩個大九宮格 (完美恢復回三拼格式)
         const largeGridY = 120;
         const largeGridSize = 330;
         drawJiugonge(ctx, 50, largeGridY, largeGridSize, bopomofo, '', true, 'black');
         drawJiugonge(ctx, 420, largeGridY, largeGridSize, bopomofo, '', true, 'outline');
         
-        // 3. 下方三排小九宮格
         const smallGridStartY = 490;
         const smallGridSize = 160;
         const gapX = 30;
@@ -297,7 +298,6 @@
             }
         }
 
-        // 4. 造詞練習常駐欄位
         const textY = smallGridStartY + smallGridSize + Math.floor((baseGapY + shiftUpOffset) / 2);
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 24px DFKai-SB, BiauKai, "微軟正黑體"';
@@ -305,7 +305,6 @@
         ctx.textBaseline = 'middle';
         ctx.fillText('造詞練習', 50, textY);
 
-        // 5. 右下角原創簽名宣告
         ctx.save();
         ctx.fillStyle = '#666666'; 
         ctx.font = 'normal 14px "微軟正黑體", Arial, sans-serif'; 
@@ -315,7 +314,6 @@
         ctx.restore();
     }
 
-    // 三拼專用九宮格渲染核心 (恢復上、中、下均勻擺放比例)
     function drawJiugonge(ctx, x, y, size, textObj, tone, isLarge, textMode) {
         ctx.strokeStyle = '#666666';
         ctx.lineWidth = isLarge ? 3 : 2;
@@ -334,7 +332,6 @@
         ctx.stroke();
         ctx.setLineDash([]);
         
-        // 三拼標準和諧字體大小 (佔每格邊長的 0.85 倍)
         const fontSize = third * 0.85; 
         
         function drawMainText(text, tx, ty) {
@@ -363,20 +360,12 @@
 
         const centerX = x + size / 2;
 
-        // 1. 聲母 (上格中間：third * 0.5)
-        if (textObj.top) {
-            drawMainText(textObj.top, centerX, y + third * 0.5);
-        }
-        // 2. 介母 (中格中間：third * 1.5)
-        if (textObj.mid) {
-            drawMainText(textObj.mid, centerX, y + third * 1.5);
-        }
+        if (textObj.top) drawMainText(textObj.top, centerX, y + third * 0.5);
+        if (textObj.mid) drawMainText(textObj.mid, centerX, y + third * 1.5);
         
-        // 3. 韻母 (下格中間：third * 2.5) 
         if (textObj.bot) {
             drawMainText(textObj.bot, centerX, y + third * 2.5);
             
-            // 4. 三拼高精度手工向量聲調（文字的1/2大小，牢牢鎖死在下格右上方）
             if (tone) {
                 ctx.save();
                 ctx.lineCap = 'round';
@@ -389,9 +378,11 @@
                 const targetToneSize = fontSize * 0.5; 
                 const lineW = isLarge ? 12 : 5.5; 
 
-                // 定位在九宮格的第 6 小格內（韻母的右上方角落）
                 const startX = x + (third * 2) + (third * 0.2);
-                const startY = y + (third * 2) + (third * 0.15); // 精準微調垂直起筆高度
+                
+                // ② 修正：將原來的垂直高度 startY 朝上方拉提移動（大格子拉高 5 像素，小格子拉高 3 像素），使其精準漂亮地高掛在韻母格子右上方。
+                const startY = y + (third * 2) + (third * 0.15) - (isLarge ? 5 : 3); 
+                
                 const w = targetToneSize * 0.65; 
                 const h = targetToneSize * 0.65; 
 
