@@ -105,7 +105,7 @@
 <div class="container">
     <div class="control-panel">
         <h2>22個二拼結合韻互動面板</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">請點選下方組合，注音將採取 1/2 上下對半分，聲調也會同步變特大並精準置於韻母右上方：</p>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">主注音文字已調至極限特大，聲調比例已微調縮小並精準吸附於韻母右上方：</p>
         
         <h3>【ㄧ】的結合韻系列 (10組)</h3>
         <div class="grid-section">
@@ -236,13 +236,12 @@
         ctx.stroke();
         ctx.setLineDash([]);
         
-        // 1/2版面特大注音字體尺寸 (主注音符號)
-        const fontSize = size * 0.45; 
+        // 1. 【極限放大】主注音文字字體大小，提高至 0.55 倍邊長，填滿 1/2 空間
+        const fontSize = size * 0.55; 
         
-        // 渲染主注音文字的核心函式
         function drawMainText(text, tx, ty) {
             ctx.save();
-            ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
+            ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSizepx} DFKai-SB, BiauKai, "微軟正黑體"`.replace('fontSizepx', fontSize + 'px');
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             
@@ -253,7 +252,7 @@
                 ctx.lineJoin = 'round';
                 ctx.lineCap = 'round';
                 ctx.strokeStyle = '#000000';
-                ctx.lineWidth = isLarge ? 16 : 7; 
+                ctx.lineWidth = isLarge ? 18 : 8; // 配合字體放大，黑邊同步微調加粗
                 ctx.strokeText(text, tx, ty);
                 ctx.fillStyle = '#ffffff';
                 ctx.fillText(text, tx, ty);
@@ -264,11 +263,11 @@
             ctx.restore();
         }
 
-        // 渲染巨大聲調專用的函式 (強制設定為靠左、獨立特大字級，並精準定位於第 6 格中心)
+        // 2. 【比例微調】聲調專用渲染函式：字體設定為 size * 0.43 (比主注音字體略小一些)
         function drawToneText(text, tx, ty) {
             ctx.save();
-            // 將聲調的字型大小設定到極限大的「size * 0.45」
-            ctx.font = `${isLarge ? 'bold' : 'normal'} ${size * 0.45}px DFKai-SB, BiauKai, "微軟正黑體"`;
+            const toneSize = size * 0.43;
+            ctx.font = `${isLarge ? 'bold' : 'normal'} ${toneSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
             
@@ -279,7 +278,7 @@
                 ctx.lineJoin = 'round';
                 ctx.lineCap = 'round';
                 ctx.strokeStyle = '#000000';
-                ctx.lineWidth = isLarge ? 14 : 6; 
+                ctx.lineWidth = isLarge ? 12 : 5; 
                 ctx.strokeText(text, tx, ty);
                 ctx.fillStyle = '#ffffff';
                 ctx.fillText(text, tx, ty);
@@ -292,25 +291,23 @@
 
         const centerX = x + size / 2;
 
-        // 【½ 對半分黃金坐標】
-        // 1. 介母：正坐於上半部 ½ 空間的中央 (y + size * 0.25)
+        // 1/2 空間分配
+        // 介母 (正坐於上半部 1/2 中央)
         if (textObj.mid) {
             drawMainText(textObj.mid, centerX, y + size * 0.25);
         }
         
-        // 2. 韻母：正坐於下半部 ½ 空間的中央 (y + size * 0.75)
+        // 韻母 (正坐於下半部 1/2 中央)
         if (textObj.bot) {
             drawMainText(textObj.bot, centerX, y + size * 0.75);
             
-            // 3. 【全新鎖定邏輯】聲調：直接強制鎖定在九宮格的「第 6 格（右中格）的正中央」！
-            // 這樣子它絕對會呈現為特大號符號，並且完美、精準地待在韻母格子的右上方區域！
+            // 3. 【精準吸附】聲調：完美定位於韻母格子的右上方區域
             if (tone) {
-                // 第 6 格的水平中心：就是右邊那一欄的中央位置 (x + third * 2.5)
-                // 微調：往左移回一點點 (third * 0.15)，使其視覺上與左邊的韻母貼得更完美、不超出外框
-                const toneX = x + (third * 2.5) - (third * 0.15);
+                // 水平位置：貼齊右側垂直分界虛線
+                const toneX = x + (third * 2);
                 
-                // 第 6 格的垂直中心：就是中間那一橫排的中央位置 (y + third * 1.5)
-                const toneY = y + (third * 1.5);
+                // 垂直位置：因為韻母字體極限放大，將聲調微調至中線橫虛線（y + size * 0.5）略往上一點點的位置，達到完美吸附效果
+                const toneY = y + (size * 0.46);
                 
                 drawToneText(tone, toneX, toneY);
             }
