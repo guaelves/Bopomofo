@@ -182,22 +182,22 @@
         if (textObj.bot) {
             ctx.fillText(textObj.bot, centerX, y + third * 2.5);
             
-            // 如果有聲調，精準定位在第六小格的左下方（即第三個注音ㄚ的右上方分界十字點）
+            // 如果有聲調，精準定位在韻母（第三格）的右上方
             if (tone) {
                 ctx.save();
                 // 聲調尺寸固定為大尺寸 fontSize * 2
                 ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize * 2}px DFKai-SB, BiauKai, "微軟正黑體"`;
                 
-                // 關鍵修正：將對齊方式改為「靠左」與「底部對齊」
-                // 這樣一來，畫筆定位在十字交叉點時，大字體的聲調符號就會完美往右、往上發展
-                // 正好落在第六小格的左下角區域，也就是韻母格子的右上方！
+                // 變更對齊方式：靠左、垂直居中
                 ctx.textAlign = 'left';
-                ctx.textBaseline = 'bottom';
+                ctx.textBaseline = 'middle';
                 
-                const crossX = x + (third * 2); // 垂直虛線線段（中欄與右欄交界）
-                const crossY = y + (third * 2); // 水平虛線線段（中排與下排交界）
+                // 畫筆定在韻母格子的右上方頂點（兩條內部虛線交叉點）
+                // 稍微往右偏移 (third * 0.05) 避免完全黏在虛線上
+                const toneX = x + (third * 2) + (third * 0.05);
+                const toneY = y + (third * 2); 
                 
-                ctx.fillText(tone, crossX, crossY);
+                ctx.fillText(tone, toneX, toneY);
                 ctx.restore();
             }
         }
