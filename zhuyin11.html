@@ -25,7 +25,7 @@
         }
         h2 { margin-top: 0; color: #1a365d; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
         
-        /* 棋盤格線切換面板樣式 */
+        /* 格線樣式切換器 */
         .style-selector {
             display: flex;
             gap: 15px;
@@ -149,7 +149,7 @@
 <div class="container">
     <div class="control-panel">
         <h2>22個二拼結合韻學習單 (直書對照表)</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">點擊表格內注音切換組合，並可自由更換下方學習單的虛線樣式：</p>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">點擊表格內注音：</p>
         
         <div class="style-selector">
             <span>格線樣式：</span>
@@ -181,12 +181,9 @@
 </div>
 
 <script>
-    // 橫軸 12 韻母定義
     const finalsOrder = ['ㄚ', 'ㄛ', 'ㄜ', 'ㄝ', 'ㄞ', 'ㄟ', 'ㄠ', 'ㄡ', 'ㄢ', 'ㄣ', 'ㄤ', 'ㄥ'];
-    // 縱軸 3 介母定義
     const medialsOrder = ['ㄧ', 'ㄨ', 'ㄩ'];
 
-    // 22個合法的二拼結合韻組合資料庫
     const validCombinations = {
         'ㄧ': ['ㄚ', 'ㄛ', 'ㄝ', 'ㄞ', 'ㄠ', 'ㄡ', 'ㄢ', 'ㄣ', 'ㄤ', 'ㄥ'],
         'ㄨ': ['ㄚ', 'ㄛ', 'ㄞ', 'ㄟ', 'ㄢ', 'ㄣ', 'ㄤ', 'ㄥ'],
@@ -196,34 +193,28 @@
     let currentBopo = { m: 'ㄧ', f: 'ㄚ' };
     let currentGridMode = '9'; // '9' 代表九宮格，'4' 代表四宮格
 
-    // 建置交換後的直書表格
     function buildSwappedTable() {
         const headerRow = document.getElementById('table-header-row');
         const tbody = document.getElementById('table-body');
         
-        // 1. 生成橫軸表頭 (12個韻符)
         finalsOrder.forEach(final => {
             const th = document.createElement('th');
             th.textContent = final;
             headerRow.appendChild(th);
         });
         
-        // 2. 生成縱軸列 (3個介符列)
         medialsOrder.forEach(medial => {
             const tr = document.createElement('tr');
             
-            // 每列的第一個欄位：顯示介母標頭
             const tdHeader = document.createElement('td');
             tdHeader.style.fontWeight = 'bold';
             tdHeader.style.backgroundColor = '#f1f5f9';
             tdHeader.textContent = medial;
             tr.appendChild(tdHeader);
             
-            // 橫向依序填入 12 個韻母格
             finalsOrder.forEach(final => {
                 const td = document.createElement('td');
                 
-                // 檢查該組合是否存在
                 if (validCombinations[medial].includes(final)) {
                     const btn = document.createElement('button');
                     btn.className = 'btn-table-combin';
@@ -251,7 +242,7 @@
         });
     }
 
-    // 切換格線並重新繪製
+    // 切換格線函式
     function changeGridStyle(value) {
         currentGridMode = value;
         drawWorksheet();
@@ -308,7 +299,6 @@
         ctx.textBaseline = 'middle';
         ctx.fillText('練習', 50, textY);
 
-        // 5. 常駐右下角版權宣告文字
         ctx.save();
         ctx.fillStyle = '#666666'; 
         ctx.font = 'normal 14px "微軟正黑體", Arial, sans-serif'; 
@@ -329,7 +319,7 @@
         const third = size / 3;
         
         ctx.beginPath();
-        // 依據目前選取的模式動態切換格線
+        // 依據選取的樣式，切換內部虛線為九宮格或四宮格
         if (currentGridMode === '9') {
             ctx.moveTo(x + third, y); ctx.lineTo(x + third, y + size);
             ctx.moveTo(x + third * 2, y); ctx.lineTo(x + third * 2, y + size);
@@ -343,10 +333,9 @@
         ctx.stroke();
         ctx.setLineDash([]);
         
-        // 主文字：特大飽滿版面比例 (0.55 倍邊長)
         const fontSize = size * 0.55; 
         
-        // 【正式定義修復】補全並修正原先缺失的 drawMainText 函式範疇
+        // 為了讓您的原程式順暢執行而補全的主文字畫筆
         function drawMainText(text, tx, ty) {
             ctx.save();
             ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
@@ -371,7 +360,6 @@
             ctx.restore();
         }
 
-        // 聲調文字繪製功能
         function drawToneText(text, tx, ty) {
             ctx.save();
             const toneSize = fontSize * 0.5; 
@@ -400,7 +388,6 @@
 
         const centerX = x + size / 2;
 
-        // 1/2 空間分配平衡
         if (textObj.mid) {
             drawMainText(textObj.mid, centerX, y + size * 0.25);
         }
@@ -408,7 +395,6 @@
         if (textObj.bot) {
             drawMainText(textObj.bot, centerX, y + size * 0.75);
             
-            // 聲調完美吸附：綁定在交叉點並微調拉高
             if (tone) {
                 const crossX = x + (third * 2);
                 const crossY = y + (third * 2) - (isLarge ? 16 : 8);
