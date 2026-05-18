@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>37個注音符號自主學習單生成器</title>
+    <title>37個注音符號基礎學習單</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -26,7 +26,6 @@
         h2 { margin-top: 0; color: #1a365d; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
         h3 { margin: 12px 0 6px 0; color: #2b6cb0; font-size: 15px; }
         
-        /* 37個注音符號直書面板分類樣式 */
         .grid-section {
             background: #f8fafc;
             padding: 10px;
@@ -52,7 +51,6 @@
             align-items: center;
             justify-content: center;
             
-            /* 注音符號直立式排列設定 */
             writing-mode: vertical-rl;
             text-orientation: upright;
             font-size: 18px;
@@ -113,8 +111,8 @@
 
 <div class="container">
     <div class="control-panel">
-        <h2>37個注音符號基礎學習單 (直書分類面板)</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">請直接點選下方任何一個注音符號，即可同步更新下方的 A4 特大練習單畫布：</p>
+        <h2>37個注音符號基礎學習單 (大字練習模式)</h2>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">點選下方任何一個注音符號，即可同步更新下方的 A4 練習單：</p>
         
         <h3>【聲符】欄位 (21個)</h3>
         <div class="grid-section">
@@ -143,14 +141,12 @@
 </div>
 
 <script>
-    // 完整的 37 個注音符號分類資料庫
-    const bopoInitials = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','產'].map(s => s==='產'?'ㄏ':s).concat(['ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ']);
+    const bopoInitials = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'];
     const bopoMedials = ['ㄧ','ㄨ','ㄩ'];
     const bopoFinals = ['ㄚ','ㄛ','ㄜ','ㄝ','ㄞ','ㄟ','ㄠ','ㄡ','ㄢ','ㄣ','ㄤ','ㄥ','ㄦ'];
 
     let currentSingleBopo = 'ㄅ';
 
-    // 動態建置分類直書面板
     function buildSingleBopoPanel() {
         renderGroupButtons('group-initials', bopoInitials);
         renderGroupButtons('group-medials', bopoMedials);
@@ -165,7 +161,6 @@
             btn.id = `btn-${char}`;
             btn.textContent = char;
             
-            // 預設將 ㄅ 高亮
             if (char === 'ㄅ') btn.classList.add('active');
             
             btn.onclick = function() {
@@ -173,7 +168,7 @@
                 btn.classList.add('active');
                 
                 currentSingleBopo = char;
-                document.getElementById('current-text').textContent = `目前選取注音：${char}`;
+                document.getElementById('current-text').textContent = `目選取注音：${char}`;
                 drawWorksheet();
             };
             container.appendChild(btn);
@@ -187,28 +182,24 @@
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // 1. 標題
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 44px DFKai-SB, BiauKai, "微軟正黑體"';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'top';
         ctx.fillText('注音學習單', 50, 40);
         
-        // 2. 上方兩個大九宮格（回歸單個特大九宮格置中規格）
+        // 上方兩個大九宮格
         const largeGridY = 120;
         const largeGridSize = 330;
-        drawJiugonge(ctx, 50, largeGridY, largeGridSize, currentSingleBopo, '', true, 'black');
-        drawJiugonge(ctx, 420, largeGridY, largeGridSize, currentSingleBopo, '', true, 'outline');
+        drawJiugonge(ctx, 50, largeGridY, largeGridSize, currentSingleBopo, true, 'black');
+        drawJiugonge(ctx, 420, largeGridY, largeGridSize, currentSingleBopo, true, 'outline');
         
-        // 3. 下方三排小九宮格
+        // 下方三排小九宮格
         const smallGridStartY = 490;
         const smallGridSize = 160;
         const gapX = 30;
         const baseGapY = 30;
         const shiftUpOffset = 25;
-        
-        // 四個基礎聲調，外加一個輕聲格練習
-        const tones = ['', 'ˊ', 'ˇ', 'ˋ', '˙'];
         
         for (let row = 0; row < 3; row++) {
             let y = smallGridStartY;
@@ -218,28 +209,23 @@
 
             for (let col = 0; col < 4; col++) {
                 const x = 50 + col * (smallGridSize + gapX);
-                if (row === 0) {
-                    // 第一排依序放入：一聲（空）、二聲（ˊ）、三聲（ˇ）、四聲（ˋ）
-                    drawJiugonge(ctx, x, y, smallGridSize, currentSingleBopo, tones[col], false, 'gray');
-                } else if (row === 1 && col === 0) {
-                    // 第二排第一個格子放輕聲格（˙）練習
-                    drawJiugonge(ctx, x, y, smallGridSize, currentSingleBopo, tones[4], false, 'gray');
+                // 第一排前兩個格子放描紅淡灰字，其餘留白供書寫練習
+                if (row === 0 && (col === 0 || col === 1)) {
+                    drawJiugonge(ctx, x, y, smallGridSize, currentSingleBopo, false, 'gray');
                 } else {
-                    // 其餘全部留白供書寫練習
-                    drawJiugonge(ctx, x, y, smallGridSize, '', '', false, 'black');
+                    drawJiugonge(ctx, x, y, smallGridSize, '', false, 'black');
                 }
             }
         }
 
-        // 4. 造詞練習欄位
+        // 修改：「造詞練習」改成「練習」
         const textY = smallGridStartY + smallGridSize + Math.floor((baseGapY + shiftUpOffset) / 2);
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 24px DFKai-SB, BiauKai, "微軟正黑體"';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
-        ctx.fillText('造詞練習', 50, textY);
+        ctx.fillText('練習', 50, textY);
 
-        // 5. 常駐右下角原創版權宣告
         ctx.save();
         ctx.fillStyle = '#666666'; 
         ctx.font = 'normal 14px "微軟正黑體", Arial, sans-serif'; 
@@ -249,8 +235,7 @@
         ctx.restore();
     }
 
-    // 單個正中央特大注音九宮格渲染功能
-    function drawJiugonge(ctx, x, y, size, text, tone, isLarge, textMode) {
+    function drawJiugonge(ctx, x, y, size, text, isLarge, textMode) {
         ctx.strokeStyle = '#666666';
         ctx.lineWidth = isLarge ? 3 : 2;
         ctx.strokeRect(x, y, size, size);
@@ -268,8 +253,8 @@
         ctx.stroke();
         ctx.setLineDash([]);
         
-        // 恢復上一個程式最滿意飽滿的極限特大比例：0.55 倍的九宮格邊長
-        const fontSize = size * 0.55; 
+        // 修改：字體佔九宮格的 90% 大小 (size * 0.90)
+        const fontSize = size * 0.90; 
         
         function drawMainText(txt, tx, ty) {
             ctx.save();
@@ -295,45 +280,10 @@
             ctx.restore();
         }
 
-        // 聲調文字填色渲染功能（字體大小固定為原主文字的 1/2）
-        function drawToneText(txt, tx, ty) {
-            ctx.save();
-            const toneSize = fontSize * 0.5; // 限制聲調大小為 1/2
-            ctx.font = `${isLarge ? 'bold' : 'normal'} ${toneSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
-            
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'bottom';
-            
-            if (textMode === 'gray') {
-                ctx.fillStyle = '#d3d3d3';
-                ctx.fillText(txt, tx, ty);
-            } else if (textMode === 'outline') {
-                ctx.lineJoin = 'round';
-                ctx.lineCap = 'round';
-                ctx.strokeStyle = '#000000';
-                ctx.lineWidth = isLarge ? 11 : 4.5; 
-                ctx.strokeText(txt, tx, ty);
-                ctx.fillStyle = '#ffffff';
-                ctx.fillText(txt, tx, ty);
-            } else {
-                ctx.fillStyle = '#000000';
-                ctx.fillText(txt, tx, ty);
-            }
-            ctx.restore();
-        }
-
-        // 單音節符號核心：正正地端坐在九宮格的最中心點（centerX, centerY）
         if (text) {
             const centerX = x + size / 2;
             const centerY = y + size / 2;
             drawMainText(text, centerX, centerY);
-            
-            // 聲調吸附定位：鎖定在九宮格中線與第二垂直分界線的交叉點上（並微調上移拉開安全距離）
-            if (tone) {
-                const crossX = x + (third * 2);
-                const crossY = y + (third * 2) - (isLarge ? 16 : 8); 
-                drawToneText(tone, crossX, crossY);
-            }
         }
     }
 
