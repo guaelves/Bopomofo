@@ -25,6 +25,24 @@
         }
         h2 { margin-top: 0; color: #1a365d; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
         
+        /* 棋盤格線切換面板樣式 */
+        .style-selector {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: #f1f5f9;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .style-selector label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         /* 三拼直書表格樣式 */
         .table-container {
             overflow-x: auto;
@@ -147,6 +165,12 @@
         <h2>162個三拼結合韻學習單 (直書對照表)</h2>
         <p style="color: #64748b; font-size: 14px; margin-top: -5px;">點擊下方拼音組合：</p>
         
+        <div class="style-selector">
+            <span>格線樣式：</span>
+            <label><input type="radio" name="gridStyle" value="9" checked onchange="changeGridStyle(this.value)"> 九宮格 (3x3)</label>
+            <label><input type="radio" name="gridStyle" value="4" onchange="changeGridStyle(this.value)"> 四宮格 (2x2 田字格)</label>
+        </div>
+
         <div class="table-container">
             <table class="bopo-table">
                 <thead>
@@ -202,6 +226,7 @@
     ];
 
     let currentBopo = { t: 'ㄅ', m: 'ㄧ', f: 'ㄝ' };
+    let currentGridMode = '9'; // 預設為九宮格
 
     function buildThreeBopoTable() {
         const headerRow = document.getElementById('table-header-row');
@@ -252,6 +277,11 @@
             
             tbody.appendChild(tr);
         });
+    }
+
+    function changeGridStyle(value) {
+        currentGridMode = value;
+        drawWorksheet();
     }
 
     function drawWorksheet() {
@@ -325,10 +355,16 @@
         const third = size / 3;
         
         ctx.beginPath();
-        ctx.moveTo(x + third, y); ctx.lineTo(x + third, y + size);
-        ctx.moveTo(x + third * 2, y); ctx.lineTo(x + third * 2, y + size);
-        ctx.moveTo(x, y + third); ctx.lineTo(x + size, y + third);
-        ctx.moveTo(x, y + third * 2); ctx.lineTo(x + size, y + third * 2);
+        if (currentGridMode === '9') {
+            ctx.moveTo(x + third, y); ctx.lineTo(x + third, y + size);
+            ctx.moveTo(x + third * 2, y); ctx.lineTo(x + third * 2, y + size);
+            ctx.moveTo(x, y + third); ctx.lineTo(x + size, y + third);
+            ctx.moveTo(x, y + third * 2); ctx.lineTo(x + size, y + third * 2);
+        } else {
+            const half = size / 2;
+            ctx.moveTo(x + half, y); ctx.lineTo(x + half, y + size);
+            ctx.moveTo(x, y + half); ctx.lineTo(x + size, y + half);
+        }
         ctx.stroke();
         ctx.setLineDash([]);
         
@@ -380,7 +416,6 @@
 
                 const startX = x + (third * 2) + (third * 0.2);
                 
-                // 【核心修正】垂直高度再次拉高（大九宮格往上提 35 像素，小九宮格往上提 17 像素），徹底與韻母拉開安全距離。
                 const startY = y + (third * 2) + (third * 0.15) - (isLarge ? 35 : 17); 
                 
                 const w = targetToneSize * 0.65; 
