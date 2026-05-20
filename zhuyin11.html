@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>162個三拼結合韻注音學習單</title>
+    <title>37個注音符號基礎學習單 (含虛線描寫)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -24,8 +24,51 @@
             margin-bottom: 20px;
         }
         h2 { margin-top: 0; color: #1a365d; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        h3 { margin: 12px 0 6px 0; color: #2b6cb0; font-size: 15px; }
         
-        /* 棋盤格線切換面板樣式 */
+        .grid-section {
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            margin-bottom: 12px;
+        }
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .btn-table-combin {
+            width: 48px;
+            height: 52px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'DFKai-SB', 'BiauKai', sans-serif;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .btn-table-combin:hover {
+            background-color: #e0f2fe;
+            border-color: #7dd3fc;
+            color: #0369a1;
+        }
+        .btn-table-combin.active {
+            background-color: #3b82f6;
+            border-color: #2563eb;
+            color: white;
+            font-weight: bold;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
         .style-selector {
             display: flex;
             gap: 15px;
@@ -41,83 +84,6 @@
             display: flex;
             align-items: center;
             gap: 6px;
-        }
-
-        /* 三拼直書表格樣式 */
-        .table-container {
-            overflow-x: auto;
-            margin-top: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: 1px solid #cbd5e1;
-        }
-        table.bopo-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
-            background-color: white;
-        }
-        table.bopo-table th, table.bopo-table td {
-            border: 1px solid #cbd5e1;
-            padding: 8px 3px;
-            min-width: 46px;
-            height: 95px; 
-        }
-        table.bopo-table th {
-            background-color: #f8fafc;
-            color: #1e293b;
-            font-weight: bold;
-            font-size: 15px;
-            height: 40px;
-        }
-        table.bopo-table th.medial-header {
-            background-color: #f1f5f9;
-            color: #0f172a;
-            min-width: 100px;
-        }
-        
-        /* 左側縱軸首欄結合韻標頭直立式排列 */
-        .vertical-header-text {
-            writing-mode: vertical-rl;
-            text-orientation: upright;
-            font-size: 15px;
-            letter-spacing: 1px;
-            margin: 0 auto;
-            display: inline-block;
-        }
-        
-        /* 結合韻按鈕直立式排列設定 */
-        .btn-table-combin {
-            width: 100%;
-            height: 100%;
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: 'DFKai-SB', 'BiauKai', sans-serif;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            
-            writing-mode: vertical-rl;
-            text-orientation: upright;
-            font-size: 16px;
-            letter-spacing: 2px;
-            padding: 4px 0;
-            margin: 0 auto;
-        }
-        .btn-table-combin:hover {
-            background-color: #e0f2fe;
-            border-color: #7dd3fc;
-            color: #0369a1;
-        }
-        .btn-table-combin.active {
-            background-color: #3b82f6;
-            border-color: #2563eb;
-            color: white;
-            font-weight: bold;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .action-row {
@@ -162,8 +128,8 @@
 
 <div class="container">
     <div class="control-panel">
-        <h2>162個三拼結合韻學習單 (直書對照表)</h2>
-        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">點擊下方拼音組合：</p>
+        <h2>37個注音符號基礎學習單 (含虛線描寫模式)</h2>
+        <p style="color: #64748b; font-size: 14px; margin-top: -5px;">點選下方注音符號，並可自由切換九宮格或四宮格（田字格）面板：</p>
         
         <div class="style-selector">
             <span>格線樣式：</span>
@@ -171,21 +137,24 @@
             <label><input type="radio" name="gridStyle" value="4" onchange="changeGridStyle(this.value)"> 四宮格 (2x2 田字格)</label>
         </div>
 
-        <div class="table-container">
-            <table class="bopo-table">
-                <thead>
-                    <tr id="table-header-row">
-                        <th class="medial-header">結合韻\聲符</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                </tbody>
-            </table>
+        <h3>【聲符】欄位 (21個)</h3>
+        <div class="grid-section">
+            <div class="btn-group" id="group-initials"></div>
+        </div>
+
+        <h3>【介符】欄位 (3個)</h3>
+        <div class="grid-section">
+            <div class="btn-group" id="group-medials"></div>
+        </div>
+
+        <h3>【韻符】欄位 (13個)</h3>
+        <div class="grid-section">
+            <div class="btn-group" id="group-finals"></div>
         </div>
 
         <div class="action-row">
-            <div class="current-status" id="current-text">目前選取：ㄅ + ㄧ + ㄝ</div>
-            <button class="main-btn btn-download" onclick="downloadPDF()">下載當前組合 A4 PDF</button>
+            <div class="current-status" id="current-text">目前選取注音：ㄅ</div>
+            <button class="main-btn btn-download" onclick="downloadPDF()">下載當前符號 A4 PDF</button>
         </div>
     </div>
 
@@ -195,87 +164,38 @@
 </div>
 
 <script>
-    const initialsOrder = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'];
-    
-    const combinationsData = [
-        // ㄧ 系列
-        { m: 'ㄧ', f: 'ㄝ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
-        { m: 'ㄧ', f: 'ㄚ', s: ['ㄌ','ㄐ','ㄑ','ㄒ'] },
-        { m: 'ㄧ', f: 'ㄛ', s: []},        
-        { m: 'ㄧ', f: 'ㄞ', s: []},       
-        { m: 'ㄧ', f: 'ㄠ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
-        { m: 'ㄧ', f: 'ㄡ', s: ['ㄇ','ㄉ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
-        { m: 'ㄧ', f: 'ㄤ', s: ['ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] }, 
-        { m: 'ㄧ', f: 'ㄢ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
-        { m: 'ㄧ', f: 'ㄥ', s: ['ㄅ','ㄆ','ㄇ','ㄉ','ㄊ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
-        { m: 'ㄧ', f: 'ㄣ', s: ['ㄅ','ㄆ','ㄇ','ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
-        // ㄨ 系列
-        { m: 'ㄨ', f: 'ㄚ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄕ'] },
-        { m: 'ㄨ', f: 'ㄛ', s: ['ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'] },
-        { m: 'ㄨ', f: 'ㄞ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ'] },
-        { m: 'ㄨ', f: 'ㄟ', s: ['ㄉ','ㄊ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'] },
-        { m: 'ㄨ', f: 'ㄢ', s: ['ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'] },
-        { m: 'ㄨ', f: 'ㄣ', s: ['ㄉ','ㄊ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'] },
-        { m: 'ㄨ', f: 'ㄤ', s: ['ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄕ'] },
-        { m: 'ㄨ', f: 'ㄥ', s: ['ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄓ','ㄔ','ㄖ','ㄗ','ㄘ','ㄙ'] },
-        // ㄩ 系列
-        { m: 'ㄩ', f: 'ㄝ', s: ['ㄋ','ㄌ','ㄐ','ㄑ','ㄒ'] },
-        { m: 'ㄩ', f: 'ㄢ', s: ['ㄐ','ㄑ','ㄒ'] },
-        { m: 'ㄩ', f: 'ㄣ', s: ['ㄐ','ㄑ','ㄒ'] },
-        { m: 'ㄩ', f: 'ㄥ', s: ['ㄐ','ㄑ','ㄒ'] }
-    ];
+    const bopoInitials = ['ㄅ','ㄆ','ㄇ','ㄈ','ㄉ','ㄊ','ㄋ','ㄌ','ㄍ','ㄎ','ㄏ','ㄐ','ㄑ','ㄒ','ㄓ','ㄔ','ㄕ','ㄖ','ㄗ','ㄘ','ㄙ'];
+    const bopoMedials = ['ㄧ','ㄨ','ㄩ'];
+    const bopoFinals = ['ㄚ','ㄛ','ㄜ','ㄝ','ㄞ','ㄟ','ㄠ','ㄡ','ㄢ','ㄣ','ㄤ','ㄥ','ㄦ'];
 
-    let currentBopo = { t: 'ㄅ', m: 'ㄧ', f: 'ㄝ' };
-    let currentGridMode = '9'; // 預設為九宮格
+    let currentSingleBopo = 'ㄅ';
+    let currentGridMode = '9'; 
 
-    function buildThreeBopoTable() {
-        const headerRow = document.getElementById('table-header-row');
-        const tbody = document.getElementById('table-body');
-        
-        initialsOrder.forEach(initial => {
-            const th = document.createElement('th');
-            th.textContent = initial;
-            headerRow.appendChild(th);
-        });
-        
-        combinationsData.forEach(rowItem => {
-            const tr = document.createElement('tr');
+    function buildSingleBopoPanel() {
+        renderGroupButtons('group-initials', bopoInitials);
+        renderGroupButtons('group-medials', bopoMedials);
+        renderGroupButtons('group-finals', bopoFinals);
+    }
+
+    function renderGroupButtons(targetId, list) {
+        const container = document.getElementById(targetId);
+        list.forEach(char => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-table-combin';
+            btn.id = `btn-${char}`;
+            btn.textContent = char;
             
-            const tdHeader = document.createElement('td');
-            tdHeader.style.backgroundColor = '#f1f5f9';
-            const spanText = document.createElement('span');
-            spanText.className = 'vertical-header-text';
-            spanText.textContent = `${rowItem.m}${rowItem.f}`;
-            tdHeader.appendChild(spanText);
-            tr.appendChild(tdHeader);
+            if (char === 'ㄅ') btn.classList.add('active');
             
-            initialsOrder.forEach(initial => {
-                const td = document.createElement('td');
+            btn.onclick = function() {
+                document.querySelectorAll('.btn-table-combin').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
                 
-                if (rowItem.s.includes(initial)) {
-                    const btn = document.createElement('button');
-                    btn.className = 'btn-table-combin';
-                    btn.id = `btn-${initial}-${rowItem.m}-${rowItem.f}`;
-                    btn.textContent = `${initial}${rowItem.m}${rowItem.f}`;
-                    
-                    if (initial === 'ㄅ' && rowItem.m === 'ㄧ' && rowItem.f === 'ㄝ') btn.classList.add('active');
-                    
-                    btn.onclick = function() {
-                        document.querySelectorAll('.btn-table-combin').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        
-                        currentBopo = { t: initial, m: rowItem.m, f: rowItem.f };
-                        document.getElementById('current-text').textContent = `目前選取：${initial} + ${rowItem.m} + ${rowItem.f}`;
-                        drawWorksheet();
-                    };
-                    td.appendChild(btn);
-                } else {
-                    td.style.backgroundColor = '#fafafa';
-                }
-                tr.appendChild(td);
-            });
-            
-            tbody.appendChild(tr);
+                currentSingleBopo = char;
+                document.getElementById('current-text').textContent = `目前選取注音：${char}`;
+                drawWorksheet();
+            };
+            container.appendChild(btn);
         });
     }
 
@@ -297,20 +217,18 @@
         ctx.textBaseline = 'top';
         ctx.fillText('注音學習單', 50, 40);
         
-        const bopomofo = { top: currentBopo.t, mid: currentBopo.m, bot: currentBopo.f };
-
+        // 上方兩個大格子：左邊實體字，右邊改為虛線描寫字
         const largeGridY = 120;
         const largeGridSize = 330;
-        drawJiugonge(ctx, 50, largeGridY, largeGridSize, bopomofo, '', true, 'black');
-        drawJiugonge(ctx, 420, largeGridY, largeGridSize, bopomofo, '', true, 'outline');
+        drawJiugonge(ctx, 50, largeGridY, largeGridSize, currentSingleBopo, true, 'black');
+        drawJiugonge(ctx, 420, largeGridY, largeGridSize, currentSingleBopo, true, 'dashed-outline');
         
+        // 下方三排小格子
         const smallGridStartY = 490;
         const smallGridSize = 160;
         const gapX = 30;
         const baseGapY = 30;
         const shiftUpOffset = 25;
-        
-        const tones = ['', 'ˊ', 'ˇ', 'ˋ'];
         
         for (let row = 0; row < 3; row++) {
             let y = smallGridStartY;
@@ -320,10 +238,11 @@
 
             for (let col = 0; col < 4; col++) {
                 const x = 50 + col * (smallGridSize + gapX);
-                if (row === 0) {
-                    drawJiugonge(ctx, x, y, smallGridSize, bopomofo, tones[col], false, 'gray');
+                // 第一排的前兩格設定為虛線描寫模式，其他留空
+                if (row === 0 && (col === 0 || col === 1)) {
+                    drawJiugonge(ctx, x, y, smallGridSize, currentSingleBopo, false, 'dashed-outline');
                 } else {
-                    drawJiugonge(ctx, x, y, smallGridSize, {top:'', mid:'', bot:''}, '', false, 'black');
+                    drawJiugonge(ctx, x, y, smallGridSize, '', false, 'black');
                 }
             }
         }
@@ -344,7 +263,7 @@
         ctx.restore();
     }
 
-    function drawJiugonge(ctx, x, y, size, textObj, tone, isLarge, textMode) {
+    function drawJiugonge(ctx, x, y, size, text, isLarge, textMode) {
         ctx.strokeStyle = '#666666';
         ctx.lineWidth = isLarge ? 3 : 2;
         ctx.strokeRect(x, y, size, size);
@@ -352,10 +271,10 @@
         ctx.strokeStyle = '#999999';
         ctx.lineWidth = 1.5;
         ctx.setLineDash([6, 4]);
-        const third = size / 3;
         
         ctx.beginPath();
         if (currentGridMode === '9') {
+            const third = size / 3;
             ctx.moveTo(x + third, y); ctx.lineTo(x + third, y + size);
             ctx.moveTo(x + third * 2, y); ctx.lineTo(x + third * 2, y + size);
             ctx.moveTo(x, y + third); ctx.lineTo(x + size, y + third);
@@ -368,9 +287,9 @@
         ctx.stroke();
         ctx.setLineDash([]);
         
-        const fontSize = third * 0.85; 
+        const fontSize = size * 0.90; 
         
-        function drawMainText(text, tx, ty) {
+        function drawMainText(txt, tx, ty) {
             ctx.save();
             ctx.font = `${isLarge ? 'bold' : 'normal'} ${fontSize}px DFKai-SB, BiauKai, "微軟正黑體"`;
             ctx.textAlign = 'center';
@@ -378,83 +297,36 @@
             
             if (textMode === 'gray') {
                 ctx.fillStyle = '#d3d3d3';
-                ctx.fillText(text, tx, ty);
+                ctx.fillText(txt, tx, ty);
             } else if (textMode === 'outline') {
+                // 實心描邊字
                 ctx.lineJoin = 'round';
                 ctx.lineCap = 'round';
                 ctx.strokeStyle = '#000000';
-                ctx.lineWidth = isLarge ? 14 : 7; 
-                ctx.strokeText(text, tx, ty);
+                ctx.lineWidth = isLarge ? 18 : 8; 
+                ctx.strokeText(txt, tx, ty);
                 ctx.fillStyle = '#ffffff';
-                ctx.fillText(text, tx, ty);
+                ctx.fillText(txt, tx, ty);
+            } else if (textMode === 'dashed-outline') {
+                // ★ 新增：虛線描寫字 (無箭頭，但有描寫感)
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = '#888888';
+                ctx.lineWidth = isLarge ? 4 : 2.5; 
+                ctx.setLineDash(isLarge ? [10, 8] : [5, 4]); // 依照格子大小設定虛線密度
+                ctx.strokeText(txt, tx, ty);
+                ctx.setLineDash([]); // 恢復實線
             } else {
                 ctx.fillStyle = '#000000';
-                ctx.fillText(text, tx, ty);
+                ctx.fillText(txt, tx, ty);
             }
             ctx.restore();
         }
 
-        const centerX = x + size / 2;
-
-        if (textObj.top) drawMainText(textObj.top, centerX, y + third * 0.5);
-        if (textObj.mid) drawMainText(textObj.mid, centerX, y + third * 1.5);
-        
-        if (textObj.bot) {
-            drawMainText(textObj.bot, centerX, y + third * 2.5);
-            
-            if (tone) {
-                ctx.save();
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-
-                let strokeColor = '#000000';
-                let fillColor = '#ffffff';
-                if (textMode === 'gray') strokeColor = '#d3d3d3';
-
-                const targetToneSize = fontSize * 0.5; 
-                const lineW = isLarge ? 12 : 5.5; 
-
-                const startX = x + (third * 2) + (third * 0.2);
-                
-                const startY = y + (third * 2) + (third * 0.15) - (isLarge ? 35 : 17); 
-                
-                const w = targetToneSize * 0.65; 
-                const h = targetToneSize * 0.65; 
-
-                ctx.beginPath();
-                if (tone === 'ˊ') {
-                    ctx.moveTo(startX, startY + h);
-                    ctx.lineTo(startX + w, startY);
-                    applyToneStroke(strokeColor, fillColor, lineW);
-                } 
-                else if (tone === 'ˇ') {
-                    ctx.moveTo(startX, startY + h * 0.2);
-                    ctx.lineTo(startX + w * 0.4, startY + h * 0.9);
-                    ctx.lineTo(startX + w, startY + h * 0.1);
-                    applyToneStroke(strokeColor, fillColor, lineW);
-                } 
-                else if (tone === 'ˋ') {
-                    ctx.moveTo(startX, startY);
-                    ctx.lineTo(startX + w, startY + h);
-                    applyToneStroke(strokeColor, fillColor, lineW);
-                }
-                ctx.restore();
-            }
-        }
-
-        function applyToneStroke(sColor, fColor, sWidth) {
-            if (textMode === 'outline') {
-                ctx.strokeStyle = sColor;
-                ctx.lineWidth = sWidth + 6; 
-                ctx.stroke();
-                ctx.strokeStyle = fColor;
-                ctx.lineWidth = sWidth;     
-                ctx.stroke();
-            } else {
-                ctx.strokeStyle = sColor;
-                ctx.lineWidth = sWidth;     
-                ctx.stroke();
-            }
+        if (text) {
+            const centerX = x + size / 2;
+            const centerY = y + size / 2;
+            drawMainText(text, centerX, centerY);
         }
     }
 
@@ -464,11 +336,11 @@
         const pdf = new jsPDF('p', 'mm', 'a4');
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
         pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-        pdf.save(`三拼結合韻練習單_${currentBopo.t}${currentBopo.m}${currentBopo.f}.pdf`);
+        pdf.save(`注音符號練習單_${currentSingleBopo}.pdf`);
     }
 
     window.onload = function() {
-        buildThreeBopoTable();
+        buildSingleBopoPanel();
         drawWorksheet();
     };
 </script>
