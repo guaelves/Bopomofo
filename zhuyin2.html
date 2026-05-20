@@ -25,6 +25,24 @@
         }
         h2 { margin-top: 0; color: #1a365d; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
         
+        /* 棋盤格線切換面板樣式 */
+        .style-selector {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: #f1f5f9;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .style-selector label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         /* 橫縱軸交換後的表格樣式 */
         .table-container {
             overflow-x: auto;
@@ -135,6 +153,12 @@
         <h2>22個二拼結合韻學習單 (直書對照表)</h2>
         <p style="color: #64748b; font-size: 14px; margin-top: -5px;">點擊表格內注音：</p>
         
+        <div class="style-selector">
+            <span>格線樣式：</span>
+            <label><input type="radio" name="gridStyle" value="9" checked onchange="changeGridStyle(this.value)"> 九宮格 (3x3)</label>
+            <label><input type="radio" name="gridStyle" value="4" onchange="changeGridStyle(this.value)"> 四宮格 (2x2 田字格)</label>
+        </div>
+
         <div class="table-container">
             <table class="bopo-table">
                 <thead>
@@ -172,6 +196,7 @@
     };
 
     let currentBopo = { m: 'ㄧ', f: 'ㄚ' };
+    let currentGridMode = '9'; // 預設為九宮格
 
     // 建置交換後的直書表格
     function buildSwappedTable() {
@@ -228,6 +253,12 @@
             
             tbody.appendChild(tr);
         });
+    }
+
+    // 切換格線並重新繪圖
+    function changeGridStyle(value) {
+        currentGridMode = value;
+        drawWorksheet();
     }
 
     function drawWorksheet() {
@@ -299,13 +330,19 @@
         ctx.strokeStyle = '#999999';
         ctx.lineWidth = 1.5;
         ctx.setLineDash([6, 4]);
-        const third = size / 3;
         
         ctx.beginPath();
-        ctx.moveTo(x + third, y); ctx.lineTo(x + third, y + size);
-        ctx.moveTo(x + third * 2, y); ctx.lineTo(x + third * 2, y + size);
-        ctx.moveTo(x, y + third); ctx.lineTo(x + size, y + third);
-        ctx.moveTo(x, y + third * 2); ctx.lineTo(x + size, y + third * 2);
+        if (currentGridMode === '9') {
+            const third = size / 3;
+            ctx.moveTo(x + third, y); ctx.lineTo(x + third, y + size);
+            ctx.moveTo(x + third * 2, y); ctx.lineTo(x + third * 2, y + size);
+            ctx.moveTo(x, y + third); ctx.lineTo(x + size, y + third);
+            ctx.moveTo(x, y + third * 2); ctx.lineTo(x + size, y + third * 2);
+        } else {
+            const half = size / 2;
+            ctx.moveTo(x + half, y); ctx.lineTo(x + half, y + size);
+            ctx.moveTo(x, y + half); ctx.lineTo(x + size, y + half);
+        }
         ctx.stroke();
         ctx.setLineDash([]);
         
@@ -359,7 +396,8 @@
                 const targetToneSize = fontSize * 0.5; 
                 const lineW = isLarge ? 12 : 5.5; 
 
-                // 第 6 小格視覺中心定位區域
+                // 第 6 小格視覺中心定位區域 (不受切換四宮格影響，維持原本的排版比例)
+                const third = size / 3;
                 const startX = x + (third * 2) + (third * 0.2);
                 const startY = y + (third) + (third * 0.25);
                 const w = targetToneSize * 0.65; 
